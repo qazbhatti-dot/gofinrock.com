@@ -79,7 +79,9 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
 /* --- responsive hardening --- */
 @media (max-width: 760px) {
   section, .wrap { padding-left: 20px !important; padding-right: 20px !important }
-  .g2, .g3, .g4 { grid-template-columns: 1fr !important }
+  .g2, .g3, .g4 { grid-template-columns: minmax(0,1fr) !important }
+  .g2[style*="px 32px"] { padding-left: 0 !important; padding-right: 0 !important }
+  .heroph { width: min(318px, 100%) !important }
   [style*="grid-template-columns:repeat(4"], [style*="grid-template-columns:repeat(3"],
   [style*="grid-template-columns: repeat(4"], [style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important }
   [style*="grid-template-columns:1fr 1fr"], [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important }
@@ -178,6 +180,30 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
   window.addEventListener('resize', sched);
 })();
 </script>
+<style id="mobile-compact">
+/* Phones: shorter pages. Tighter rhythm, swipeable screenshot rows, two-column footer. */
+@media (max-width: 760px) {
+  section { padding-top: 40px !important; padding-bottom: 40px !important }
+  h1 { font-size: clamp(31px, 8.4vw, 40px) !important }
+  h2 { font-size: clamp(24px, 6.4vw, 30px) !important }
+  p:not(.num):not([style*="font-size:7"]):not([style*="font-size:8"]):not([style*="font-size:9"]):not([style*="font-size:10"]):not([style*="font-size:11"]):not([style*="font-size:12"]) { font-size: 15px !important; line-height: 1.55 !important }
+  .card-h { padding: 20px !important }
+  [style*="margin-top:46px"], [style*="margin-top:48px"], [style*="margin-top:52px"], [style*="margin-top:56px"] { margin-top: 28px !important }
+  /* phone screenshots side by side, swipe for more */
+  .phonerow, .g3:has(> .card-h > [style*="border-radius:34px"]) {
+    display: flex !important; flex-wrap: nowrap !important; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px !important;
+    margin-left: -16px !important; margin-right: -16px !important; padding: 0 16px 10px !important;
+    max-width: none !important; scrollbar-width: none; -webkit-overflow-scrolling: touch }
+  .phonerow::-webkit-scrollbar, .g3::-webkit-scrollbar { display: none }
+  .phonerow > *, .g3:has(> .card-h > [style*="border-radius:34px"]) > * { flex: 0 0 64%; scroll-snap-align: center; min-width: 0 }
+  .g3:has(> .card-h > [style*="border-radius:34px"]) > .card-h { padding: 16px 12px !important }
+  /* footer: brand across the top, link groups two by two */
+  footer .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 22px 16px !important }
+  footer .g4 > :first-child { grid-column: 1 / -1 }
+  footer [style*="padding:64px 32px"] { padding-top: 40px !important }
+  .heroph { width: min(250px, 72vw) !important; margin: 0 auto }
+}
+</style>
 </head>
 <body>
 <div style="min-height:100vh;background:#f6f5f1">

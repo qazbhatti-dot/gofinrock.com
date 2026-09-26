@@ -82,7 +82,9 @@ details.faq[open] summary .fx { transform: rotate(45deg); background: #1e1b4b; c
 /* --- responsive hardening --- */
 @media (max-width: 760px) {
   section, .wrap { padding-left: 20px !important; padding-right: 20px !important }
-  .g2, .g3, .g4 { grid-template-columns: 1fr !important }
+  .g2, .g3, .g4 { grid-template-columns: minmax(0,1fr) !important }
+  .g2[style*="px 32px"] { padding-left: 0 !important; padding-right: 0 !important }
+  .heroph { width: min(318px, 100%) !important }
   [style*="grid-template-columns:repeat(4"], [style*="grid-template-columns:repeat(3"],
   [style*="grid-template-columns: repeat(4"], [style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important }
   [style*="grid-template-columns:1fr 1fr"], [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important }
@@ -182,6 +184,30 @@ details.faq[open] summary .fx { transform: rotate(45deg); background: #1e1b4b; c
 })();
 </script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is there a free plan?","acceptedAnswer":{"@type":"Answer","text":"Every account starts free and stays free until you buy something — renewals and documents, net worth, spending and goals, statement import and ten receipt scans a month. No card. You pay when you connect a live bank feed (Individual) or when you have a trade, a let or a company to run."}},{"@type":"Question","name":"Which plan am I?","acceptedAnswer":{"@type":"Answer","text":"Not self-employed: Individual. A sole trader under the MTD threshold (£50,000 of qualifying income, falling to £30,000 from April 2027): Sole trader. Over it, or a side hustle you want done properly: Self-employed. Rental income: Landlord. A company: Limited company, per company. If your turnover crosses the MTD threshold, the app tells you before HMRC does."}},{"@type":"Question","name":"Does Finrock file to HMRC?","acceptedAnswer":{"@type":"Answer","text":"Not yet. Every figure — Self Assessment, quarterly updates for Making Tax Digital for Income Tax, the VAT return — is prepared from your books, ready to file. Filing to HMRC from the app is planned — for now, submit your Self Assessment on HMRC's website, and send quarterly updates and VAT returns through your accountant or other software that can file them. Mark it filed in Finrock and the record stays in one place."}},{"@type":"Question","name":"Why do your prices include VAT when others don't?","acceptedAnswer":{"@type":"Answer","text":"Because most sole traders can't reclaim it. A “£19 + VAT” plan really costs £22.80. Finrock's £24.99 is £24.99 — the comparison is honest only when both numbers are what actually leaves your account."}},{"@type":"Question","name":"Is it tax-deductible?","acceptedAnswer":{"@type":"Answer","text":"For a sole trader, yes — software for the business is an allowable expense. At basic rate (20% income tax + 6% Class 4 NI) Self-employed at £24.99 costs about £18.50 a month after relief; at higher rate about £14.50. Individual is a personal subscription and is not deductible."}},{"@type":"Question","name":"Do I need an accountant?","acceptedAnswer":{"@type":"Answer","text":"No. Finrock keeps the books, works out what you owe under current UK rules and prepares every filing. From £10 a month more (£34.99 in all for a sole trader, who moves to Self-employed + accountant), a qualified UK accountant reviews every return before you file it — your Self Assessment, your VAT returns and your quarterly updates, not just the year end. Your own accountant can also be invited free on any plan."}},{"@type":"Question","name":"What does “per company” mean?","acceptedAnswer":{"@type":"Answer","text":"Every limited company is its own set of books, its own CT600 and its own Companies House paperwork — prepared here, filed by you or your accountant for now — so a second company is a second £39.99. Your personal side and any sole trade are included; you don't pay twice for being a director."}},{"@type":"Question","name":"Can I cancel anytime?","acceptedAnswer":{"@type":"Answer","text":"Yes, in one tap from Settings. Access runs to the end of the billing period, your data exports as CSV, and the free tier keeps your records."}}]}</script>
+<style id="mobile-compact">
+/* Phones: shorter pages. Tighter rhythm, swipeable screenshot rows, two-column footer. */
+@media (max-width: 760px) {
+  section { padding-top: 40px !important; padding-bottom: 40px !important }
+  h1 { font-size: clamp(31px, 8.4vw, 40px) !important }
+  h2 { font-size: clamp(24px, 6.4vw, 30px) !important }
+  p:not(.num):not([style*="font-size:7"]):not([style*="font-size:8"]):not([style*="font-size:9"]):not([style*="font-size:10"]):not([style*="font-size:11"]):not([style*="font-size:12"]) { font-size: 15px !important; line-height: 1.55 !important }
+  .card-h { padding: 20px !important }
+  [style*="margin-top:46px"], [style*="margin-top:48px"], [style*="margin-top:52px"], [style*="margin-top:56px"] { margin-top: 28px !important }
+  /* phone screenshots side by side, swipe for more */
+  .phonerow, .g3:has(> .card-h > [style*="border-radius:34px"]) {
+    display: flex !important; flex-wrap: nowrap !important; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px !important;
+    margin-left: -16px !important; margin-right: -16px !important; padding: 0 16px 10px !important;
+    max-width: none !important; scrollbar-width: none; -webkit-overflow-scrolling: touch }
+  .phonerow::-webkit-scrollbar, .g3::-webkit-scrollbar { display: none }
+  .phonerow > *, .g3:has(> .card-h > [style*="border-radius:34px"]) > * { flex: 0 0 64%; scroll-snap-align: center; min-width: 0 }
+  .g3:has(> .card-h > [style*="border-radius:34px"]) > .card-h { padding: 16px 12px !important }
+  /* footer: brand across the top, link groups two by two */
+  footer .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 22px 16px !important }
+  footer .g4 > :first-child { grid-column: 1 / -1 }
+  footer [style*="padding:64px 32px"] { padding-top: 40px !important }
+  .heroph { width: min(250px, 72vw) !important; margin: 0 auto }
+}
+</style>
 </head>
 <body>
 <div style="min-height:100vh;background:#f6f5f1">
