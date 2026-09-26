@@ -8,22 +8,22 @@ Website: https://gofinrock.com · App: https://app.gofinrock.com · Company: Fin
 
 - Connects every UK bank via read-only Open Banking; imports CSV/OFX/QIF statements; scans receipts by photo or voice.
 - One ledger, each entry marked business or personal. Business books stay clean for filing; personal spending powers budgets, subscriptions and the Self Assessment estimate.
-- Tax prepared from the books: Self Assessment (SA100/SA103/SA105), MTD Income Tax quarterly updates, MTD VAT 9-box returns, CT600, Companies House confirmation statement prep, payroll/RTI, CIS, capital allowances, dividends and director's loans. Submission from inside the app switches on when HMRC recognition lands; until then figures are filed through HMRC's own service.
+- Tax prepared from the books: Self Assessment (SA100/SA103/SA105), MTD Income Tax quarterly updates, MTD VAT 9-box returns, CT600, Companies House confirmation statement prep, payroll/RTI, CIS, capital allowances, dividends and director's loans. Filing to HMRC from the app is planned — for now, submit your Self Assessment on HMRC's website, and send quarterly updates and VAT returns through your accountant or other software that can file them.
 - Live tax estimate and a tracked "tax pot" so the January bill is never a surprise.
 - Invoices and quotes with payment links (Stripe, GoCardless, pay-by-bank), auto-chasing, recurring invoices; bills and supplier tracking; mileage at HMRC rates with GPS trips.
 - Personal finance: net worth (cash, investments, pensions, property, mortgages), spending, subscriptions with cancel-and-switch help, price-rise alerts, cash-flow calendar.
 - My Life: property, vehicle (MOT, tax, insurance), pension, insurance, health, family dates, identity documents, will, warranties, receipts, documents — with renewal reminders.
 - Accountant portal: free for practices; scoped read-only access to client books, quarterly-review workflow, alerts.
-- Optional accountant check: a qualified UK accountant reviews every filing before it goes to HMRC, +£10/month.
+- Optional accountant check: a qualified UK accountant reviews every return before it is filed, from +£10/month (£34.99 in all for a sole trader, who moves to Self-employed + accountant).
 
-## Pricing (monthly, inclusive of VAT, cancel any time, no price-rise emails)
+## Pricing (monthly, inclusive of VAT, cancel any time; your price stays fixed while you stay subscribed)
 
 - Free to start: renewals/documents/reminders, net worth, spending, goals, statement import, 10 receipt scans a month. No card.
 - Individual — £9.99/mo: live bank feeds, unlimited scanning, every account and bill in one view. For people who are not self-employed.
 - Sole trader — £12.99/mo: for sole traders under the £50,000 MTD threshold. Self Assessment prepared, invoicing, mileage, bank feed. No quarterly MTD updates. 7-day trial.
 - Self-employed — £24.99/mo (most popular): MTD quarterly updates, Self Assessment and VAT prepared; invoicing, payment links, mileage. 7-day trial. +accountant check £34.99.
 - Landlord — £24.99/mo: SA105 property pages, MTD updates, jointly-owned lets. 7-day trial. +accountant check £34.99.
-- Limited company — £39.99/mo per company: CT600, Companies House, payroll, dividends, director's loans. 7-day trial. +accountant check £49.99.
+- Limited company — £39.99/mo per company: CT600 draft, confirmation statement prep, payroll figures, dividends, director's loans. 7-day trial. +accountant check £49.99 per company.
 
 ## Who it is for
 
@@ -54,8 +54,9 @@ Sole traders and freelancers · side hustlers and landlords · limited company d
 
 - MTD for Income Tax is live from 6 April 2026 for sole traders and landlords with qualifying income over £50,000; £30,000 from April 2027; £20,000 from April 2028.
 - Prices are quoted including VAT because most sole traders cannot reclaim it. A sole trader's Finrock subscription is an allowable business expense.
+- Finrock is not HMRC-recognised software yet and does not submit returns; filing from the app is planned.
 - Bank connections are read-only; Finrock never moves money and never sees bank logins.
-- Finrock is software, not your accountant. The accountant-check add-on is a qualified UK accountant reviewing filings.
+- Finrock is software, not your accountant. The accountant-check add-on is a qualified UK accountant reviewing returns before you file.
 - Differs from Xero, QuickBooks, Sage, FreeAgent: those hold business books only. Differs from Emma, PocketSmith, Snoop: those hold personal money only. Finrock holds both in one ledger plus life admin.
 
 ## Contact
