@@ -66,7 +66,7 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
 .mmenu a { font-size: 15px; font-weight: 600; color: #15161a; padding: 12px 14px; border-radius: 10px; }
 .mmenu a:hover { background: rgba(30,27,75,.06); }
 @media (max-width: 1040px) { .mbtn { display: flex } }
-@media (max-width: 960px) { .avmain { grid-template-columns: 1fr !important } .avhide { display: none !important } .avrail { display: none !important } }
+@media (max-width: 960px) { .avmain { grid-template-columns: 1fr !important } .avtiles { flex-wrap: wrap } .avtiles > div { flex: 1 1 40% !important } .avhide { display: none !important } .avrail { display: none !important } }
 .navlink { position: relative; }
 .navlink:after { content: ''; position: absolute; left: 0; right: 100%; bottom: -4px; height: 2px; background: #f6921a; transition: right .25s cubic-bezier(.16,1,.3,1); }
 .navlink:hover:after { right: 0; }
@@ -174,7 +174,7 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
 <div style="min-height:100vh;background:#f6f5f1">
 
 <div style="background:#070709;color:#fff;text-align:center;padding:8px 16px;font-size:12.5px;font-weight:600;position:relative;z-index:61">
-  <span style="opacity:.85">Making Tax Digital for Income Tax is now live —</span> <a href="index.html#filing" style="color:#f6921a;font-weight:700">Finrock files your quarterly updates →</a>
+  <span style="opacity:.85">Making Tax Digital for Income Tax is now live —</span> <a href="index.html#filing" style="color:#f6921a;font-weight:700">Finrock prepares your quarterly updates →</a>
 </div>
 
 <header style="position:sticky;top:0;z-index:60;background:rgba(251,250,246,.85);backdrop-filter:blur(16px) saturate(150%);border-bottom:1px solid rgba(20,22,28,.07)">
@@ -219,7 +219,7 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
   <div style="position:relative;max-width:1280px;margin:0 auto;padding:74px 32px 0;text-align:center">
     <p class="rv in" style="margin:0;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f6921a">For accountants &amp; bookkeepers</p>
     <h1 class="rv in" style="margin:14px auto 0;max-width:860px;font-size:clamp(38px,4.6vw,62px);line-height:1.02;letter-spacing:-.045em;font-weight:800;color:#fff;text-wrap:balance">A working portal, not a read-only export.</h1>
-    <p class="rv in" style="margin:20px auto 0;max-width:610px;font-size:17px;line-height:1.62;color:rgba(255,255,255,.66);text-wrap:pretty">Every client's ledger, P&amp;L, VAT position, receipts and tax workings in one place — with review, approval and a filing log that shows exactly what was submitted, when, by whom.</p>
+    <p class="rv in" style="margin:20px auto 0;max-width:610px;font-size:17px;line-height:1.62;color:rgba(255,255,255,.66);text-wrap:pretty">Every client's ledger, P&amp;L, VAT position, receipts and tax workings in one place — with review, approval and a sign-off trail that shows exactly what was prepared, approved and marked filed — when, and by whom.</p>
     <div class="rv in" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:30px;flex-wrap:wrap">
       <a href="https://app.gofinrock.com/register" class="btn-p" style="display:inline-flex;align-items:center;gap:9px;background:linear-gradient(120deg,#f6921a,#fb923c);color:#140d02;font-size:15.5px;font-weight:800;padding:15px 28px;border-radius:14px;box-shadow:0 14px 40px rgba(246,146,26,.38)">Create a practice account <i data-lucide="arrow-right" style="width:16px;height:16px"></i></a>
       <a href="finrock-contact.html" style="display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:600;color:rgba(255,255,255,.88);padding:15px 22px;border-radius:14px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06)">Talk to us</a>
@@ -230,103 +230,54 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
   <div class="rv in" style="position:relative;max-width:1180px;margin:50px auto 0;padding:0 24px 84px">
     <div style="border-radius:16px;overflow:hidden;background:#f6f5f1;border:1px solid rgba(255,255,255,.12);box-shadow:0 40px 100px rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.4)">
       <div style="display:flex;align-items:center;gap:11px;padding:10px 14px;background:#fff;border-bottom:1px solid rgba(20,22,28,.08)">
-        <span style="width:21px;height:21px;border-radius:7px;background:#1e1b4b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800">F</span>
-        <span class="avhide" style="font-size:10.5px;color:rgba(21,22,26,.42)">Practice</span>
-        <span class="avhide" style="font-size:10.5px;color:rgba(21,22,26,.28)">/</span>
+        <span style="width:23px;height:23px;border-radius:7px;border:1px solid rgba(20,22,28,.12);display:flex;align-items:center;justify-content:center"><i data-lucide="briefcase" style="width:12px;height:12px;color:#15161a"></i></span>
         <span style="font-size:11.5px;font-weight:700">Reed &amp; Dunn Accountants</span>
-        <span style="font-size:8px;font-weight:800;letter-spacing:.09em;padding:3px 7px;border-radius:5px;background:rgba(30,27,75,.08);color:#1e1b4b">ACCOUNTANT</span>
         <div style="flex:1"></div>
-        <div class="avhide" style="display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:9px;background:#f6f5f1;border:1px solid rgba(20,22,28,.07);width:200px"><i data-lucide="search" style="width:12px;height:12px;color:rgba(21,22,26,.38)"></i><span style="font-size:10px;color:rgba(21,22,26,.40)">Search clients…</span><span style="margin-left:auto;font-size:8.5px;font-weight:700;color:rgba(21,22,26,.32);border:1px solid rgba(20,22,28,.12);border-radius:4px;padding:1px 4px">⌘K</span></div>
-        <span style="width:21px;height:21px;border-radius:9999px;background:#2f7d5b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:800">RD</span>
+        <span style="position:relative;display:flex"><i data-lucide="bell" style="width:14px;height:14px;color:rgba(21,22,26,.62)"></i><span style="position:absolute;top:-5px;right:-6px;font-size:7.5px;font-weight:800;color:#9a6b00">3</span></span>
+        <span class="avhide" style="display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(21,22,26,.62)"><i data-lucide="log-out" style="width:12px;height:12px"></i>Sign out</span>
       </div>
       <div style="display:flex">
-        <div class="avrail" style="width:152px;flex-shrink:0;background:#fff;border-right:1px solid rgba(20,22,28,.07);padding:12px 10px;display:flex;flex-direction:column;gap:9px">
-          <img src="assets/finrock-logo.svg" alt="Finrock" style="height:17px;width:auto;display:block;margin:1px 0 3px 6px" />
+        <div class="avrail" style="width:152px;flex-shrink:0;background:#fff;border-right:1px solid rgba(20,22,28,.07);padding:12px 10px;display:flex;flex-direction:column;gap:6px">
+          <p style="margin:0 0 2px 8px;font-size:8.5px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:rgba(21,22,26,.42)">Practice</p>
           <div style="display:flex;flex-direction:column;gap:2px">
-            <span style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px;background:rgba(30,27,75,.07)"><span style="width:22px;height:22px;border-radius:7px;background:rgba(30,27,75,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="users" style="width:11px;height:11px;color:#1e1b4b"></i></span><span style="font-size:10.5px;font-weight:700;color:#15161a">Clients</span></span>
-            <span style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px"><span style="width:22px;height:22px;border-radius:7px;background:rgba(15,124,58,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="file-check-2" style="width:11px;height:11px;color:rgba(21,22,26,.55)"></i></span><span style="font-size:10.5px;font-weight:600;color:rgba(21,22,26,.62)">Filings</span></span>
+            <span style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px;background:rgba(30,27,75,.07)"><span style="width:22px;height:22px;border-radius:7px;background:rgba(30,27,75,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="layout-grid" style="width:11px;height:11px;color:#1e1b4b"></i></span><span style="font-size:10.5px;font-weight:700;color:#15161a">Home</span></span>
+            <span style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px"><span style="width:22px;height:22px;border-radius:7px;background:rgba(30,27,75,.08);display:flex;align-items:center;justify-content:center"><i data-lucide="users" style="width:11px;height:11px;color:rgba(21,22,26,.55)"></i></span><span style="font-size:10.5px;font-weight:600;color:rgba(21,22,26,.62)">Clients</span></span>
+            <span style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px"><span style="width:22px;height:22px;border-radius:7px;background:rgba(2,132,199,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="square-check" style="width:11px;height:11px;color:rgba(21,22,26,.55)"></i></span><span style="font-size:10.5px;font-weight:600;color:rgba(21,22,26,.62)">Tasks</span></span>
+            <span style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px"><span style="width:22px;height:22px;border-radius:7px;background:rgba(79,70,229,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="calendar-clock" style="width:11px;height:11px;color:rgba(21,22,26,.55)"></i></span><span style="font-size:10.5px;font-weight:600;color:rgba(21,22,26,.62)">Calendar</span></span>
+            <span style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px"><span style="width:22px;height:22px;border-radius:7px;background:rgba(200,50,71,.09);display:flex;align-items:center;justify-content:center"><i data-lucide="inbox" style="width:11px;height:11px;color:rgba(21,22,26,.55)"></i></span><span style="font-size:10.5px;font-weight:600;color:rgba(21,22,26,.62)">Chasing</span></span>
+            <span style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px"><span style="width:22px;height:22px;border-radius:7px;background:rgba(15,124,58,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="file-check-2" style="width:11px;height:11px;color:rgba(21,22,26,.55)"></i></span><span style="font-size:10.5px;font-weight:600;color:rgba(21,22,26,.62)">Filing log</span></span>
             <span style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px"><span style="width:22px;height:22px;border-radius:7px;background:rgba(246,146,26,.12);display:flex;align-items:center;justify-content:center"><i data-lucide="receipt" style="width:11px;height:11px;color:rgba(21,22,26,.55)"></i></span><span style="font-size:10.5px;font-weight:600;color:rgba(21,22,26,.62)">Fees</span></span>
-            <span style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px"><span style="width:22px;height:22px;border-radius:7px;background:rgba(79,70,229,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="briefcase" style="width:11px;height:11px;color:rgba(21,22,26,.55)"></i></span><span style="font-size:10.5px;font-weight:600;color:rgba(21,22,26,.62)">My firm</span></span>
-            <span style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px"><span style="width:22px;height:22px;border-radius:7px;background:rgba(2,132,199,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="shield-check" style="width:11px;height:11px;color:rgba(21,22,26,.55)"></i></span><span style="font-size:10.5px;font-weight:600;color:rgba(21,22,26,.62)">My practice</span></span>
+            <span style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px"><span style="width:22px;height:22px;border-radius:7px;background:rgba(15,124,58,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="shield-check" style="width:11px;height:11px;color:rgba(21,22,26,.55)"></i></span><span style="font-size:10.5px;font-weight:600;color:rgba(21,22,26,.62)">My practice</span></span>
           </div>
         </div>
-        <div style="flex:1;min-width:0;padding:13px 15px 17px;display:flex;flex-direction:column;gap:11px">
+        <div style="flex:1;min-width:0;padding:15px 15px 17px;display:flex;flex-direction:column;gap:11px">
+          <p style="margin:0;font-size:15px;font-weight:800;letter-spacing:-.02em">Good morning, Rachel</p>
+          <div class="avtiles" style="display:flex;gap:9px">
+            <div style="flex:1;min-width:0;background:#fff;border:1px solid rgba(20,22,28,.09);border-radius:12px;padding:10px 12px"><span class="num" style="display:block;margin:0;font-size:19px;color:#c83247">1</span><span style="display:block;margin:2px 0 0;font-size:9.5px;font-weight:700">Overdue</span><span style="display:block;margin:1px 0 0;font-size:8.5px;color:rgba(21,22,26,.48)">Past the deadline</span></div>
+            <div style="flex:1;min-width:0;background:#fff;border:1px solid rgba(20,22,28,.09);border-radius:12px;padding:10px 12px"><span class="num" style="display:block;margin:0;font-size:19px;color:#9a6b00">3</span><span style="display:block;margin:2px 0 0;font-size:9.5px;font-weight:700">Waiting on you</span><span style="display:block;margin:1px 0 0;font-size:8.5px;color:rgba(21,22,26,.48)">Replies and requests</span></div>
+            <div style="flex:1;min-width:0;background:#fff;border:1px solid rgba(20,22,28,.09);border-radius:12px;padding:10px 12px"><span class="num" style="display:block;margin:0;font-size:19px;color:#c83247">1</span><span style="display:block;margin:2px 0 0;font-size:9.5px;font-weight:700">Cannot file</span><span style="display:block;margin:1px 0 0;font-size:8.5px;color:rgba(21,22,26,.48)">No HMRC access</span></div>
+            <div style="flex:1;min-width:0;background:#fff;border:1px solid rgba(20,22,28,.09);border-radius:12px;padding:10px 12px"><span class="num" style="display:block;margin:0;font-size:19px;color:#1e1b4b">9</span><span style="display:block;margin:2px 0 0;font-size:9.5px;font-weight:700">Coming up</span><span style="display:block;margin:1px 0 0;font-size:8.5px;color:rgba(21,22,26,.48)">Next 90 days</span></div>
+            <div style="flex:1;min-width:0;background:#fff;border:1px solid rgba(20,22,28,.09);border-radius:12px;padding:10px 12px"><span class="num" style="display:block;margin:0;font-size:19px;color:#1e1b4b">4</span><span style="display:block;margin:2px 0 0;font-size:9.5px;font-weight:700">Tasks</span><span style="display:block;margin:1px 0 0;font-size:8.5px;color:rgba(21,22,26,.48)">Open</span></div>
+          </div>
           <div class="avmain" style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:11px;align-items:start">
-            <div style="display:flex;flex-direction:column;gap:11px;min-width:0">
-              <div style="background:#fff;border:1px solid rgba(20,22,28,.09);border-radius:13px;padding:13px 15px">
-                <div style="display:flex;align-items:center;justify-content:space-between">
-                  <div><p style="margin:0;font-size:8.5px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:rgba(21,22,26,.42)">Work queue · this week</p><p style="margin:2px 0 0;font-size:9px;color:rgba(21,22,26,.45)">Sorted by deadline, across every client</p></div>
-                  <span style="font-size:9px;font-weight:800;padding:4px 9px;border-radius:7px;background:rgba(200,50,71,.09);color:#c83247">12 items</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid rgba(20,22,28,.06)"><span style="flex-shrink:0;width:23px;height:23px;border-radius:7px;background:rgba(200,50,71,.09);display:flex;align-items:center;justify-content:center"><i data-lucide="landmark" style="width:11px;height:11px;color:#c83247"></i></span><span style="flex:1;min-width:0"><span style="display:block;font-size:10.5px;font-weight:700;line-height:1.3">VAT Q2 — Bridges Plumbing Ltd</span><span style="display:block;margin-top:1px;font-size:9px;color:rgba(21,22,26,.50)">Figures ready · £4,287.50 · your review</span></span><span style="flex-shrink:0;font-size:8.5px;font-weight:800;padding:3px 7px;border-radius:6px;background:#c8324714;color:#c83247">3d</span></div>
-                <div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid rgba(20,22,28,.06)"><span style="flex-shrink:0;width:23px;height:23px;border-radius:7px;background:rgba(154,107,0,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="file-clock" style="width:11px;height:11px;color:#9a6b00"></i></span><span style="flex:1;min-width:0"><span style="display:block;font-size:10.5px;font-weight:700;line-height:1.3">MTD Q2 update — Sam Whitfield</span><span style="display:block;margin-top:1px;font-size:9px;color:rgba(21,22,26,.50)">Sole trader · quarterly update to approve</span></span><span style="flex-shrink:0;font-size:8.5px;font-weight:800;padding:3px 7px;border-radius:6px;background:#9a6b0014;color:#9a6b00">7 Aug</span></div>
-                <div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid rgba(20,22,28,.06)"><span style="flex-shrink:0;width:23px;height:23px;border-radius:7px;background:rgba(30,27,75,.08);display:flex;align-items:center;justify-content:center"><i data-lucide="file-check-2" style="width:11px;height:11px;color:#1e1b4b"></i></span><span style="flex:1;min-width:0"><span style="display:block;font-size:10.5px;font-weight:700;line-height:1.3">Year-end — K. Mensah Electrical</span><span style="display:block;margin-top:1px;font-size:9px;color:rgba(21,22,26,.50)">Sign-off requested · CT600 drafted</span></span><span style="flex-shrink:0;font-size:8.5px;font-weight:800;padding:3px 7px;border-radius:6px;background:#1e1b4b14;color:#1e1b4b">12d</span></div>
-                <div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid rgba(20,22,28,.06)"><span style="flex-shrink:0;width:23px;height:23px;border-radius:7px;background:rgba(15,124,58,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="receipt" style="width:11px;height:11px;color:#0f7c3a"></i></span><span style="flex:1;min-width:0"><span style="display:block;font-size:10.5px;font-weight:700;line-height:1.3">Receipts missing — 4 clients</span><span style="display:block;margin-top:1px;font-size:9px;color:rgba(21,22,26,.50)">Chase list ready to send</span></span><span style="flex-shrink:0;font-size:8.5px;font-weight:800;padding:3px 7px;border-radius:6px;background:#0f7c3a14;color:#0f7c3a">Today</span></div>
-              </div>
-              <div style="background:#fff;border:1px solid rgba(20,22,28,.09);border-radius:13px;overflow:hidden">
-                <div style="padding:12px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(20,22,28,.07)">
-                  <p style="margin:0;font-size:8.5px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:rgba(21,22,26,.42)">Clients</p>
-                  <span style="font-size:9px;font-weight:800;padding:4px 9px;border-radius:7px;background:rgba(200,50,71,.09);color:#c83247">4 need review</span>
-                </div>
-                
-                  <div style="display:flex;align-items:center;gap:10px;padding:10px 15px;border-bottom:1px solid rgba(20,22,28,.05)">
-                    <span style="flex-shrink:0;width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;color:#fff;background:#1e1b4b">BP</span>
-                    <span style="min-width:0;flex:1"><span style="display:block;font-size:10.5px;font-weight:700">Bridges Plumbing Ltd</span><span style="display:block;font-size:9px;color:rgba(21,22,26,.48)">VAT Q2 · figures ready</span></span>
-                    <span style="flex-shrink:0;font-size:8.5px;font-weight:800;padding:3px 8px;border-radius:6px;background:rgba(246,146,26,.14);color:#9a6b00">Ready to file</span>
-                  </div>
-                
-
-                  <div style="display:flex;align-items:center;gap:10px;padding:10px 15px;border-bottom:1px solid rgba(20,22,28,.05)">
-                    <span style="flex-shrink:0;width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;color:#fff;background:#2f7d5b">SW</span>
-                    <span style="min-width:0;flex:1"><span style="display:block;font-size:10.5px;font-weight:700">Sam Whitfield</span><span style="display:block;font-size:9px;color:rgba(21,22,26,.48)">Sole trader · MTD Q2 due 7 Aug</span></span>
-                    <span style="flex-shrink:0;font-size:8.5px;font-weight:800;padding:3px 8px;border-radius:6px;background:rgba(200,50,71,.10);color:#c83247">Overdue</span>
-                  </div>
-                
-
-                  <div style="display:flex;align-items:center;gap:10px;padding:10px 15px;border-bottom:1px solid rgba(20,22,28,.05)">
-                    <span style="flex-shrink:0;width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;color:#fff;background:#4a5b8c">KM</span>
-                    <span style="min-width:0;flex:1"><span style="display:block;font-size:10.5px;font-weight:700">K. Mensah Electrical</span><span style="display:block;font-size:9px;color:rgba(21,22,26,.48)">Year-end · sign-off requested</span></span>
-                    <span style="flex-shrink:0;font-size:8.5px;font-weight:800;padding:3px 8px;border-radius:6px;background:rgba(30,27,75,.07);color:rgba(21,22,26,.62)">Open</span>
-                  </div>
-                
-
-                  <div style="display:flex;align-items:center;gap:10px;padding:10px 15px;border-bottom:1px solid rgba(20,22,28,.05)">
-                    <span style="flex-shrink:0;width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;color:#fff;background:#d4652f">LT</span>
-                    <span style="min-width:0;flex:1"><span style="display:block;font-size:10.5px;font-weight:700">Lakeview Trades</span><span style="display:block;font-size:9px;color:rgba(21,22,26,.48)">SA filed 14 Jul · receipt logged</span></span>
-                    <span style="flex-shrink:0;font-size:8.5px;font-weight:800;padding:3px 8px;border-radius:6px;background:rgba(15,124,58,.10);color:#0f7c3a">Filed</span>
-                  </div>
-                
-              </div>
+            <div style="background:#fff;border:1px solid rgba(20,22,28,.09);border-radius:13px;padding:13px 15px">
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><i data-lucide="triangle-alert" style="width:12px;height:12px;color:#c83247"></i><p style="margin:0;font-size:11px;font-weight:700">Needs you now</p><span style="margin-left:auto;font-size:9px;color:rgba(21,22,26,.45)">4</span></div>
+              <div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid rgba(20,22,28,.06)"><span style="flex-shrink:0;width:23px;height:23px;border-radius:7px;background:rgba(200,50,71,.09);display:flex;align-items:center;justify-content:center"><i data-lucide="file-clock" style="width:11px;height:11px;color:#c83247"></i></span><span style="flex:1;min-width:0"><span style="display:block;font-size:10.5px;font-weight:700;line-height:1.3">Sam Whitfield</span><span style="display:block;margin-top:1px;font-size:9px;color:rgba(21,22,26,.50)">Quarterly update · due 7 Aug</span></span><span style="flex-shrink:0;font-size:8.5px;font-weight:800;padding:3px 7px;border-radius:6px;background:#c8324714;color:#c83247">Overdue</span></div>
+              <div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid rgba(20,22,28,.06)"><span style="flex-shrink:0;width:23px;height:23px;border-radius:7px;background:rgba(30,27,75,.08);display:flex;align-items:center;justify-content:center"><i data-lucide="message-square" style="width:11px;height:11px;color:#1e1b4b"></i></span><span style="flex:1;min-width:0"><span style="display:block;font-size:10.5px;font-weight:700;line-height:1.3">Bridges Plumbing Ltd</span><span style="display:block;margin-top:1px;font-size:9px;color:rgba(21,22,26,.50)">Unread message</span></span><span style="flex-shrink:0;font-size:8.5px;font-weight:800;padding:3px 7px;border-radius:6px;background:#1e1b4b14;color:#1e1b4b">2 unread</span></div>
+              <div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid rgba(20,22,28,.06)"><span style="flex-shrink:0;width:23px;height:23px;border-radius:7px;background:rgba(154,107,0,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="link-2-off" style="width:11px;height:11px;color:#9a6b00"></i></span><span style="flex:1;min-width:0"><span style="display:block;font-size:10.5px;font-weight:700;line-height:1.3">K. Mensah Electrical</span><span style="display:block;margin-top:1px;font-size:9px;color:rgba(21,22,26,.50)">Not connected to HMRC</span></span><i data-lucide="chevron-right" style="width:12px;height:12px;color:rgba(21,22,26,.3);flex-shrink:0"></i></div>
+              <div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid rgba(20,22,28,.06)"><span style="flex-shrink:0;width:23px;height:23px;border-radius:7px;background:rgba(154,107,0,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="trending-up" style="width:11px;height:11px;color:#9a6b00"></i></span><span style="flex:1;min-width:0"><span style="display:block;font-size:10.5px;font-weight:700;line-height:1.3">Lakeview Trades</span><span style="display:block;margin-top:1px;font-size:9px;color:rgba(21,22,26,.50)">Over the Making Tax Digital threshold</span></span><i data-lucide="chevron-right" style="width:12px;height:12px;color:rgba(21,22,26,.3);flex-shrink:0"></i></div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:11px;min-width:0">
-              <div style="background:#fff;border:1px solid rgba(20,22,28,.09);border-radius:13px;padding:13px 15px">
-                <p style="margin:0 0 9px;font-size:8.5px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:rgba(21,22,26,.42)">Practice</p>
-                <div style="display:flex;gap:10px">
-              <div style="flex:1;min-width:0"><p class="num" style="margin:0;font-size:19px">28</p><p style="margin:1px 0 0;font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(21,22,26,.42)">Clients</p></div>
-              <div style="flex:1;min-width:0"><p class="num" style="margin:0;font-size:19px">12</p><p style="margin:1px 0 0;font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(21,22,26,.42)">Due</p></div>
-              <div style="flex:1;min-width:0"><p class="num" style="margin:0;font-size:19px">4</p><p style="margin:1px 0 0;font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(21,22,26,.42)">Review</p></div>
-                </div>
-              </div>
-              <div style="background:#fbfaf6;border:1px solid rgba(30,27,75,.14);border-radius:13px;padding:13px 15px">
-                <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px"><i data-lucide="message-square" style="width:12px;height:12px;color:#1e1b4b"></i><p style="margin:0;font-size:8.5px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:rgba(21,22,26,.42)">Pinned to the entry</p></div>
-                <p style="margin:0;font-size:10.5px;line-height:1.5;color:rgba(21,22,26,.72)"><b>You:</b> “Receipt for the £184.20 Travis Perkins entry?”</p>
-                <div style="margin-top:8px;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid rgba(20,22,28,.08);display:flex;align-items:center;gap:8px">
-                  <span style="width:22px;height:22px;border-radius:7px;background:rgba(15,124,58,.10);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="paperclip" style="width:11px;height:11px;color:#0f7c3a"></i></span>
-                  <span style="flex:1;min-width:0"><span style="display:block;font-size:9.5px;font-weight:700">Client attached a photo</span><span style="display:block;font-size:8.5px;color:rgba(21,22,26,.48)">2h ago · on the transaction</span></span>
-                </div>
-              </div>
-              <div style="background:#fff;border:1px solid rgba(20,22,28,.09);border-radius:13px;padding:13px 15px">
-                <p style="margin:0 0 3px;font-size:8.5px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:rgba(21,22,26,.42)">Filing log</p>
-              <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid rgba(20,22,28,.06)"><i data-lucide="check-circle-2" style="width:12px;height:12px;color:#0f7c3a;flex-shrink:0"></i><span style="flex:1;min-width:0"><span style="display:block;font-size:10px;font-weight:700">SA100 — Lakeview Trades</span><span style="display:block;font-size:8.5px;color:rgba(21,22,26,.48)">Filed 14 Jul · HMRC receipt logged</span></span></div>
-              <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid rgba(20,22,28,.06)"><i data-lucide="check-circle-2" style="width:12px;height:12px;color:#0f7c3a;flex-shrink:0"></i><span style="flex:1;min-width:0"><span style="display:block;font-size:10px;font-weight:700">VAT Q1 — Bridges Plumbing Ltd</span><span style="display:block;font-size:8.5px;color:rgba(21,22,26,.48)">Filed 7 May · by R. Dunn</span></span></div>
-              <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid rgba(20,22,28,.06)"><i data-lucide="check-circle-2" style="width:12px;height:12px;color:#0f7c3a;flex-shrink:0"></i><span style="flex:1;min-width:0"><span style="display:block;font-size:10px;font-weight:700">CT600 — K. Mensah Electrical</span><span style="display:block;font-size:8.5px;color:rgba(21,22,26,.48)">Filed 2 Apr · receipt on file</span></span></div>
-              </div>
+            <div style="background:#fff;border:1px solid rgba(20,22,28,.09);border-radius:13px;padding:13px 15px">
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><i data-lucide="calendar-clock" style="width:12px;height:12px;color:#1e1b4b"></i><p style="margin:0;font-size:11px;font-weight:700">Coming up</p></div>
+              <div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid rgba(20,22,28,.06)"><span style="flex-shrink:0;width:23px;height:23px;border-radius:7px;background:rgba(30,27,75,.08);display:flex;align-items:center;justify-content:center"><i data-lucide="landmark" style="width:11px;height:11px;color:#1e1b4b"></i></span><span style="flex:1;min-width:0"><span style="display:block;font-size:10.5px;font-weight:700;line-height:1.3">VAT return — Bridges Plumbing Ltd</span><span style="display:block;margin-top:1px;font-size:9px;color:rgba(21,22,26,.50)">1 Apr – 30 Jun · due 7 Aug</span></span><span style="flex-shrink:0;font-size:8.5px;font-weight:800;padding:3px 7px;border-radius:6px;background:#9a6b0014;color:#9a6b00">Due soon</span></div>
+              <div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid rgba(20,22,28,.06)"><span style="flex-shrink:0;width:23px;height:23px;border-radius:7px;background:rgba(30,27,75,.08);display:flex;align-items:center;justify-content:center"><i data-lucide="file-text" style="width:11px;height:11px;color:#1e1b4b"></i></span><span style="flex:1;min-width:0"><span style="display:block;font-size:10.5px;font-weight:700;line-height:1.3">CT600 — K. Mensah Electrical</span><span style="display:block;margin-top:1px;font-size:9px;color:rgba(21,22,26,.50)">Year to 31 Mar · due 31 Mar next year</span></span><i data-lucide="chevron-right" style="width:12px;height:12px;color:rgba(21,22,26,.3);flex-shrink:0"></i></div>
+              <div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-top:1px solid rgba(20,22,28,.06)"><span style="flex-shrink:0;width:23px;height:23px;border-radius:7px;background:rgba(30,27,75,.08);display:flex;align-items:center;justify-content:center"><i data-lucide="file-text" style="width:11px;height:11px;color:#1e1b4b"></i></span><span style="flex:1;min-width:0"><span style="display:block;font-size:10.5px;font-weight:700;line-height:1.3">Self Assessment — Lakeview Trades</span><span style="display:block;margin-top:1px;font-size:9px;color:rgba(21,22,26,.50)">2025–26 · due 31 Jan</span></span><i data-lucide="chevron-right" style="width:12px;height:12px;color:rgba(21,22,26,.3);flex-shrink:0"></i></div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <p style="margin:18px 0 0;text-align:center;font-size:12px;color:rgba(255,255,255,.42)">The accountant portal — one work queue, real books underneath, and a filing log both sides can see.</p>
+    <p style="margin:18px 0 0;text-align:center;font-size:12px;color:rgba(255,255,255,.42)">Illustration of the accountant portal’s Home: what needs you now across every client, what’s coming up, and the real books one click underneath.</p>
   </div>
 </section>
 
@@ -343,7 +294,7 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
           <span class="num" style="font-size:15px;color:rgba(21,22,26,.28)">01</span>
         </div>
         <p style="margin:0;font-size:17px;font-weight:700;letter-spacing:-.02em">The queue finds the work</p>
-        <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:rgba(21,22,26,.62)">A practice-wide work queue surfaces which client needs what, by when — quarters due, year-ends waiting, receipts missing. No spreadsheet of deadlines.</p>
+        <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:rgba(21,22,26,.62)">Practice Home surfaces which client needs what, by when — overdue deadlines, replies waiting on you, clients over the MTD threshold — with a practice calendar and a Chasing list for missing receipts. No spreadsheet of deadlines.</p>
       </div>
     
 
@@ -362,8 +313,8 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
           <span style="width:44px;height:44px;border-radius:13px;background:rgba(30,27,75,.07);display:flex;align-items:center;justify-content:center"><i data-lucide="file-check-2" style="width:21px;height:21px;color:#1e1b4b"></i></span>
           <span class="num" style="font-size:15px;color:rgba(21,22,26,.28)">03</span>
         </div>
-        <p style="margin:0;font-size:17px;font-weight:700;letter-spacing:-.02em">Approve, sign off, filed</p>
-        <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:rgba(21,22,26,.62)">Quarterly updates reviewed and approved, year-end signed off, and a filing log both sides so 'what did HMRC receive?' always has an answer.</p>
+        <p style="margin:0;font-size:17px;font-weight:700;letter-spacing:-.02em">Approve, sign off, mark filed</p>
+        <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:rgba(21,22,26,.62)">Quarterly updates reviewed and approved, year-end signed off, and a sign-off trail both sides so 'which figures were filed?' always has an answer.</p>
       </div>
     
   </div>
@@ -375,7 +326,7 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
       
         <div style="display:flex;align-items:flex-start;gap:12px">
           <span style="flex-shrink:0;width:36px;height:36px;border-radius:11px;background:#fff;border:1px solid rgba(20,22,28,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="inbox" style="width:17px;height:17px;color:#1e1b4b"></i></span>
-          <span><span style="display:block;font-size:14.5px;font-weight:700;letter-spacing:-.01em">Practice-wide work queue</span><span style="display:block;margin-top:3px;font-size:13px;line-height:1.55;color:rgba(21,22,26,.60)">Every deadline for every client, one list.</span></span>
+          <span><span style="display:block;font-size:14.5px;font-weight:700;letter-spacing:-.01em">Practice Home and calendar</span><span style="display:block;margin-top:3px;font-size:13px;line-height:1.55;color:rgba(21,22,26,.60)">Every deadline for every client, in one place.</span></span>
         </div>
       
 
@@ -393,7 +344,7 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
 
         <div style="display:flex;align-items:flex-start;gap:12px">
           <span style="flex-shrink:0;width:36px;height:36px;border-radius:11px;background:#fff;border:1px solid rgba(20,22,28,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="shield-check" style="width:17px;height:17px;color:#1e1b4b"></i></span>
-          <span><span style="display:block;font-size:14.5px;font-weight:700;letter-spacing:-.01em">Submission audit trail</span><span style="display:block;margin-top:3px;font-size:13px;line-height:1.55;color:rgba(21,22,26,.60)">What was filed, when, by whom — logged both sides.</span></span>
+          <span><span style="display:block;font-size:14.5px;font-weight:700;letter-spacing:-.01em">Review and sign-off trail</span><span style="display:block;margin-top:3px;font-size:13px;line-height:1.55;color:rgba(21,22,26,.60)">What was prepared, approved and marked filed, when, by whom — logged both sides.</span></span>
         </div>
       
 
@@ -420,265 +371,24 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
       <p style="margin:14px 0 0;font-size:16px;line-height:1.62;color:rgba(255,255,255,.62);text-wrap:pretty">Your client keeps the records in Finrock all year. You get the workings, the evidence and the return — already reconciled, ready to review.</p>
     </div>
     <figure class="rv deskshot" style="margin:40px 0 0">
-      <div style="border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.10);background:#f6f5f1;box-shadow:0 34px 80px rgba(0,0,0,.55)"><div style="aspect-ratio:1120/720;position:relative;overflow:hidden;background:#f6f5f1" data-appshot="1120x720">
-          <div style="position:absolute;top:0;left:0;width:1120px;height:720px;transform-origin:top left;transform:scale(.55);display:flex;color:#15161a"><div style="width:198px;flex-shrink:0;background:#fff;border-right:1px solid rgba(20,22,28,.07);display:flex;flex-direction:column;padding:16px 12px">
-      <div style="display:flex;align-items:center;gap:8px;padding:0 6px 14px">
-        <img src="assets/finrock-logo.svg" alt="Finrock" style="height:24px;width:auto;display:block" />
+      <div style="border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.10);background:#f6f5f1;box-shadow:0 34px 80px rgba(0,0,0,.55)">
+        <img src="assets/app/desktop-accountant.webp" width="2240" height="778" alt="The Finrock accountant portal: practice home with clients that need you now" loading="lazy" decoding="async" style="display:block;width:100%;height:auto">
       </div>
-      <span style="display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 14px;border-radius:12px;margin:0 0 12px;font-size:13.5px;font-weight:800;color:#fff;background:linear-gradient(135deg,#6366f1 0%,#4f46e5 60%,#3730a3 100%);box-shadow:0 6px 18px rgba(79,70,229,.38)"><i data-lucide="sparkles" style="width:15px;height:15px"></i>Ask Finrock</span>
-      <div style="display:flex;flex-direction:column;gap:2px">
-        <span style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;">
-        <span style="width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, #1e1b4b 13%, transparent);color:#1e1b4b"><i data-lucide="home" style="width:14px;height:14px"></i></span>
-        <span style="font-size:13px;font-weight:500;color:rgba(21,22,26,.70)">Home</span></span>
-        <span style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;">
-        <span style="width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, hsl(190 70% 42%) 13%, transparent);color:hsl(190 70% 42%)"><i data-lucide="activity" style="width:14px;height:14px"></i></span>
-        <span style="font-size:13px;font-weight:500;color:rgba(21,22,26,.70)">Activity</span></span>
-        <span style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;">
-        <span style="width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, hsl(150 55% 40%) 13%, transparent);color:hsl(150 55% 40%)"><i data-lucide="shield-check" style="width:14px;height:14px"></i></span>
-        <span style="font-size:13px;font-weight:500;color:rgba(21,22,26,.70)">Business</span></span>
-      </div>
-      <p style="margin:16px 6px 6px;font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(21,22,26,.28)">Work</p>
-      <div style="display:flex;flex-direction:column;gap:2px">
-        <span style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;">
-        <span style="width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, hsl(28 80% 50%) 13%, transparent);color:hsl(28 80% 50%)"><i data-lucide="file-text" style="width:14px;height:14px"></i></span>
-        <span style="font-size:13px;font-weight:500;color:rgba(21,22,26,.70)">Invoices</span></span>
-        <span style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;">
-        <span style="width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, hsl(262 60% 55%) 13%, transparent);color:hsl(262 60% 55%)"><i data-lucide="bar-chart-3" style="width:14px;height:14px"></i></span>
-        <span style="font-size:13px;font-weight:500;color:rgba(21,22,26,.70)">Reports</span></span>
-        <span style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;background:rgba(20,22,28,.04)">
-        <span style="width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, hsl(330 55% 50%) 22%, transparent);color:hsl(330 55% 50%)"><i data-lucide="layout-grid" style="width:14px;height:14px"></i></span>
-        <span style="font-size:13px;font-weight:700;color:#15161a">More</span></span>
-      </div>
-      <div style="margin-top:auto;display:flex;align-items:center;gap:8px;padding:8px 6px;border-top:1px solid rgba(20,22,28,.07)">
-        <span style="width:26px;height:26px;border-radius:9999px;background:#1e1b4b;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">JB</span>
-        <span style="min-width:0"><span style="display:block;font-size:12px;font-weight:700;color:#15161a">James Bowen</span><span style="display:block;font-size:10px;color:rgba(21,22,26,.48)">Redgate Joinery Ltd</span></span>
-      </div>
-    </div><div style="flex:1;min-width:0;display:flex;flex-direction:column;background:#f6f5f1"><div style="height:48px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 20px;border-bottom:1px solid rgba(20,22,28,.07);background:#fff">
-        <span style="display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:9px;background:rgba(20,22,28,.04);border:1px solid rgba(20,22,28,.07);min-width:240px"><i data-lucide="search" style="width:12px;height:12px;color:rgba(21,22,26,.48)"></i><span style="font-size:11.5px;color:rgba(21,22,26,.48)">Search invoices, contacts, bills…</span><span style="margin-left:auto;font-family:ui-monospace,monospace;font-size:10px;color:rgba(21,22,26,.28)">⌘K</span></span>
-        <span style="margin-left:auto;display:flex;align-items:center;gap:8px">
-          <span style="display:flex;padding:2px;border-radius:9px;background:rgba(20,22,28,.04);border:1px solid rgba(20,22,28,.07)"><span style="padding:3px 9px;border-radius:7px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.06);color:#15161a;font-weight:700;font-size:11px">Business</span><span style="padding:3px 9px;border-radius:7px;color:rgba(21,22,26,.48);font-weight:600;font-size:11px">Personal</span></span>
-          <i data-lucide="bell" style="width:15px;height:15px;color:rgba(21,22,26,.48)"></i>
-        </span>
-      </div><div style="flex:1;min-height:0;overflow:hidden;padding:20px 24px">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-          <div><p style="margin:0;font-size:20px;font-weight:800;letter-spacing:-.02em">VAT (MTD)</p><p style="margin:2px 0 0;font-size:12.5px;color:rgba(21,22,26,.48)">Period 1 Mar – 31 May 2026 · Filing due <span style="color:#a35f00;font-weight:700">7 Jul 2026</span></p></div>
-          <span style="display:flex;align-items:center;gap:8px"><span style="padding:7px 12px;border-radius:9px;border:1px solid rgba(20,22,28,.12);font-size:12px;font-weight:700;color:rgba(21,22,26,.70)">Export</span><span style="padding:7px 14px;border-radius:9px;background:#1e1b4b;color:#fff;font-size:12px;font-weight:800">Submit to HMRC</span></span>
-        </div>
-        <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-top:14px;align-items:start">
-          <div>
-            <div style="background:#fff;border:1px solid rgba(20,22,28,.07);border-radius:14px;box-shadow:0 1px 2px rgba(15,23,42,.04);padding:16px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px">
-              <div><p style="margin:0;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(21,22,26,.48)">Net VAT to pay HMRC</p><p class="num" style="margin:4px 0 0;font-size:32px;letter-spacing:-.03em">£2,847.50</p></div>
-              <span style="padding:4px 10px;border-radius:9999px;background:rgba(224,138,0,.12);color:#a35f00;font-size:11px;font-weight:800">Due in 9 days</span>
-            </div>
-            <div style="background:#fff;border:1px solid rgba(20,22,28,.07);border-radius:14px;box-shadow:0 1px 2px rgba(15,23,42,.04);margin-top:12px;padding:0;overflow:hidden">
-              <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid rgba(20,22,28,.07)">
-                <span style="font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(21,22,26,.48)">Return · 9 boxes</span><span style="font-size:10.5px;color:rgba(21,22,26,.48)">Click a box to drill in</span>
-              </div>
-              <span style="display:grid;grid-template-columns:26px 1fr 130px;gap:12px;align-items:center;padding:9px 14px;border-bottom:1px solid rgba(20,22,28,.07);">
-            <span style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:rgba(21,22,26,.48)">01</span>
-            <span style="font-size:12.5px;font-weight:400;color:#15161a">VAT due on sales</span>
-            <span class="num" style="text-align:right;font-size:13px;font-weight:600;color:#15161a">£4,918.20</span></span><span style="display:grid;grid-template-columns:26px 1fr 130px;gap:12px;align-items:center;padding:9px 14px;border-bottom:1px solid rgba(20,22,28,.07);">
-            <span style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:rgba(21,22,26,.48)">02</span>
-            <span style="font-size:12.5px;font-weight:400;color:#15161a">VAT due on EU acquisitions</span>
-            <span class="num" style="text-align:right;font-size:13px;font-weight:600;color:#15161a">£0.00</span></span><span style="display:grid;grid-template-columns:26px 1fr 130px;gap:12px;align-items:center;padding:9px 14px;border-bottom:1px solid rgba(20,22,28,.07);">
-            <span style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:rgba(21,22,26,.48)">03</span>
-            <span style="font-size:12.5px;font-weight:600;color:#15161a">Total VAT due (Box 1 + 2)</span>
-            <span class="num" style="text-align:right;font-size:13px;font-weight:700;color:#15161a">£4,918.20</span></span><span style="display:grid;grid-template-columns:26px 1fr 130px;gap:12px;align-items:center;padding:9px 14px;border-bottom:1px solid rgba(20,22,28,.07);">
-            <span style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:rgba(21,22,26,.48)">04</span>
-            <span style="font-size:12.5px;font-weight:400;color:#15161a">VAT reclaimed on purchases</span>
-            <span class="num" style="text-align:right;font-size:13px;font-weight:600;color:#15161a">£2,070.70</span></span><span style="display:grid;grid-template-columns:26px 1fr 130px;gap:12px;align-items:center;padding:9px 14px;border-bottom:1px solid rgba(20,22,28,.07);background:linear-gradient(90deg,rgba(30,27,75,.08),transparent)">
-            <span style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:#1e1b4b">05</span>
-            <span style="font-size:12.5px;font-weight:700;color:#15161a">Net VAT to pay HMRC (Box 3 − 4)</span>
-            <span class="num" style="text-align:right;font-size:17px;font-weight:700;color:#1e1b4b">£2,847.50</span></span><span style="display:grid;grid-template-columns:26px 1fr 130px;gap:12px;align-items:center;padding:9px 14px;border-bottom:1px solid rgba(20,22,28,.07);">
-            <span style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:rgba(21,22,26,.48)">06</span>
-            <span style="font-size:12.5px;font-weight:400;color:#15161a">Total sales ex-VAT</span>
-            <span class="num" style="text-align:right;font-size:13px;font-weight:600;color:#15161a">£24,591.00</span></span><span style="display:grid;grid-template-columns:26px 1fr 130px;gap:12px;align-items:center;padding:9px 14px;border-bottom:1px solid rgba(20,22,28,.07);">
-            <span style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:rgba(21,22,26,.48)">07</span>
-            <span style="font-size:12.5px;font-weight:400;color:#15161a">Total purchases ex-VAT</span>
-            <span class="num" style="text-align:right;font-size:13px;font-weight:600;color:#15161a">£10,353.50</span></span><span style="display:grid;grid-template-columns:26px 1fr 130px;gap:12px;align-items:center;padding:9px 14px;border-bottom:1px solid rgba(20,22,28,.07);">
-            <span style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:rgba(21,22,26,.48)">08</span>
-            <span style="font-size:12.5px;font-weight:400;color:#15161a">EU goods supplied</span>
-            <span class="num" style="text-align:right;font-size:13px;font-weight:600;color:#15161a">£0.00</span></span><span style="display:grid;grid-template-columns:26px 1fr 130px;gap:12px;align-items:center;padding:9px 14px;;">
-            <span style="font-family:ui-monospace,monospace;font-size:11px;font-weight:700;color:rgba(21,22,26,.48)">09</span>
-            <span style="font-size:12.5px;font-weight:400;color:#15161a">EU goods acquired</span>
-            <span class="num" style="text-align:right;font-size:13px;font-weight:600;color:#15161a">£0.00</span></span>
-            </div>
-            <div style="margin-top:12px;border-radius:12px;padding:12px 14px;background:rgba(224,138,0,.10);border:1px solid rgba(224,138,0,.24)">
-              <span style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;font-weight:800;color:#a35f00">Bad debt relief eligible</span><span class="num" style="font-size:13px;color:#a35f00">£240.00</span></span>
-              <p style="margin:4px 0 0;font-size:11px;line-height:1.5;color:rgba(21,22,26,.70)">Output VAT on invoices unpaid more than 6 months past their due date. Add this to Box 4 when submitting.</p>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div style="background:#fff;border:1px solid rgba(20,22,28,.07);border-radius:14px;box-shadow:0 1px 2px rgba(15,23,42,.04);padding:16px">
-              <p style="margin:0 0 10px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(21,22,26,.48)">Submission progress</p>
-              <span style="display:flex;align-items:center;gap:9px;padding:6px 0"><span style="width:18px;height:18px;border-radius:9999px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(15,157,88,.12)"><i data-lucide="check" style="width:11px;height:11px;color:#0b7a44"></i></span><span style="font-size:12px;font-weight:500;color:#15161a">Ledger reconciled to 31 May</span></span><span style="display:flex;align-items:center;gap:9px;padding:6px 0"><span style="width:18px;height:18px;border-radius:9999px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(15,157,88,.12)"><i data-lucide="check" style="width:11px;height:11px;color:#0b7a44"></i></span><span style="font-size:12px;font-weight:500;color:#15161a">Receipts attached · 34 of 34</span></span><span style="display:flex;align-items:center;gap:9px;padding:6px 0"><span style="width:18px;height:18px;border-radius:9999px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(15,157,88,.12)"><i data-lucide="check" style="width:11px;height:11px;color:#0b7a44"></i></span><span style="font-size:12px;font-weight:500;color:#15161a">Bank feed matched</span></span><span style="display:flex;align-items:center;gap:9px;padding:6px 0"><span style="width:18px;height:18px;border-radius:9999px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(30,27,75,.10)"><i data-lucide="circle-dot" style="width:11px;height:11px;color:#1e1b4b"></i></span><span style="font-size:12px;font-weight:700;color:#15161a">Director review</span></span><span style="display:flex;align-items:center;gap:9px;padding:6px 0"><span style="width:18px;height:18px;border-radius:9999px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(20,22,28,.04)"><i data-lucide="circle" style="width:11px;height:11px;color:rgba(21,22,26,.28)"></i></span><span style="font-size:12px;font-weight:500;color:rgba(21,22,26,.48)">Submit via MTD</span></span>
-            </div>
-            <div style="background:#fff;border:1px solid rgba(20,22,28,.07);border-radius:14px;box-shadow:0 1px 2px rgba(15,23,42,.04);padding:16px">
-              <p style="margin:0 0 10px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(21,22,26,.48)">Upcoming filings</p>
-              <span style="display:flex;align-items:center;gap:10px;padding:5px 0;font-size:12px"><span class="num" style="width:46px;flex-shrink:0;font-size:11.5px;color:#a35f00;font-weight:700">7 Jul</span><span style="color:rgba(21,22,26,.70)">VAT return · Mar–May</span></span><span style="display:flex;align-items:center;gap:10px;padding:5px 0;font-size:12px"><span class="num" style="width:46px;flex-shrink:0;font-size:11.5px;color:rgba(21,22,26,.48);font-weight:700">19 Aug</span><span style="color:rgba(21,22,26,.70)">CIS monthly return</span></span><span style="display:flex;align-items:center;gap:10px;padding:5px 0;font-size:12px"><span class="num" style="width:46px;flex-shrink:0;font-size:11.5px;color:rgba(21,22,26,.48);font-weight:700">31 Dec</span><span style="color:rgba(21,22,26,.70)">Statutory accounts</span></span><span style="display:flex;align-items:center;gap:10px;padding:5px 0;font-size:12px"><span class="num" style="width:46px;flex-shrink:0;font-size:11.5px;color:rgba(21,22,26,.48);font-weight:700">1 Jan</span><span style="color:rgba(21,22,26,.70)">Corporation Tax payment</span></span>
-            </div>
-            <div style="background:#fff;border:1px solid rgba(20,22,28,.07);border-radius:14px;box-shadow:0 1px 2px rgba(15,23,42,.04);padding:16px">
-              <p style="margin:0 0 6px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(21,22,26,.48)">Connected</p>
-              <span style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:9999px;background:#0f9d58"></span><span style="font-size:12px;font-weight:600;color:rgba(21,22,26,.70)">HMRC · Making Tax Digital</span></span>
-              <p style="margin:5px 0 0;font-size:11px;color:rgba(21,22,26,.48)">Authorised 4 Apr 2026 · renews yearly</p>
-            </div>
-          </div>
-        </div></div></div></div>
-        </div></div>
-      <figcaption style="margin:14px 2px 0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.52);max-width:760px"><b style="color:#fff">VAT & filing</b> — the nine boxes built from the ledger, with submission progress and every figure clickable through to the entries behind it.</figcaption>
+      <figcaption style="margin:14px 2px 0;font-size:13px;line-height:1.55;color:rgba(255,255,255,.52);max-width:760px"><b style="color:#fff">Practice home</b> — the real portal: what needs you now, with Clients, Tasks, Calendar, Chasing, Filing log, Fees and My practice in the rail.</figcaption>
     </figure>
     <div class="phonerow" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;margin-top:52px;align-items:start;max-width:660px">
       <figure class="rv" style="margin:0">
         <div style="border-radius:34px;padding:9px;background:linear-gradient(160deg,#2a2a33,#101015);box-shadow:0 26px 60px rgba(0,0,0,.55)">
-          <div style="border-radius:27px;overflow:hidden;background:#0b0b10;color:#fff;position:relative">
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 16px 4px;font-size:10.5px;font-weight:700">
-  <span>9:41</span>
-  <span style="display:flex;gap:4px;align-items:center;opacity:.9"><i data-lucide="signal" style="width:11px;height:11px"></i><i data-lucide="wifi" style="width:11px;height:11px"></i><i data-lucide="battery-full" style="width:14px;height:14px"></i></span>
-</div>
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 14px 10px;border-bottom:1px solid rgba(255,255,255,.07)">
-              <div><p style="margin:0;font-size:14px;font-weight:800;letter-spacing:-.02em">New expense</p><p style="margin:1px 0 0;font-size:8.5px;color:rgba(255,255,255,.45)">Check the details, then tap Record.</p></div>
-              <span style="width:22px;height:22px;border-radius:9999px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center"><i data-lucide="x" style="width:11px;height:11px;color:rgba(255,255,255,.55)"></i></span>
-            </div>
-            <div style="padding:11px 14px 0">
-              <div style="border-radius:11px;overflow:hidden;border:1px solid rgba(255,255,255,.09)">
-                <div style="height:66px;background:repeating-linear-gradient(135deg,#101017 0 7px,#171720 7px 14px);display:flex;align-items:center;justify-content:center">
-                  <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:7.5px;letter-spacing:.10em;color:rgba(255,255,255,.42)">RECEIPT PHOTO</span>
-                </div>
-                <div style="padding:5px 8px;font-size:7.5px;color:rgba(255,255,255,.42);background:#15151c">IMG_4821.HEIC</div>
-              </div>
-            </div>
-            <div style="padding:9px 14px 0">
-              <div style="background:#15151c;border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:9px 10px">
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
-                  <span style="display:inline-flex;align-items:center;gap:4px"><i data-lucide="sparkles" style="width:9px;height:9px;color:#818cf8"></i><span style="font-size:7.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#818cf8">Read off the photo</span></span>
-                  <span style="font-size:7.5px;font-weight:700;color:#4ade80">92% confident</span>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 10px">
-                  <span style="display:flex;justify-content:space-between;gap:6px;font-size:8.5px"><span style="color:rgba(255,255,255,.45)">Vendor</span><span style="font-weight:700">Shell</span></span>
-                  <span style="display:flex;justify-content:space-between;gap:6px;font-size:8.5px"><span style="color:rgba(255,255,255,.45)">Amount</span><span style="font-weight:700">£48.60</span></span>
-                  <span style="display:flex;justify-content:space-between;gap:6px;font-size:8.5px"><span style="color:rgba(255,255,255,.45)">Date</span><span style="font-weight:700">12 Aug 2026</span></span>
-                  <span style="display:flex;justify-content:space-between;gap:6px;font-size:8.5px"><span style="color:rgba(255,255,255,.45)">VAT</span><span style="font-weight:700">£8.10</span></span>
-                </div>
-              </div>
-            </div>
-            <div style="padding:9px 14px 0">
-              <div style="border-radius:14px;padding:11px 12px;background:rgba(251,113,133,.10);border:1px solid rgba(251,113,133,.20)">
-                <p style="margin:0;font-size:7.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#fb7185">Amount paid</p>
-                <p class="num" style="margin:3px 0 0;font-size:27px;letter-spacing:-.03em;color:#fda4af">£48.60</p>
-              </div>
-            </div>
-            <div style="padding:10px 14px 0">
-              <p style="margin:0 0 5px;font-size:8px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.42)">Vendor / supplier</p>
-              <div style="background:#15151c;border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:8px 10px;font-size:10.5px;font-weight:600">Shell</div>
-            </div>
-            <div style="padding:10px 14px 0">
-              <p style="margin:0 0 5px;font-size:8px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.42)">Is this business or personal?</p>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-                <span style="display:flex;align-items:center;justify-content:center;gap:5px;padding:7px 0;border-radius:10px;border:1px solid rgba(129,140,248,.55);background:rgba(79,70,229,.14)"><i data-lucide="briefcase" style="width:11px;height:11px;color:#818cf8"></i><span style="font-size:9.5px;font-weight:700;color:#818cf8">Business</span></span>
-                <span style="display:flex;align-items:center;justify-content:center;gap:5px;padding:7px 0;border-radius:10px;border:1px solid rgba(255,255,255,.09)"><i data-lucide="user" style="width:11px;height:11px;color:rgba(255,255,255,.55)"></i><span style="font-size:9.5px;font-weight:700">Personal</span></span>
-              </div>
-            </div>
-            <div style="padding:10px 14px 0">
-              <p style="margin:0 0 5px;font-size:8px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.42)">Category</p>
-              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
-                <span style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 3px;border-radius:10px;border:1px solid rgba(129,140,248,.55);background:rgba(79,70,229,.14);text-align:center"><i data-lucide="fuel" style="width:13px;height:13px;color:#818cf8"></i><span style="font-size:8px;font-weight:700;line-height:1.15;color:#818cf8">Fuel &amp; Mileage</span></span><span style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 3px;border-radius:10px;border:1px solid rgba(255,255,255,.09);background:transparent;text-align:center"><i data-lucide="wrench" style="width:13px;height:13px;color:rgba(255,255,255,.55)"></i><span style="font-size:8px;font-weight:700;line-height:1.15;color:#fff">Vehicle Maint.</span></span><span style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 3px;border-radius:10px;border:1px solid rgba(255,255,255,.09);background:transparent;text-align:center"><i data-lucide="shield" style="width:13px;height:13px;color:rgba(255,255,255,.55)"></i><span style="font-size:8px;font-weight:700;line-height:1.15;color:#fff">Insurance</span></span><span style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 3px;border-radius:10px;border:1px solid rgba(255,255,255,.09);background:transparent;text-align:center"><i data-lucide="smartphone" style="width:13px;height:13px;color:rgba(255,255,255,.55)"></i><span style="font-size:8px;font-weight:700;line-height:1.15;color:#fff">Phone &amp; Net</span></span><span style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 3px;border-radius:10px;border:1px solid rgba(255,255,255,.09);background:transparent;text-align:center"><i data-lucide="package" style="width:13px;height:13px;color:rgba(255,255,255,.55)"></i><span style="font-size:8px;font-weight:700;line-height:1.15;color:#fff">Materials</span></span><span style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 3px;border-radius:10px;border:1px solid rgba(255,255,255,.09);background:transparent;text-align:center"><i data-lucide="plane" style="width:13px;height:13px;color:rgba(255,255,255,.55)"></i><span style="font-size:8px;font-weight:700;line-height:1.15;color:#fff">Travel</span></span>
-              </div>
-              <p style="margin:5px 0 0;font-size:7.5px;color:rgba(255,255,255,.42)">✨ Suggested · 94% confident — you code Shell to Fuel &amp; Mileage.</p>
-            </div>
-            <div style="padding:11px 14px 0">
-              <span style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 0;border-radius:9999px;background:linear-gradient(135deg,#4f46e5,#6366f1);box-shadow:0 8px 20px rgba(79,70,229,.45);font-size:11px;font-weight:800"><i data-lucide="arrow-right" style="width:12px;height:12px"></i>Record expense</span>
-            </div>
-            <div style="display:flex;justify-content:center;padding:7px 0 9px"><span style="width:88px;height:3.5px;border-radius:9999px;background:rgba(255,255,255,.30)"></span></div>
+          <div style="border-radius:26px;overflow:hidden;background:#101018">
+            <img src="assets/app/mobile-capture-dark.webp" width="780" height="1688" alt="Scan a document in Finrock on a phone" loading="lazy" decoding="async" style="display:block;width:100%;height:auto">
           </div>
         </div>
         <figcaption style="margin:14px 4px 0;font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.52)"><b style="color:#fff">At the merchant</b> — photographed, read and coded before they leave the forecourt.</figcaption>
       </figure>
       <figure class="rv" style="margin:0;transition-delay:70ms">
         <div style="border-radius:34px;padding:9px;background:linear-gradient(160deg,#2a2a33,#101015);box-shadow:0 26px 60px rgba(0,0,0,.55)">
-          <div style="border-radius:27px;overflow:hidden;background:#0b0b10;color:#fff;position:relative">
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 16px 4px;font-size:10.5px;font-weight:700">
-  <span>9:41</span>
-  <span style="display:flex;gap:4px;align-items:center;opacity:.9"><i data-lucide="signal" style="width:11px;height:11px"></i><i data-lucide="wifi" style="width:11px;height:11px"></i><i data-lucide="battery-full" style="width:14px;height:14px"></i></span>
-</div>
-            <div style="padding:6px 14px 0">
-              <p style="margin:0;font-size:16px;font-weight:800;letter-spacing:-.03em">Filing &amp; deadlines</p>
-              <p style="margin:0;font-size:8.5px;color:rgba(255,255,255,.45)">Redgate Joinery Ltd · VAT registered</p>
-            </div>
-            <div style="padding:11px 14px 0">
-              <div style="background:#15151c;border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:12px">
-                <p style="margin:0;font-size:8px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.42)">Mar &ndash; May 2026</p>
-                <p style="margin:4px 0 0;font-size:16px;font-weight:800;letter-spacing:-.03em">A filing is due soon</p>
-                <p style="margin:3px 0 0;font-size:8.5px;color:rgba(255,255,255,.45)">4 deadlines in the next 12 months</p>
-                <div style="display:flex;align-items:stretch;gap:8px;margin-top:10px;padding:8px;border-radius:11px;border:1px solid #f6921a;background:linear-gradient(135deg,rgba(246,146,26,.16),transparent 90%)">
-                  <span style="width:34px;height:34px;border-radius:9px;background:#0b0b10;border:1px solid rgba(255,255,255,.09);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;color:#f6921a">
-                    <span class="num" style="font-size:14px;line-height:1">9</span><span style="font-size:6px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-top:1px">days</span>
-                  </span>
-                  <span style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center">
-                    <span style="font-size:8px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.42)">Next up</span>
-                    <span style="font-size:10px;font-weight:700">VAT return</span>
-                    <span style="font-size:8px;color:rgba(255,255,255,.45)">Quarter ending 31 May 2026</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div style="padding:12px 14px 0">
-              <p style="margin:0 0 7px;font-size:8px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.42)">Your filings</p>
-              <div style="display:flex;flex-direction:column;gap:6px">
-                <div style="background:#15151c;border:1px solid rgba(255,255,255,.07);border-radius:11px;;padding:9px 10px">
-                  <div style="display:flex;align-items:center;gap:8px">
-                    <span style="width:24px;height:24px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="calculator" style="width:12px;height:12px;color:#818cf8"></i></span>
-                    <span style="flex:1;min-width:0">
-                      <span style="display:flex;align-items:center;gap:5px;flex-wrap:wrap"><span style="font-size:10.5px;font-weight:700">VAT (MTD)</span><span style="font-size:7px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 5px;border-radius:9999px;background:rgba(246,146,26,.18);color:#f6921a">Due soon</span></span>
-                      <span style="display:block;font-size:8px;color:rgba(255,255,255,.45);margin-top:2px">9-box return, built from your ledger</span>
-                    </span>
-                    <span style="text-align:right;flex-shrink:0"><span class="num" style="display:block;font-size:12px">£2,848</span><span style="display:block;font-size:7px;color:rgba(255,255,255,.42)">due · Mar&ndash;May</span></span>
-                    <i data-lucide="chevron-right" style="width:12px;height:12px;color:rgba(255,255,255,.35);flex-shrink:0"></i>
-                  </div>
-                  <p style="margin:7px 0 0;padding-top:7px;border-top:1px solid rgba(255,255,255,.07);font-size:8.5px;color:#f6921a">Next: VAT return · 9d</p>
-                </div>
-                <div style="background:#15151c;border:1px solid rgba(255,255,255,.07);border-radius:11px;;padding:9px 10px">
-                  <div style="display:flex;align-items:center;gap:8px">
-                    <span style="width:24px;height:24px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="building-2" style="width:12px;height:12px;color:#818cf8"></i></span>
-                    <span style="flex:1;min-width:0">
-                      <span style="display:flex;align-items:center;gap:5px;flex-wrap:wrap"><span style="font-size:10.5px;font-weight:700">Corporation Tax</span><span style="font-size:7px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 5px;border-radius:9999px;background:rgba(74,222,128,.16);color:#4ade80">On track</span></span>
-                      <span style="display:block;font-size:8px;color:rgba(255,255,255,.45);margin-top:2px">CT600 + statutory accounts</span>
-                    </span>
-                    
-                    <i data-lucide="chevron-right" style="width:12px;height:12px;color:rgba(255,255,255,.35);flex-shrink:0"></i>
-                  </div>
-                  <p style="margin:7px 0 0;padding-top:7px;border-top:1px solid rgba(255,255,255,.07);font-size:8.5px;color:rgba(255,255,255,.45)">Next: CT600 · 214d</p>
-                </div>
-                <div style="background:#15151c;border:1px solid rgba(255,255,255,.07);border-radius:11px;;padding:9px 10px">
-                  <div style="display:flex;align-items:center;gap:8px">
-                    <span style="width:24px;height:24px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="hard-hat" style="width:12px;height:12px;color:#818cf8"></i></span>
-                    <span style="flex:1;min-width:0">
-                      <span style="display:flex;align-items:center;gap:5px;flex-wrap:wrap"><span style="font-size:10.5px;font-weight:700">CIS</span><span style="font-size:7px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 5px;border-radius:9999px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.60)">Monthly</span></span>
-                      <span style="display:block;font-size:8px;color:rgba(255,255,255,.45);margin-top:2px">Subcontractor deductions &amp; returns</span>
-                    </span>
-                    
-                    <i data-lucide="chevron-right" style="width:12px;height:12px;color:rgba(255,255,255,.35);flex-shrink:0"></i>
-                  </div>
-                  <p style="margin:7px 0 0;padding-top:7px;border-top:1px solid rgba(255,255,255,.07);font-size:8.5px;color:rgba(255,255,255,.45)">Return due by the 19th of each month</p>
-                </div>
-              </div>
-            </div>
-            <div style="padding:10px 14px 0;display:flex;flex-direction:column;gap:6px">
-              <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03)"><span style="min-width:0"><span style="display:block;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.86)">Am I ready to file?</span><span style="display:block;font-size:8px;color:rgba(255,255,255,.42);margin-top:1px">Per-regime checks on your data</span></span><i data-lucide="chevron-right" style="width:11px;height:11px;color:rgba(255,255,255,.35)"></i></span><span style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03)"><span style="min-width:0"><span style="display:block;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.86)">Records &amp; registers</span><span style="display:block;font-size:8px;color:rgba(255,255,255,.42);margin-top:1px">Statutory books · payroll · filings log</span></span><i data-lucide="chevron-right" style="width:11px;height:11px;color:rgba(255,255,255,.35)"></i></span>
-            </div>
-            <div style="padding:11px 14px 0">
-              <p style="margin:0 0 6px;font-size:8px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.42)">Upcoming filings</p>
-              <div style="display:flex;flex-direction:column;gap:5px">
-                <span style="display:flex;align-items:center;gap:8px;font-size:8.5px"><span class="num" style="width:34px;flex-shrink:0;color:#f6921a;font-size:8.5px">7 Jul</span><span style="flex:1;min-width:0;color:rgba(255,255,255,.70)">VAT return · Mar&ndash;May</span></span><span style="display:flex;align-items:center;gap:8px;font-size:8.5px"><span class="num" style="width:34px;flex-shrink:0;color:rgba(255,255,255,.42);font-size:8.5px">19 Aug</span><span style="flex:1;min-width:0;color:rgba(255,255,255,.70)">CIS monthly return</span></span><span style="display:flex;align-items:center;gap:8px;font-size:8.5px"><span class="num" style="width:34px;flex-shrink:0;color:rgba(255,255,255,.42);font-size:8.5px">31 Dec</span><span style="flex:1;min-width:0;color:rgba(255,255,255,.70)">Statutory accounts to Companies House</span></span>
-              </div>
-            </div>
-            <div style="margin-top:12px;display:flex;align-items:flex-end;justify-content:space-between;padding:9px 20px 0;border-top:1px solid rgba(255,255,255,.07)">
-  <span style="display:flex;flex-direction:column;align-items:center;gap:2px"><i data-lucide="home" style="width:14px;height:14px;color:rgba(255,255,255,.40)"></i><span style="font-size:7px;font-weight:600;color:rgba(255,255,255,.40)">Home</span></span>
-  <span style="display:flex;flex-direction:column;align-items:center;gap:2px"><i data-lucide="activity" style="width:14px;height:14px;color:rgba(255,255,255,.40)"></i><span style="font-size:7px;font-weight:600;color:rgba(255,255,255,.40)">Activity</span></span>
-  <span style="width:34px;height:34px;border-radius:9999px;background:#4f46e5;display:flex;align-items:center;justify-content:center;margin-bottom:4px;box-shadow:0 6px 18px rgba(79,70,229,.55)"><i data-lucide="sparkles" style="width:16px;height:16px;color:#fff"></i></span>
-  <span style="display:flex;flex-direction:column;align-items:center;gap:2px"><i data-lucide="shield-check" style="width:14px;height:14px;color:rgba(255,255,255,.40)"></i><span style="font-size:7px;font-weight:600;color:rgba(255,255,255,.40)">My Life</span></span>
-  <span style="display:flex;flex-direction:column;align-items:center;gap:2px"><i data-lucide="layout-grid" style="width:14px;height:14px;color:rgba(255,255,255,.40)"></i><span style="font-size:7px;font-weight:600;color:rgba(255,255,255,.40)">More</span></span>
-</div>
-<div style="display:flex;justify-content:center;padding:7px 0 9px"><span style="width:88px;height:3.5px;border-radius:9999px;background:rgba(255,255,255,.30)"></span></div>
+          <div style="border-radius:26px;overflow:hidden;background:#101018">
+            <img src="assets/app/mobile-filing-dark.webp" width="780" height="1688" alt="Finrock Filing and deadlines on a phone" loading="lazy" decoding="async" style="display:block;width:100%;height:auto">
           </div>
         </div>
         <figcaption style="margin:14px 4px 0;font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.52)"><b style="color:#fff">They see the deadline too</b> — so the quarterly nudge is not always coming from you.</figcaption>
@@ -703,9 +413,9 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
 
 <section style="background:#f6f5f1;border-top:1px solid rgba(20,22,28,.07)">
   <div style="max-width:1280px;margin:0 auto;padding:20px 32px;display:flex;align-items:center;justify-content:center;gap:10px 34px;flex-wrap:wrap">
-    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="landmark" style="width:15px;height:15px;color:#1e1b4b"></i>MTD quarterly updates &amp; VAT — filed from the app</span>
-    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="building-2" style="width:15px;height:15px;color:#0f7c3a"></i>Open Banking feeds via FCA-authorised providers</span>
-    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="lock" style="width:15px;height:15px;color:#f6921a"></i>Encrypted in transit &amp; at rest — data stays in the UK</span>
+    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="landmark" style="width:15px;height:15px;color:#1e1b4b"></i>Quarterly updates &amp; VAT — prepared, ready to file</span>
+    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="building-2" style="width:15px;height:15px;color:#0f7c3a"></i>Open Banking feeds via TrueLayer (FCA-regulated) — coming soon</span>
+    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="lock" style="width:15px;height:15px;color:#f6921a"></i>Encrypted in transit · documents encrypted at rest</span>
     <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="monitor-smartphone" style="width:15px;height:15px;color:#1e1b4b"></i>iPhone, Android &amp; desktop — nothing to install</span>
   </div>
 </section>
