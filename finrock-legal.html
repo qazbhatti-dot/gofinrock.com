@@ -204,6 +204,17 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
   .heroph { width: min(250px, 72vw) !important; margin: 0 auto }
 }
 </style>
+<style id="legal-collapse">
+@media (max-width: 760px) {
+  article.lgc > div:first-child { cursor: pointer; position: relative; padding-right: 34px; margin-bottom: 0 !important; padding-bottom: 0 !important; border-bottom: 0 !important; -webkit-tap-highlight-color: transparent }
+  article.lgc > div:first-child::after { content: ""; position: absolute; right: 4px; top: 50%; width: 9px; height: 9px; border-right: 2px solid rgba(21,22,26,.45); border-bottom: 2px solid rgba(21,22,26,.45); transform: translateY(-70%) rotate(45deg); transition: transform .2s }
+  article.lgc.open > div:first-child::after { transform: translateY(-30%) rotate(-135deg) }
+  article.lgc { padding: 20px 20px !important }
+  article.lgc > div:first-child h2 { font-size: 19px !important; line-height: 1.2 !important }
+  article.lgc:not(.open) > .lg { display: none }
+  article.lgc.open > .lg { margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(20,22,28,.08) }
+}
+</style>
 </head>
 <body>
 <div style="min-height:100vh;background:#f6f5f1">
@@ -891,5 +902,22 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
 
 </div>
 <script src="site.js"></script>
+<script>
+(function(){
+  var arts = document.querySelectorAll('article[id]');
+  function openFor(hash){ var a = hash && document.getElementById(hash.slice(1)); if (a && a.classList.contains('lgc')) a.classList.add('open'); }
+  arts.forEach(function(a){
+    var head = a.firstElementChild; if (!head || !a.querySelector(':scope > .lg')) return;
+    a.classList.add('lgc');
+    head.setAttribute('role', 'button'); head.setAttribute('tabindex', '0');
+    var toggle = function(){ a.classList.toggle('open'); head.setAttribute('aria-expanded', a.classList.contains('open')); };
+    head.addEventListener('click', toggle);
+    head.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+  });
+  openFor(location.hash);
+  window.addEventListener('hashchange', function(){ openFor(location.hash); });
+  document.querySelectorAll('a[href^="#"]').forEach(function(l){ l.addEventListener('click', function(){ openFor(l.getAttribute('href')); }); });
+})();
+</script>
 </body>
 </html>
