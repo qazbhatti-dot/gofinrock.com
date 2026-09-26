@@ -4,13 +4,13 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>System status | Finrock</title>
-<meta name="description" content="Live availability of Finrock services and bank feeds.">
+<meta name="description" content="What is live in Finrock today, and what is coming soon.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://gofinrock.com/finrock-status.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Finrock">
 <meta property="og:title" content="System status | Finrock">
-<meta property="og:description" content="Live availability of Finrock services and bank feeds.">
+<meta property="og:description" content="What is live in Finrock today, and what is coming soon.">
 <meta property="og:url" content="https://gofinrock.com/finrock-status.html">
 <meta property="og:image" content="https://gofinrock.com/assets/og-card.png">
 <meta property="og:image:width" content="1200">
@@ -18,12 +18,12 @@
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="System status | Finrock">
-<meta name="twitter:description" content="Live availability of Finrock services and bank feeds.">
+<meta name="twitter:description" content="What is live in Finrock today, and what is coming soon.">
 <meta name="twitter:image" content="https://gofinrock.com/assets/og-card.png">
 <meta name="theme-color" content="#0b0b10">
 <link rel="alternate" type="text/plain" href="https://gofinrock.com/llms.txt" title="llms.txt">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"System status | Finrock","description":"Live availability of Finrock services and bank feeds.","url":"https://gofinrock.com/finrock-status.html","inLanguage":"en-GB","isPartOf":{"@type":"WebSite","name":"Finrock","url":"https://gofinrock.com/"},"publisher":{"@type":"Organization","name":"Finrock","url":"https://gofinrock.com/","logo":"https://gofinrock.com/assets/finrock-logo.svg"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"System status | Finrock","description":"What is live in Finrock today, and what is coming soon.","url":"https://gofinrock.com/finrock-status.html","inLanguage":"en-GB","isPartOf":{"@type":"WebSite","name":"Finrock","url":"https://gofinrock.com/"},"publisher":{"@type":"Organization","name":"Finrock","url":"https://gofinrock.com/","logo":"https://gofinrock.com/assets/finrock-logo.svg"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -61,6 +61,7 @@ header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); 
 .mmenu.open { display: flex; }
 .mmenu a { font-size: 15px; font-weight: 600; color: #15161a; padding: 12px 14px; border-radius: 10px; }
 .mmenu a:hover { background: rgba(30,27,75,.06); }
+@media (max-width: 640px) { .strow { grid-template-columns: minmax(0,1fr) auto !important } .strow > span:last-child { display:none } }
 @media (max-width: 1040px) { .mbtn { display: flex } }
 .navlink { position: relative; }
 .navlink:after { content: ''; position: absolute; left: 0; right: 100%; bottom: -4px; height: 2px; background: #f6921a; transition: right .25s cubic-bezier(.16,1,.3,1); }
@@ -213,80 +214,78 @@ label.lb { display: block; font-size: 12.5px; font-weight: 700; letter-spacing: 
 <section style="position:relative;overflow:hidden;background:radial-gradient(130% 100% at 72% -12%,#1b1b2c 0%,#121219 42%,#0b0b10 74%,#070709 100%);margin-top:-72px;padding-top:72px;border-bottom:1px solid rgba(20,22,28,.07)">
   <div aria-hidden="true" style="position:absolute;width:600px;height:600px;border-radius:9999px;background:radial-gradient(closest-side,rgba(246,146,26,.11),transparent);right:-160px;top:-220px;pointer-events:none"></div>
   <div style="position:relative;max-width:1280px;margin:0 auto;padding:80px 32px 64px">
-    <p class="rv in" style="margin:0;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f6921a">System status</p>
-    <h1 class="rv in" style="margin:14px 0 0;max-width:800px;font-size:clamp(36px,4.4vw,58px);line-height:1.03;letter-spacing:-.045em;font-weight:800;color:#fff;text-wrap:balance">All systems operational.</h1>
-    <p class="rv in" style="margin:20px 0 0;max-width:600px;font-size:17px;line-height:1.62;color:rgba(255,255,255,.66);text-wrap:pretty">Live status for every Finrock service, refreshed continuously. 99.97% uptime across the last 90 days.</p>
+    <p class="rv in" style="margin:0;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f6921a">Service status</p>
+    <h1 class="rv in" style="margin:14px 0 0;max-width:800px;font-size:clamp(36px,4.4vw,58px);line-height:1.03;letter-spacing:-.045em;font-weight:800;color:#fff;text-wrap:balance">What’s running today.</h1>
+    <p class="rv in" style="margin:20px 0 0;max-width:600px;font-size:17px;line-height:1.62;color:rgba(255,255,255,.66);text-wrap:pretty">Finrock is in its launch phase. This page says plainly which parts are live, which are in test mode, and which are still planned.</p>
 
   </div>
 </section>
 <section style="max-width:1280px;margin:0 auto;padding:72px 32px 0">
   <div class="rv" style="max-width:940px;border:1px solid rgba(20,22,28,.10);border-radius:20px;background:#fff;overflow:hidden;box-shadow:0 1px 2px rgba(15,23,42,.04)">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 24px;background:#fbfaf6;flex-wrap:wrap">
-      <span style="display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:700"><span style="width:9px;height:9px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 4px rgba(15,124,58,.16)"></span>All services operational</span>
-      <span style="font-size:12.5px;color:rgba(21,22,26,.50)">Last checked 2 minutes ago</span>
+      <span style="font-size:15px;font-weight:700">What’s live, and what isn’t yet</span>
+      <span style="font-size:12.5px;color:rgba(21,22,26,.50)">Updated September 2026</span>
     </div>
-      <div style="display:grid;grid-template-columns:minmax(0,2fr) 150px 110px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)">
-        <span style="font-size:15px;font-weight:600;color:#15161a">API · Core</span>
-        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Operational</span>
-        <span class="tab" style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">99.99% · 90d</span>
+      <div style="display:grid;grid-template-columns:minmax(0,2fr) 130px 150px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)" class="strow">
+        <span style="font-size:15px;font-weight:600;color:#15161a">Web app &amp; installable app</span>
+        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Live</span>
+        <span style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">Any browser</span>
       </div>
-      <div style="display:grid;grid-template-columns:minmax(0,2fr) 150px 110px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)">
-        <span style="font-size:15px;font-weight:600;color:#15161a">Bank sync · Open Banking</span>
-        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Operational</span>
-        <span class="tab" style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">99.96% · 90d</span>
+      <div style="display:grid;grid-template-columns:minmax(0,2fr) 130px 150px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)" class="strow">
+        <span style="font-size:15px;font-weight:600;color:#15161a">Statement import (CSV, OFX, QIF)</span>
+        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Live</span>
+        <span style="font-size:13px;color:rgba(21,22,26,.50);text-align:right"></span>
       </div>
-      <div style="display:grid;grid-template-columns:minmax(0,2fr) 150px 110px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)">
-        <span style="font-size:15px;font-weight:600;color:#15161a">Receipt OCR &amp; AI categorisation</span>
-        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Operational</span>
-        <span class="tab" style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">99.98% · 90d</span>
+      <div style="display:grid;grid-template-columns:minmax(0,2fr) 130px 150px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)" class="strow">
+        <span style="font-size:15px;font-weight:600;color:#15161a">Receipt reading &amp; categorisation</span>
+        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Live</span>
+        <span style="font-size:13px;color:rgba(21,22,26,.50);text-align:right"></span>
       </div>
-      <div style="display:grid;grid-template-columns:minmax(0,2fr) 150px 110px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)">
+      <div style="display:grid;grid-template-columns:minmax(0,2fr) 130px 150px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)" class="strow">
         <span style="font-size:15px;font-weight:600;color:#15161a">Document vault</span>
-        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Operational</span>
-        <span class="tab" style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">100.00% · 90d</span>
+        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Live</span>
+        <span style="font-size:13px;color:rgba(21,22,26,.50);text-align:right"></span>
       </div>
-      <div style="display:grid;grid-template-columns:minmax(0,2fr) 150px 110px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)">
-        <span style="font-size:15px;font-weight:600;color:#15161a">Payment processing</span>
-        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Operational</span>
-        <span class="tab" style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">99.99% · 90d</span>
-      </div>
-      <div style="display:grid;grid-template-columns:minmax(0,2fr) 150px 110px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)">
+      <div style="display:grid;grid-template-columns:minmax(0,2fr) 130px 150px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)" class="strow">
         <span style="font-size:15px;font-weight:600;color:#15161a">Transactional email</span>
-        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Operational</span>
-        <span class="tab" style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">99.95% · 90d</span>
+        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Live</span>
+        <span style="font-size:13px;color:rgba(21,22,26,.50);text-align:right"></span>
       </div>
-      <div style="display:grid;grid-template-columns:minmax(0,2fr) 150px 110px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)">
-        <span style="font-size:15px;font-weight:600;color:#15161a">Mobile apps · iOS &amp; Android</span>
-        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Operational</span>
-        <span class="tab" style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">99.99% · 90d</span>
+      <div style="display:grid;grid-template-columns:minmax(0,2fr) 130px 150px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)" class="strow">
+        <span style="font-size:15px;font-weight:600;color:#15161a">Invoices by email &amp; Direct Debit via GoCardless</span>
+        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#0f7c3a"><span style="width:8px;height:8px;border-radius:9999px;background:#0f7c3a;box-shadow:0 0 0 3px rgba(15,124,58,.18)"></span>Live</span>
+        <span style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">Your own account</span>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(0,2fr) 130px 150px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)" class="strow">
+        <span style="font-size:15px;font-weight:600;color:#15161a">Open Banking feeds (TrueLayer)</span>
+        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#9a6b00"><span style="width:8px;height:8px;border-radius:9999px;background:#9a6b00;box-shadow:0 0 0 3px rgba(154,107,0,.18)"></span>Coming soon</span>
+        <span style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">Test mode</span>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(0,2fr) 130px 150px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)" class="strow">
+        <span style="font-size:15px;font-weight:600;color:#15161a">Card &amp; Pay-by-Bank links</span>
+        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#9a6b00"><span style="width:8px;height:8px;border-radius:9999px;background:#9a6b00;box-shadow:0 0 0 3px rgba(154,107,0,.18)"></span>Coming soon</span>
+        <span style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">Test mode</span>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(0,2fr) 130px 150px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)" class="strow">
+        <span style="font-size:15px;font-weight:600;color:#15161a">Filing to HMRC from the app</span>
+        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#9a6b00"><span style="width:8px;height:8px;border-radius:9999px;background:#9a6b00;box-shadow:0 0 0 3px rgba(154,107,0,.18)"></span>Planned</span>
+        <span style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">Prepared, ready to file</span>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(0,2fr) 130px 150px;gap:16px;align-items:center;padding:17px 24px;border-top:1px solid rgba(20,22,28,.08)" class="strow">
+        <span style="font-size:15px;font-weight:600;color:#15161a">iPhone &amp; Android apps in the stores</span>
+        <span style="display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:#9a6b00"><span style="width:8px;height:8px;border-radius:9999px;background:#9a6b00;box-shadow:0 0 0 3px rgba(154,107,0,.18)"></span>In testing</span>
+        <span style="font-size:13px;color:rgba(21,22,26,.50);text-align:right">TestFlight · Play</span>
       </div>
   </div>
+  <p class="rv" style="margin:24px 0 0;font-size:13.5px;color:rgba(21,22,26,.52);max-width:940px">Something not working? <a href="finrock-contact.html" style="font-weight:700">Tell us</a> — we would rather hear it twice than not at all. Incidents will be posted here once live monitoring is in place.</p>
 </section>
 
-<section style="max-width:1280px;margin:0 auto;padding:80px 32px 0">
-  <div class="rv" style="max-width:640px">
-    <p style="margin:0;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f6921a">History</p>
-    <h2 style="margin:12px 0 0;font-size:clamp(28px,3.4vw,42px);line-height:1.06;letter-spacing:-.035em;font-weight:800">Recent incidents.</h2>
-    <p style="margin:14px 0 0;font-size:16px;line-height:1.62;color:rgba(21,22,26,.62);text-wrap:pretty">Every incident is posted here, including the ones only we noticed.</p>
-  </div>
-
-  <div style="display:flex;flex-direction:column;gap:12px;margin-top:32px;max-width:940px">
-    <div class="rv" style="padding:22px 24px;background:#fff;border:1px solid rgba(20,22,28,.10);border-radius:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
-        <span style="font-size:15px;font-weight:700;letter-spacing:-.015em">Brief degradation · bank sync delay</span>
-        <span style="font-size:12.5px;color:rgba(21,22,26,.50)">May 18, 2026 · 14:22–14:37 BST · Resolved</span>
-      </div>
-      <p style="margin:9px 0 0;font-size:14px;line-height:1.6;color:rgba(21,22,26,.62)">Fifteen minutes of slow responses on the bank-sync API caused by an upstream provider issue. No data was lost and transactions caught up automatically once the provider recovered.</p>
-    </div>
-  </div>
-  <p class="rv" style="margin:24px 0 0;font-size:13.5px;color:rgba(21,22,26,.52);max-width:940px">Something wrong that isn&rsquo;t listed? <a href="finrock-contact.html" style="font-weight:700">Tell us</a> — we would rather hear it twice than not at all.</p>
-</section>
 <section style="max-width:1280px;margin:0 auto;padding:96px 32px 112px">
   <div class="rv" style="position:relative;overflow:hidden;border-radius:30px;text-align:center;padding:64px 46px;background:linear-gradient(160deg,#0a0d24 0%,#1e1b4b 55%,#312e81 100%);color:#fff">
     <div aria-hidden="true" style="position:absolute;width:520px;height:520px;border-radius:9999px;background:#f6921a;opacity:.15;filter:blur(130px);left:50%;transform:translateX(-50%);bottom:-340px"></div>
     <div style="position:relative">
       <h2 style="margin:0;font-size:clamp(28px,3.6vw,44px);line-height:1.04;letter-spacing:-.04em;font-weight:800">Boring is the goal.</h2>
-      <p style="margin:16px auto 0;max-width:470px;font-size:15.5px;line-height:1.6;color:rgba(255,255,255,.66)">Filing deadlines don&rsquo;t move, so neither do we. Uptime is a feature.</p>
+      <p style="margin:16px auto 0;max-width:470px;font-size:15.5px;line-height:1.6;color:rgba(255,255,255,.66)">Filing deadlines don&rsquo;t move, so neither do we.</p>
       <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:30px;flex-wrap:wrap">
         <a href="https://app.gofinrock.com/register" class="btn-p" style="display:inline-flex;align-items:center;gap:9px;background:#f6921a;color:#140d02;font-size:15px;font-weight:800;padding:15px 28px;border-radius:14px;box-shadow:0 14px 36px rgba(246,146,26,.32)">Start free <i data-lucide="arrow-right" style="width:16px;height:16px"></i></a>
         <a href="finrock-security.html" style="font-size:15px;font-weight:600;color:rgba(255,255,255,.85);padding:15px 22px;border-radius:14px;border:1px solid rgba(255,255,255,.20)">Security &amp; data</a>
@@ -298,8 +297,8 @@ label.lb { display: block; font-size: 12.5px; font-weight: 700; letter-spacing: 
 <section style="background:#f6f5f1;border-top:1px solid rgba(20,22,28,.07)">
   <div style="max-width:1280px;margin:0 auto;padding:20px 32px;display:flex;align-items:center;justify-content:center;gap:10px 34px;flex-wrap:wrap">
     <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="landmark" style="width:15px;height:15px;color:#1e1b4b"></i>Quarterly updates &amp; VAT — prepared, ready to file</span>
-    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="building-2" style="width:15px;height:15px;color:#0f7c3a"></i>Open Banking feeds via FCA-authorised providers</span>
-    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="lock" style="width:15px;height:15px;color:#f6921a"></i>Encrypted in transit &amp; at rest — data stays in the UK</span>
+    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="building-2" style="width:15px;height:15px;color:#0f7c3a"></i>Open Banking feeds via TrueLayer (FCA-regulated) — coming soon</span>
+    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="lock" style="width:15px;height:15px;color:#f6921a"></i>Encrypted in transit · documents encrypted at rest</span>
     <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="monitor-smartphone" style="width:15px;height:15px;color:#1e1b4b"></i>iPhone, Android &amp; desktop — nothing to install</span>
   </div>
 </section>
