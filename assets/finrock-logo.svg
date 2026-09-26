@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280.83 78.65">
-  <defs></defs>
+  <defs><style>.blk{fill:#15161a}.org{fill:#f6921a}</style></defs>
   <text x="72.72" y="61.08" font-family="Inter, Helvetica, Arial, sans-serif" font-size="56" font-weight="700" letter-spacing="-2">
     <tspan class="blk">Fin</tspan><tspan class="org">r</tspan><tspan class="blk">ock</tspan>
   </text>
