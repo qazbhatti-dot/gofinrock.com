@@ -20,7 +20,7 @@ Website: https://gofinrock.com · App: https://app.gofinrock.com · Company: Fin
 
 - Free to start: renewals/documents/reminders, net worth, spending, goals, statement import, 10 receipt scans a month. No card.
 - Individual — £9.99/mo: live bank feeds, unlimited scanning, every account and bill in one view. For people who are not self-employed.
-- Sole trader — £12.99/mo: for sole traders under the £50,000 MTD threshold. Self Assessment prepared, invoicing, mileage, bank feed. No quarterly MTD updates. 7-day trial.
+- Sole trader — £12.99/mo: for sole traders under the MTD threshold (£50,000 of qualifying income; £30,000 from April 2027). Self Assessment prepared, invoicing, mileage, bank feed. No quarterly MTD updates. 7-day trial.
 - Self-employed — £24.99/mo (most popular): MTD quarterly updates, Self Assessment and VAT prepared; invoicing, payment links, mileage. 7-day trial. +accountant check £34.99.
 - Landlord — £24.99/mo: SA105 property pages, MTD updates, jointly-owned lets. 7-day trial. +accountant check £34.99.
 - Limited company — £39.99/mo per company: CT600 draft, confirmation statement prep, payroll figures, dividends, director's loans. 7-day trial. +accountant check £49.99 per company.
