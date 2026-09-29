@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://gofinrock.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://gofinrock.com/finrock-personal.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-business.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-accountants.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-sole-traders.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-side-hustlers.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-pricing.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-banking.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-help.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-about.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-careers.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-contact.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-security.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-legal.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-status.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-changelog.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/finrock-blog.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://gofinrock.com/guide-self-assessment-2026.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://gofinrock.com/guide-sole-trader-expenses.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://gofinrock.com/guide-vat-registration.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://gofinrock.com/</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://gofinrock.com/finrock-personal.html</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://gofinrock.com/finrock-sole-traders.html</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://gofinrock.com/finrock-side-hustlers.html</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://gofinrock.com/finrock-business.html</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://gofinrock.com/finrock-accountants.html</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://gofinrock.com/finrock-pricing.html</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://gofinrock.com/finrock-help.html</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://gofinrock.com/finrock-about.html</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://gofinrock.com/finrock-security.html</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://gofinrock.com/finrock-contact.html</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://gofinrock.com/finrock-careers.html</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://gofinrock.com/finrock-banking.html</loc><lastmod>2026-09-29</lastmod></url>
 </urlset>
