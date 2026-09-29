@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://gofinrock.com/sitemap.xml
 
-# AI crawlers: see https://gofinrock.com/llms.txt
+# LLM discoverability
+# https://gofinrock.com/llms.txt

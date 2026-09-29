@@ -1,762 +1,312 @@
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Finrock — one life, one app. Money, tax and life admin, together</title>
-<meta name="description" content="All your accounts in one ledger — business and personal. Self Assessment and MTD figures ready to file, every bill and subscription seen, every renewal and document remembered. Built for the UK.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Finrock — One life. One app. Money, tax and life admin for the UK</title>
+<meta name="description" content="Every account, every income, one ledger. Self Assessment and MTD figures ready to file, every bill seen, every renewal and document remembered. From £9.99/mo incl. VAT. One price per person — however many ways you earn.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://gofinrock.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Finrock">
-<meta property="og:title" content="Finrock — one life, one app. Money, tax and life admin, together">
-<meta property="og:description" content="All your accounts in one ledger — business and personal. Self Assessment and MTD figures ready to file, every bill and subscription seen, every renewal and document remembered. Built for the UK.">
+<meta property="og:title" content="Finrock — One life. One app.">
+<meta property="og:description" content="Money, tax and life admin in one app. One price per person — however many ways you earn.">
 <meta property="og:url" content="https://gofinrock.com/">
 <meta property="og:image" content="https://gofinrock.com/assets/og-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Finrock — one life, one app. Money, tax and life admin, together">
-<meta name="twitter:description" content="All your accounts in one ledger — business and personal. Self Assessment and MTD figures ready to file, every bill and subscription seen, every renewal and document remembered. Built for the UK.">
+<meta name="twitter:title" content="Finrock — One life. One app.">
+<meta name="twitter:description" content="Money, tax and life admin in one app. One price per person — however many ways you earn.">
 <meta name="twitter:image" content="https://gofinrock.com/assets/og-card.png">
 <meta name="theme-color" content="#0b0b10">
 <link rel="alternate" type="text/plain" href="https://gofinrock.com/llms.txt" title="llms.txt">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Finrock — bookkeeping, tax prep and life admin in one app","description":"Finrock keeps your books, works out what you owe under current UK rules, and prepares the figures, ready to file.","url":"https://gofinrock.com/","inLanguage":"en-GB","isPartOf":{"@type":"WebSite","name":"Finrock","url":"https://gofinrock.com/"},"publisher":{"@type":"Organization","name":"Finrock","url":"https://gofinrock.com/","logo":"https://gofinrock.com/assets/finrock-logo.svg"}}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
-<style>
-@font-face { font-family: 'Inter Display'; src: url('assets/InterDisplay-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
-@font-face { font-family: 'Inter Display'; src: url('assets/InterDisplay-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; background: #0b0b10; }
-body { margin: 0; background: linear-gradient(180deg, #0b0b10 0, #0b0b10 560px, #f6f5f1 560px) no-repeat, #f6f5f1; color: #15161a; font-family: Inter, system-ui, -apple-system, sans-serif; overflow-x: hidden; overflow-x: clip;  }
-* { box-sizing: border-box; }
-a { color: #1e1b4b; text-decoration: none; }
-a:hover { color: #312e81; }
-.num { font-family: 'Inter Display', Inter, system-ui, sans-serif; font-variant-numeric: tabular-nums lining-nums; font-weight: 600; letter-spacing: -0.03em; }
-.tab { font-variant-numeric: tabular-nums; }
-[data-lucide] { display: block; }
-.rv { opacity: 0; transform: translateY(26px) scale(.985); filter: blur(7px); transition: opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1), filter .9s cubic-bezier(.16,1,.3,1); }
-.rv.in { opacity: 1; transform: none; filter: blur(0); }
-@keyframes fr-aurora { 0%,100% { transform: translate(0,0) scale(1) } 33% { transform: translate(-40px,26px) scale(1.12) } 66% { transform: translate(30px,-20px) scale(.94) } }
-.aur { animation: fr-aurora 16s ease-in-out infinite; }
-.aur2 { animation: fr-aurora 21s ease-in-out infinite reverse; }
-@keyframes fr-marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
-.mq { display: flex; width: max-content; gap: 52px; animation: fr-marquee 30s linear infinite; }
-.mqwrap:hover .mq { animation-play-state: paused; }
-.btn-p { position: relative; overflow: hidden; }
-.btn-p::after { content: ''; position: absolute; top: 0; bottom: 0; left: -80%; width: 55%; background: linear-gradient(105deg, transparent, rgba(255,255,255,.32), transparent); transform: skewX(-20deg); transition: left .6s cubic-bezier(.16,1,.3,1); pointer-events: none; }
-.btn-p:hover::after { left: 130%; }
-header { transition: background .45s, border-color .45s; }
-header:not(.scrolled) { background: rgba(9,9,13,.42) !important; border-bottom-color: rgba(255,255,255,.07) !important; backdrop-filter: blur(14px) saturate(140%); }
-header:not(.scrolled) .navlink { color: rgba(255,255,255,.78) !important; }
-header:not(.scrolled) .navlink.on { color: #fff !important; }
-header:not(.scrolled) .hsign { color: rgba(255,255,255,.78) !important; }
-header:not(.scrolled) .hcta { background: #f6921a !important; color: #140d02 !important; box-shadow: 0 8px 24px rgba(246,146,26,.35); }
-header:not(.scrolled) g[fill="#15161a"] { fill: #ffffff; }
-header.scrolled { box-shadow: 0 8px 32px rgba(15,23,42,.08); }
-@keyframes fr-glow { 0%,100% { opacity: .55 } 50% { opacity: .95 } }
-.phone-glow { animation: fr-glow 5s ease-in-out infinite; }
-.grad-txt { background: linear-gradient(100deg, #f6921a 10%, #fbbf24 50%, #f6921a 90%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-header.scrolled .hdr-inner { padding-top: 10px !important; padding-bottom: 10px !important; }
-.hdr-inner { transition: padding .35s cubic-bezier(.16,1,.3,1); }
-.mbtn { display: none; width: 40px; height: 40px; border-radius: 11px; border: 1px solid rgba(20,22,28,.14); background: transparent; align-items: center; justify-content: center; cursor: pointer; color: #15161a; }
-header:not(.scrolled) .mbtn { color: #fff; border-color: rgba(255,255,255,.28); }
-.mmenu { display: none; position: absolute; top: calc(100% + 8px); right: 20px; left: 20px; flex-direction: column; gap: 2px; background: #fff; border: 1px solid rgba(20,22,28,.10); border-radius: 16px; padding: 10px; box-shadow: 0 24px 60px rgba(15,23,42,.18); }
-.mmenu.open { display: flex; }
-.mmenu a { font-size: 15px; font-weight: 600; color: #15161a; padding: 12px 14px; border-radius: 10px; }
-.mmenu a:hover { background: rgba(30,27,75,.06); }
-@media (max-width: 1040px) { .mbtn { display: flex } }
-.card-h { will-change: transform; }
-img { -webkit-user-drag: none; }
-@keyframes fr-float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }
-@keyframes fr-pulse { 0% { transform: scale(1); opacity: .5 } 100% { transform: scale(1.7); opacity: 0 } }
-.float { animation: fr-float 7s ease-in-out infinite; }
-.card-h { transition: transform .4s cubic-bezier(.16,1,.3,1), box-shadow .4s, border-color .4s; }
-.heroph { transition: transform .6s cubic-bezier(.16,1,.3,1), box-shadow .6s; cursor: pointer; }
-.heroph:hover { transform: perspective(900px) rotateY(-5deg) rotateX(2deg) scale(1.02); }
-.card-h:hover { transform: translateY(-4px); box-shadow: 0 2px 4px rgba(15,23,42,.06), 0 24px 48px rgba(15,23,42,.10); border-color: rgba(20,22,28,.16); }
-.btn-p { transition: transform .2s, box-shadow .2s, opacity .2s; }
-.btn-p:hover { transform: translateY(-1px); opacity: .94; box-shadow: 0 10px 26px rgba(30,27,75,.28); }
-.btn-p:active { transform: scale(.98); }
-.navlink { position: relative; }
-.navlink:after { content: ''; position: absolute; left: 0; right: 100%; bottom: -4px; height: 2px; background: #f6921a; transition: right .25s cubic-bezier(.16,1,.3,1); }
-.navlink:hover:after { right: 0; }
-details.faq { border-bottom: 1px solid rgba(20,22,28,.09); }
-details.faq summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 4px; font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
-details.faq summary::-webkit-details-marker { display: none; }
-details.faq summary .fx { flex-shrink: 0; width: 26px; height: 26px; border-radius: 9999px; background: rgba(30,27,75,.07); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #1e1b4b; transition: transform .3s; }
-details.faq[open] summary .fx { transform: rotate(45deg); background: #1e1b4b; color: #fff; }
-@media (max-width: 1120px) { .fbadge { display: none !important } }
-@media (max-width: 944px) { .g3 { grid-template-columns: 1fr !important } }
-@media (max-width: 1040px) { .mainnav { display: none !important } .g2 { grid-template-columns: 1fr !important } .g3 { grid-template-columns: 1fr !important } .g4 { grid-template-columns: repeat(2, 1fr) !important } .fbadge { display: none !important } }
-@media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; filter: none; transition: none } .aur, .aur2, .mq { animation: none } .float { animation: none } }
-
-/* --- responsive hardening --- */
-@media (max-width: 760px) {
-  section, .wrap { padding-left: 20px !important; padding-right: 20px !important }
-  .g2, .g3, .g4 { grid-template-columns: minmax(0,1fr) !important }
-  .g2[style*="px 32px"] { padding-left: 0 !important; padding-right: 0 !important }
-  .heroph { width: min(318px, 100%) !important }
-  [style*="grid-template-columns:repeat(4"], [style*="grid-template-columns:repeat(3"],
-  [style*="grid-template-columns: repeat(4"], [style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important }
-  [style*="grid-template-columns:1fr 1fr"], [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important }
-  h1 { font-size: clamp(34px, 9vw, 46px) !important; line-height: 1.04 !important }
-  h2 { font-size: clamp(26px, 7.2vw, 34px) !important; line-height: 1.08 !important }
-  img, svg, canvas { max-width: 100% }
-}
-@media (max-width: 520px) {
-  section, .wrap { padding-left: 16px !important; padding-right: 16px !important }
-}
-
-/* desktop-workspace shots: unreadable when scaled onto a phone — the phone mockups carry the story there */
-@media (max-width: 760px) {
-  .deskshot > div:first-child { display: none !important }
-  .deskshot figcaption, .deskshot + figcaption { margin-top: 0 !important }
-}
-
-/* --- phone: kill horizontal overflow, tighten rhythm --- */
-@media (max-width: 760px) {
-  html, body { overflow-x: hidden !important; max-width: 100vw }
-  section { padding-top: 52px !important; padding-bottom: 52px !important }
-  figure { margin-left: 0 !important; margin-right: 0 !important }
-  p:not(.num):not([style*="font-size:7"]):not([style*="font-size:8"]):not([style*="font-size:9"]):not([style*="font-size:10"]):not([style*="font-size:11"]):not([style*="font-size:12"]) { font-size: 15.5px !important; line-height: 1.55 !important }
-  div:has(> span[style*="width:148px;flex-shrink:0"]) { flex-wrap: wrap !important; row-gap: 4px !important }
-  div > span[style*="width:148px;flex-shrink:0"] { width: auto !important; flex: 1 1 auto }
-  div > span[style*="width:148px;flex-shrink:0"] + span { flex: 0 0 100% !important; padding-left: 28px }
-  [style*="grid-template-columns:180px minmax(0,1fr)"], [style*="grid-template-columns:96px 1fr"], [style*="grid-template-columns:236px minmax(0,1fr)"] { grid-template-columns: minmax(0,1fr) !important; row-gap: 6px !important }
-  [style*="grid-template-columns:100px 92px minmax(0,1fr)"] { grid-template-columns: 100px minmax(0,1fr) !important; row-gap: 4px !important }
-  [style*="grid-template-columns:100px 92px minmax(0,1fr)"] > :nth-child(3) { grid-column: 1 / -1 }
-  [style*="grid-template-columns:minmax(0,2fr) 1fr 1fr 30px"] { grid-template-columns: minmax(0,1fr) auto !important; row-gap: 6px !important }
-  [style*="grid-template-columns:minmax(0,2fr) 1fr 1fr 30px"] > :first-child { grid-column: 1 / -1 }
-  [style*="grid-template-columns:minmax(0,2fr) 1fr 1fr 30px"] > svg, [style*="grid-template-columns:minmax(0,2fr) 1fr 1fr 30px"] > i { display: none }
-  p.num { line-height: 1.05 !important }
-}
-
-/* --- phone header: one clean row, proper menu sheet --- */
-@media (max-width: 760px) {
-  .hdr-inner { padding: 12px 16px !important; gap: 12px !important; flex-wrap: nowrap !important }
-  .hdr-inner > a:first-child svg { height: 22px !important }
-  .hsign { display: none !important }
-  .hcta { font-size: 13px !important; padding: 9px 14px !important; border-radius: 10px !important; white-space: nowrap }
-  .mbtn { width: 38px !important; height: 38px !important; flex: 0 0 38px }
-  .mmenu { left: 10px !important; right: 10px !important; top: calc(100% + 6px) !important;
-           padding: 8px !important; border-radius: 18px !important;
-           box-shadow: 0 24px 60px rgba(15,23,42,.22) !important;
-           max-height: calc(100vh - 120px); overflow-y: auto }
-  .mmenu a { font-size: 16px !important; padding: 13px 14px !important; min-height: 46px; display: flex; align-items: center }
-  .mmenu a:last-child { margin-top: 6px; justify-content: center; background: #1e1b4b; color: #fff !important; font-weight: 700 }
-}
-
-/* nav sits with the logo, not adrift */
-.hdr-inner { justify-content: flex-start !important }
-.mainnav { margin-left: 22px; margin-right: auto !important }
-.hdr-inner > div:last-child { margin-left: auto }
-
-.navlink, .hsign, .hcta, .mmenu a { white-space: nowrap }
-</style>
-<script>
-(function(){
-  var MB = 760;
-  function fix(){
-    var on = window.innerWidth <= MB;
-    var vw = window.innerWidth;
-    document.documentElement.style.overflowX = 'hidden';
-    document.body.style.overflowX = 'hidden';
-    var all = document.body.querySelectorAll('*');
-    for (var i=0;i<all.length;i++){
-      var el = all[i];
-      if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') continue;
-      if (el.closest('header') || el.tagName === 'NAV' || el.closest('nav') || el.closest('.mqwrap')) continue;
-      var cs = getComputedStyle(el);
-      if (!on){ if (el.dataset.rwUndo){ el.style.gridTemplateColumns = el.dataset.rwUndo === '_' ? '' : el.dataset.rwUndo; delete el.dataset.rwUndo; } continue; }
-      /* collapse multi-column grids, but leave narrow grids (inside phone mockups) alone */
-      if (cs.display.indexOf('grid') > -1){
-        var cols = cs.gridTemplateColumns.split(' ').filter(Boolean).length;
-        if (cols > 1 && el.getBoundingClientRect().width > 360){
-          if (!el.dataset.rwUndo) el.dataset.rwUndo = el.style.gridTemplateColumns || '_';
-          el.style.gridTemplateColumns = '1fr';
-        }
-      }
-      /* let wide flex rows wrap instead of squeezing */
-      if (cs.display.indexOf('flex') > -1 && cs.flexDirection.indexOf('row') > -1 && cs.flexWrap === 'nowrap' && el.scrollWidth > vw - 24 && el.getBoundingClientRect().width > 340){
-        el.style.flexWrap = 'wrap';
-      }
-      /* nothing may be wider than the screen */
-      var w = parseFloat(cs.width);
-      if (w > vw - 8 && cs.position !== 'fixed' && !el.closest('[data-phone]')){
-        if (el.style.width && el.style.width.indexOf('px') > -1) el.style.width = '100%';
-        el.style.maxWidth = '100%';
-      }
-    }
-  }
-  var t; function sched(){ clearTimeout(t); t = setTimeout(fix, 60); }
-  if (document.readyState !== 'loading') sched(); else document.addEventListener('DOMContentLoaded', sched);
-  window.addEventListener('load', sched);
-  window.addEventListener('resize', sched);
-})();
-</script>
-<style id="mobile-compact">
-/* Phones: shorter pages. Tighter rhythm, swipeable screenshot rows, two-column footer. */
-@media (max-width: 760px) {
-  section { padding-top: 40px !important; padding-bottom: 40px !important }
-  h1 { font-size: clamp(31px, 8.4vw, 40px) !important }
-  h2 { font-size: clamp(24px, 6.4vw, 30px) !important }
-  p:not(.num):not([style*="font-size:7"]):not([style*="font-size:8"]):not([style*="font-size:9"]):not([style*="font-size:10"]):not([style*="font-size:11"]):not([style*="font-size:12"]) { font-size: 15px !important; line-height: 1.55 !important }
-  .card-h { padding: 20px !important }
-  [style*="margin-top:46px"], [style*="margin-top:48px"], [style*="margin-top:52px"], [style*="margin-top:56px"] { margin-top: 28px !important }
-  /* phone screenshots side by side, swipe for more */
-  .phonerow, .g3:has(> .card-h > [style*="border-radius:34px"]) {
-    display: flex !important; flex-wrap: nowrap !important; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px !important;
-    margin-left: -16px !important; margin-right: -16px !important; padding: 0 16px 10px !important;
-    max-width: none !important; scrollbar-width: none; -webkit-overflow-scrolling: touch }
-  .phonerow::-webkit-scrollbar, .g3::-webkit-scrollbar { display: none }
-  .phonerow > *, .g3:has(> .card-h > [style*="border-radius:34px"]) > * { flex: 0 0 64%; scroll-snap-align: center; min-width: 0 }
-  .g3:has(> .card-h > [style*="border-radius:34px"]) > .card-h { padding: 16px 12px !important }
-  /* footer: brand across the top, link groups two by two */
-  footer .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 22px 16px !important }
-  footer .g4 > :first-child { grid-column: 1 / -1 }
-  footer [style*="padding:64px 32px"] { padding-top: 40px !important }
-  .heroph { width: min(250px, 72vw) !important; margin: 0 auto }
-}
-</style>
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Finrock — One life. One app.","url":"https://gofinrock.com/","inLanguage":"en-GB","description":"Money, tax and life admin in one UK app. One price per person."},{"@type":"Organization","name":"Finrock","url":"https://gofinrock.com/","logo":"https://gofinrock.com/assets/finrock-logo.svg"},{"@type":"SoftwareApplication","name":"Finrock","applicationCategory":"FinanceApplication","operatingSystem":"Web, iOS, Android","offers":{"@type":"AggregateOffer","priceCurrency":"GBP","lowPrice":"9.99","highPrice":"49.99","offerCount":"4"}}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/app/mobile-home-light.webp" fetchpriority="high">
+<link rel="stylesheet" href="assets/fr.css">
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+<script src="assets/fr.js" defer></script>
 </head>
 <body>
-<div style="min-height:100vh;background:#f6f5f1">
 
-<div style="background:#070709;color:#fff;text-align:center;padding:8px 16px;font-size:12.5px;font-weight:600;position:relative;z-index:61">
-  <span style="opacity:.85">Making Tax Digital for Income Tax is now live —</span> <a href="#filing" style="color:#f6921a;font-weight:700">Finrock prepares your quarterly updates →</a>
-</div>
+<div class="bar">MTD for Income Tax is live. <a href="finrock-sole-traders.html">Your quarterly updates, prepared →</a></div>
 
-<header style="position:sticky;top:0;z-index:60;background:rgba(251,250,246,.85);backdrop-filter:blur(16px) saturate(150%);border-bottom:1px solid rgba(20,22,28,.07)">
-  <div class="hdr-inner" style="max-width:1280px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px">
-    <a href="#top" aria-label="Finrock" style="display:flex;align-items:center;gap:9px">
-      <svg viewBox="0 0 280.83 56.13" style="height:26px;width:auto;display:block" role="img" aria-label="Finrock"><g transform="translate(-40.81 -146.87)"><g fill="#15161a"><path d="M62.57,203l24.78-40.52a2.06,2.06,0,0,1,.22.25q2.66,4.34,5.29,8.68a.69.69,0,0,1,0,.64c-2.85,4.7-5.72,9.38-8.64,14.16-1-1.55-1.88-3-2.85-4.64L79.87,184q-5.28,8.59-10.54,17.2c-.29.48-.56,1-.88,1.44a.67.67,0,0,1-.45.27C66.24,203,64.48,203,62.57,203Z"></path><path d="M40.81,202.8l34-55.93,3.41,5.61c1.36,2.25,2.74,4.5,4.09,6.76a1,1,0,0,1,.08.82c-3.9,6.47-8.13,12.65-12.06,19.11,0,0,0,0-.15.13-1.27-2.09-2.24-3.86-3.56-6l-.6,1q-8.49,14-17,28a1.14,1.14,0,0,1-1.13.61C45.59,202.78,43.28,202.8,40.81,202.8Z"></path><path d="M96.38,178.11c1.84,3,3.61,5.93,5.41,8.82a.86.86,0,0,1,0,1q-4.17,6.76-8.31,13.56c-.06.1-.14.2-.24.35l-2.84-4.62c-.78,1.29-1.53,2.51-2.28,3.73-.35.57-.69,1.15-1.06,1.7a.67.67,0,0,1-.46.27c-1.7,0-3.41,0-5.11,0a1.52,1.52,0,0,1-.27-.06Z"></path><path d="M205.13,165.72c.52-.09,1-.16,1.48-.21s1-.07,1.48-.07,1,0,1.55.07a13,13,0,0,1,1.42.21q.21,1.07.42,2.79a24.91,24.91,0,0,1,.21,2.93,14.46,14.46,0,0,1,3.92-4.16,10.34,10.34,0,0,1,6.24-1.77c.38,0,.77,0,1.17,0s.74.06,1,.1a11,11,0,0,1,.21,1.34,14.19,14.19,0,0,1,.07,1.49,15.45,15.45,0,0,1-.1,1.76c-.07.61-.16,1.2-.25,1.76a5,5,0,0,0-1.16-.14h-1a12.4,12.4,0,0,0-3.63.53,7.77,7.77,0,0,0-3.11,1.87,9.43,9.43,0,0,0-2.18,3.67,18.3,18.3,0,0,0-.81,6v18a16,16,0,0,1-1.73.22c-.64,0-1.22.07-1.73.07s-1.1,0-1.73-.07-1.24-.12-1.8-.22Z"></path><path d="M240.7,202.77a17.75,17.75,0,0,1-7.41-1.44,14.82,14.82,0,0,1-5.3-4,16.61,16.61,0,0,1-3.14-6,27.94,27.94,0,0,1,0-15,16.53,16.53,0,0,1,3.14-6,15.13,15.13,0,0,1,5.3-4,19.29,19.29,0,0,1,14.82,0,15.18,15.18,0,0,1,5.29,4,16.53,16.53,0,0,1,3.14,6,27.94,27.94,0,0,1,0,15,16.61,16.61,0,0,1-3.14,6,14.87,14.87,0,0,1-5.29,4A17.81,17.81,0,0,1,240.7,202.77Zm0-5.57q4.86,0,7.19-3.53t2.33-9.81q0-6.29-2.33-9.77t-7.19-3.5q-4.87,0-7.17,3.5t-2.29,9.77q0,6.28,2.29,9.81T240.7,197.2Z"></path><path d="M286.56,195.64a11.12,11.12,0,0,1,1,2.47,13,13,0,0,1,.5,3,26.15,26.15,0,0,1-9.53,1.62q-9,0-13.62-5.11t-4.59-13.8a24.07,24.07,0,0,1,1.13-7.48,16.92,16.92,0,0,1,3.35-6,16,16,0,0,1,5.54-4,18.69,18.69,0,0,1,7.7-1.48,33.68,33.68,0,0,1,5.22.35,21.56,21.56,0,0,1,4.3,1.13,13.87,13.87,0,0,1-.32,2.79,12,12,0,0,1-.88,2.78,24,24,0,0,0-7.9-1.2q-5.43,0-8.12,3.6t-2.68,9.53q0,6.78,3,9.91a11,11,0,0,0,8.32,3.14,25.09,25.09,0,0,0,3.92-.28A17.24,17.24,0,0,0,286.56,195.64Z"></path><path d="M291.57,150.2a13.89,13.89,0,0,1,1.73-.21c.64-.05,1.21-.07,1.73-.07s1.11,0,1.77.07a13.72,13.72,0,0,1,1.76.21v51.72a15.62,15.62,0,0,1-1.76.22c-.66,0-1.25.07-1.77.07s-1.09,0-1.73-.07a16,16,0,0,1-1.73-.22Zm8.9,33L312,165.72q.91-.14,1.83-.21c.61,0,1.25-.07,1.91-.07s1.38,0,2,.07,1.28.12,1.94.21l-11.5,16.94,13.48,19.26c-.66.1-1.3.17-1.91.22s-1.25.07-1.9.07-1.32,0-2-.07-1.32-.12-2-.22Z"></path></g><g fill="#f6921a"><path d="M118.47,151.19h28.79a21.26,21.26,0,0,1,.43,4.3,22.1,22.1,0,0,1-.43,4.45H128.77v11.92h14.68a23.2,23.2,0,0,1,.43,4.38,22.66,22.66,0,0,1-.43,4.44H128.77v21.24a31,31,0,0,1-10.3,0Z"></path><path d="M151.92,173.06h-4.73a16,16,0,0,1-.32-1.94,19,19,0,0,1-.1-1.94,16.75,16.75,0,0,1,.42-3.74h14.54v36.48a29.2,29.2,0,0,1-4.94.43,28.84,28.84,0,0,1-4.87-.43Zm-1.48-13.76a27.35,27.35,0,0,1-.42-4.73,28.12,28.12,0,0,1,.42-4.72,24,24,0,0,1,2.57-.32c.92-.07,1.76-.11,2.51-.11s1.67,0,2.61.11a23.88,23.88,0,0,1,2.61.32,19.44,19.44,0,0,1,.28,2.36c0,.78.07,1.56.07,2.36s0,1.53-.07,2.33a19.61,19.61,0,0,1-.28,2.4,20,20,0,0,1-2.57.28c-.92,0-1.78.07-2.58.07s-1.6,0-2.54-.07A20.08,20.08,0,0,1,150.44,159.3Z"></path><path d="M167.3,165.44a19.42,19.42,0,0,1,2-.32,21,21,0,0,1,2.19-.1,19.09,19.09,0,0,1,2.12.1c.61.07,1.24.18,1.9.32a4.36,4.36,0,0,1,.39,1c.12.45.22.92.32,1.42s.17,1,.24,1.44l.18,1.2a17.22,17.22,0,0,1,1.69-2.12,12.32,12.32,0,0,1,2.3-1.9,12.77,12.77,0,0,1,2.93-1.38,11.61,11.61,0,0,1,3.59-.53q6.21,0,9.35,3.39t3.14,10.66v23.28a29.4,29.4,0,0,1-10,0v-20.6a12,12,0,0,0-1.16-5.86,4.28,4.28,0,0,0-4.06-2,9,9,0,0,0-2.47.35,5.15,5.15,0,0,0-2.29,1.37A7.48,7.48,0,0,0,178,178a15.12,15.12,0,0,0-.63,4.8v19.12a29.46,29.46,0,0,1-10,0Z"></path><path d="M99.82,203l5.58-9.09L111,203Z"></path></g></g></svg>
-    </a>
-    <nav class="mainnav" style="display:flex;align-items:center;gap:22px">
-      <a class="navlink" href="finrock-sole-traders.html" style="font-size:13.5px;font-weight:600;color:rgba(21,22,26,.70)">Sole traders</a>
-      <a class="navlink" href="finrock-business.html" style="font-size:13.5px;font-weight:600;color:rgba(21,22,26,.70)">Business</a>
-      <a class="navlink" href="finrock-personal.html" style="font-size:13.5px;font-weight:600;color:rgba(21,22,26,.70)">My Life · free</a>
-      <a class="navlink" href="finrock-accountants.html" style="font-size:13.5px;font-weight:600;color:rgba(21,22,26,.70)">Accountants</a>
-      <a class="navlink" href="finrock-banking.html" style="font-size:13.5px;font-weight:600;color:rgba(21,22,26,.70)">Banking</a>
-      <a class="navlink" href="finrock-pricing.html" style="font-size:13.5px;font-weight:600;color:rgba(21,22,26,.70)">Pricing</a>
-      <a class="navlink" href="finrock-blog.html" style="font-size:13.5px;font-weight:600;color:rgba(21,22,26,.70)">Blog</a>
-      <a class="navlink" href="finrock-help.html" style="font-size:13.5px;font-weight:600;color:rgba(21,22,26,.70)">Help</a>
+<header class="hdr">
+  <div class="wrap">
+    <a class="logo" href="index.html" aria-label="Finrock home"><img src="assets/finrock-logo-white.svg" alt="Finrock" width="115" height="23"></a>
+    <nav aria-label="Main">
+      <a href="finrock-personal.html">My Life</a>
+      <a href="finrock-sole-traders.html">Sole traders &amp; landlords</a>
+      <a href="finrock-business.html">Companies</a>
+      <a href="finrock-pricing.html">Pricing</a>
+      <a href="finrock-help.html">Help</a>
     </nav>
-    <div style="display:flex;align-items:center;gap:8px">
-      <a href="https://app.gofinrock.com/login" class="hsign" style="font-size:13.5px;font-weight:600;color:rgba(21,22,26,.70);padding:10px 14px">Sign in</a>
-      <a href="https://app.gofinrock.com/register" class="btn-p hcta" style="display:inline-block;font-size:13.5px;font-weight:700;background:#1e1b4b;color:#fff;padding:11px 20px;border-radius:12px;transition:background .45s,color .45s">Get started free</a>
-      <button class="mbtn" aria-label="Menu" type="button"><i data-lucide="menu" style="width:19px;height:19px"></i></button>
+    <div class="sp">
+      <a class="signin" href="https://app.gofinrock.com/login" target="_blank" rel="noopener">Sign in</a>
+      <a class="btn btn-or cta" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free</a>
+      <button class="burger" type="button" aria-label="Menu" aria-expanded="false"><i data-lucide="menu"></i></button>
     </div>
   </div>
-
-  <nav class="mmenu">
-    <a href="finrock-sole-traders.html">Sole traders</a>
-    <a href="finrock-business.html">Business</a>
-    <a href="finrock-personal.html">My Life · free</a>
-    <a href="finrock-accountants.html">Accountants</a>
-    <a href="finrock-banking.html">Banking · coming soon</a>
+  <nav class="sheet" aria-label="Mobile">
+    <a href="finrock-personal.html">My Life</a>
+    <a href="finrock-sole-traders.html">Sole traders &amp; landlords</a>
+    <a href="finrock-side-hustlers.html">Side hustlers</a>
+    <a href="finrock-business.html">Limited companies</a>
     <a href="finrock-pricing.html">Pricing</a>
-    <a href="finrock-help.html">Help centre</a>
-    <a href="finrock-blog.html">Blog</a>
-    <a href="finrock-about.html">About</a>
-    <a href="finrock-contact.html">Contact</a>
-    <a href="https://app.gofinrock.com/login">Sign in</a>
+    <div class="small">
+      <a href="finrock-help.html">Help centre</a>
+      <a href="finrock-security.html">Security</a>
+      <a href="finrock-banking.html">Banking · planned</a>
+      <a href="finrock-about.html">About</a>
+      <a href="finrock-contact.html">Contact</a>
+      <a href="finrock-careers.html">Careers</a>
+      <a href="finrock-status.html">Status</a>
+      <a href="finrock-accountants.html">For accountants</a>
+      <a href="https://app.gofinrock.com/login" target="_blank" rel="noopener">Sign in</a>
+    </div>
+    <a class="btn btn-or" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free — no card</a>
   </nav>
 </header>
 
-<section id="top" style="position:relative;overflow:hidden;background:radial-gradient(130% 100% at 72% -12%,#1b1b2c 0%,#121219 42%,#0b0b10 74%,#070709 100%);margin-top:-72px;padding-top:72px">
-  <div aria-hidden="true" class="aur" style="position:absolute;width:720px;height:720px;border-radius:9999px;background:radial-gradient(closest-side,rgba(99,102,241,.14),transparent);right:-180px;top:-200px;pointer-events:none"></div>
-  <div aria-hidden="true" class="aur2" style="position:absolute;width:560px;height:560px;border-radius:9999px;background:radial-gradient(closest-side,rgba(246,146,26,.10),transparent);left:-140px;bottom:-200px;pointer-events:none"></div>
-  <div class="g2" style="position:relative;max-width:1280px;margin:0 auto;padding:84px 32px 104px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:48px;align-items:center">
-    <div>
-      <div class="rv in" style="display:inline-flex;align-items:center;gap:9px;padding:6px 14px 6px 7px;border-radius:9999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(8px);margin-bottom:26px">
-        <span style="position:relative;display:inline-flex;width:20px;height:20px;border-radius:9999px;background:#f6921a;align-items:center;justify-content:center"><span aria-hidden="true" style="position:absolute;inset:0;border-radius:9999px;background:#f6921a;animation:fr-pulse 2.6s ease-out infinite"></span><i data-lucide="landmark" style="width:11px;height:11px;color:#140d02;position:relative"></i></span>
-        <span style="font-size:12.5px;font-weight:600;color:rgba(255,255,255,.82)">Every account · every kind of income · one ledger</span>
+<main>
+<section class="hero">
+  <div class="wrap hero-g">
+    <div class="hero-copy">
+      <span class="pill"><b><i data-lucide="sparkles"></i></b>Money · tax · life admin — one ledger</span>
+      <h1><span style="white-space:nowrap">One life.</span><br><span class="grad" style="white-space:nowrap">One app.</span></h1>
+      <p class="lede"><span class="cw"><span class="on">Salary.</span><span>Side income.</span><span>Rent.</span><span>The company.</span><span>The mortgage.</span><span>The MOT.</span></span> Every other app holds one piece. Finrock holds all of it — and tells you what you owe before HMRC does.</p>
+      <div class="ctas">
+        <a class="btn btn-or" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free <i data-lucide="arrow-right"></i></a>
+        <a class="btn btn-ghost" href="#tour">Take the tour</a>
       </div>
-      <h1 class="rv in" style="margin:0;font-size:clamp(46px,5.6vw,82px);line-height:.98;letter-spacing:-.045em;font-weight:800;color:#fff;text-wrap:balance">One life. <span class="grad-txt">One app.</span></h1>
-      <p class="rv in" style="margin:24px 0 0;max-width:480px;font-size:17.5px;line-height:1.62;color:rgba(255,255,255,.66);text-wrap:pretty">Your money doesn’t come in neat halves — salary, dividends, a side income, rent, a pension, the mortgage — yet every app only holds one piece of it. Finrock holds all of it. All your accounts in one ledger, your tax figures ready when HMRC wants them, every bill and subscription seen, and the MOT, the renewal and the passport remembered in the same place.</p>
-      <div class="rv in" style="display:flex;align-items:center;gap:12px;margin-top:34px;flex-wrap:wrap">
-        <a href="https://app.gofinrock.com/register" class="btn-p" style="display:inline-flex;align-items:center;gap:9px;background:linear-gradient(120deg,#f6921a,#fb923c);color:#140d02;font-size:15.5px;font-weight:800;padding:16px 30px;border-radius:14px;box-shadow:0 14px 40px rgba(246,146,26,.38)">Get started free <i data-lucide="arrow-right" style="width:16px;height:16px"></i></a>
-        <a href="#how" style="display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:600;color:rgba(255,255,255,.88);padding:16px 24px;border-radius:14px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);backdrop-filter:blur(8px)">How it works</a>
+      <p class="fine">No card to start · From £9.99/mo incl. VAT · One price per person</p>
+    </div>
+    <div class="fan cyc" aria-label="Finrock on a phone">
+      <div class="phone l"><div class="screen"><img src="assets/app/mobile-life-light.webp" data-l="assets/app/mobile-life-light.webp" data-d="assets/app/mobile-life-dark.webp" alt="My Life: net worth, renewals and what you own" width="780" height="1688" loading="lazy"></div></div>
+      <div class="phone r"><div class="screen"><img src="assets/app/mobile-quarterly-light.webp" data-l="assets/app/mobile-quarterly-light.webp" data-d="assets/app/mobile-quarterly-dark.webp" alt="MTD quarterly update, prepared" width="780" height="1688" loading="lazy"></div></div>
+      <div class="phone c tilt"><div class="screen">
+        <img class="on" src="assets/app/mobile-home-light.webp" data-l="assets/app/mobile-home-light.webp" data-d="assets/app/mobile-home-dark.webp" alt="Finrock Home: cash position, owed to you, you owe, tax owed" width="780" height="1688" fetchpriority="high">
+        <img src="assets/app/mobile-bills-light.webp" data-l="assets/app/mobile-bills-light.webp" data-d="assets/app/mobile-bills-dark.png" alt="Bills" width="780" height="1688" loading="lazy">
+        <img src="assets/app/mobile-capture-light.webp" data-l="assets/app/mobile-capture-light.webp" data-d="assets/app/mobile-capture-dark.webp" alt="Snap a receipt" width="780" height="1688" loading="lazy">
+        <img src="assets/app/mobile-vehicle-light.webp" data-l="assets/app/mobile-vehicle-light.webp" data-d="assets/app/mobile-vehicle-dark.webp" alt="Vehicle: MOT and road tax countdown" width="780" height="1688" loading="lazy">
+        <img src="assets/app/mobile-property-light.webp" data-l="assets/app/mobile-property-light.webp" data-d="assets/app/mobile-property-dark.webp" alt="Property: rent, mortgage, gas safety" width="780" height="1688" loading="lazy">
+      </div></div>
+      <div class="chip a on" data-i="0"><i style="background:rgba(15,124,58,.1);color:#0f7c3a"><i data-lucide="landmark"></i></i><span><b>Tax owed · £9,258</b><small>Set aside for 31 January</small></span></div>
+      <div class="chip b on" data-i="0"><i style="background:rgba(246,146,26,.14);color:#b45f06"><i data-lucide="car"></i></i><span><b>Road tax · 9 days</b><small>BV70 KXR · renew now</small></span></div>
+      <div class="chip a" data-i="1"><i style="background:rgba(200,50,71,.12);color:#b91c1c"><i data-lucide="alert-circle"></i></i><span><b>Broadband +£9/mo</b><small>Price rise spotted</small></span></div>
+      <div class="chip b" data-i="1"><i style="background:rgba(15,124,58,.1);color:#0f7c3a"><i data-lucide="piggy-bank"></i></i><span><b>Save £492/yr</b><small>3 switches worth making</small></span></div>
+      <div class="chip a" data-i="2"><i style="background:rgba(129,140,248,.18);color:#4338ca"><i data-lucide="camera"></i></i><span><b>Receipt · £184.20</b><small>Matched · Business · Materials</small></span></div>
+      <div class="chip b" data-i="2"><i style="background:rgba(15,124,58,.1);color:#0f7c3a"><i data-lucide="check-check"></i></i><span><b>Sorted in 4 seconds</b><small>Tax owed updated</small></span></div>
+      <div class="chip a" data-i="3"><i style="background:rgba(246,146,26,.14);color:#b45f06"><i data-lucide="car"></i></i><span><b>MOT · 22 Oct</b><small>KX19 ABC · book now</small></span></div>
+      <div class="chip b" data-i="3"><i style="background:rgba(15,124,58,.1);color:#0f7c3a"><i data-lucide="shield-check"></i></i><span><b>Insured · 11 Mar</b><small>Certificate in the vault</small></span></div>
+      <div class="chip a" data-i="4"><i style="background:rgba(129,140,248,.18);color:#4338ca"><i data-lucide="home"></i></i><span><b>Flat 4 · £238,500</b><small>Rent £6,900 · yours £87k</small></span></div>
+      <div class="chip b" data-i="4"><i style="background:rgba(200,50,71,.12);color:#b91c1c"><i data-lucide="flame"></i></i><span><b>Gas safety · 23 days</b><small>Book the engineer</small></span></div>
+      <button class="mode" type="button" aria-label="Switch to dark mode" aria-pressed="false"><i data-lucide="moon"></i></button>
+      <div class="dots" role="tablist"><button type="button" aria-label="Home" aria-selected="true"></button><button type="button" aria-label="Bills"></button><button type="button" aria-label="Capture"></button><button type="button" aria-label="Vehicle"></button><button type="button" aria-label="Property"></button></div>
+    </div>
+  </div>
+</section>
+
+<section class="facts" aria-label="At a glance">
+  <div class="wrap">
+    <div><i data-lucide="layers"></i>Every account — business and personal</div>
+    <div><i data-lucide="file-check-2"></i>Self Assessment &amp; MTD, ready to file</div>
+    <div><i data-lucide="bell-ring"></i>Bills, renewals and documents remembered</div>
+    <div><i data-lucide="badge-pound-sterling"></i>Prices include VAT. No rises.</div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="center rv">
+      <p class="eyebrow">The first minute</p>
+      <h2 class="big">Three answers no other app<br>gives you at once.</h2>
+      <p class="lede">Accounting apps only see the business. Budgeting apps only see the spending. Finrock sees both — so it can tell you all three.</p>
+    </div>
+    <div class="tri">
+      <div class="tcard rv" style="--g:rgba(246,146,26,.28)">
+        <span class="k">HMRC</span>
+        <p class="num grad" data-count="9258" data-pre="£">£0</p>
+        <h3>What you’ll owe</h3>
+        <p>Worked out from every income you have — not just the business. Set aside now, not found in January.</p>
       </div>
-      <p class="rv in" style="margin:16px 0 0;font-size:12.5px;color:rgba(255,255,255,.45)">Free to start · No card · From £9.99/mo incl. VAT · UK &amp; NI</p>
-      <div class="rv in" style="display:flex;gap:36px;margin-top:44px;padding-top:26px;border-top:1px solid rgba(255,255,255,.12);flex-wrap:wrap">
-        <div><p class="num" style="margin:0;font-size:24px;color:#fff">7 returns</p><p style="margin:3px 0 0;font-size:12px;color:rgba(255,255,255,.48)">prepared from one ledger</p></div>
-        <div><p class="num" style="margin:0;font-size:24px;color:#fff">3 min</p><p style="margin:3px 0 0;font-size:12px;color:rgba(255,255,255,.48)">to set up</p></div>
-        <div><p class="num" style="margin:0;font-size:24px;color:#fff">£0</p><p style="margin:3px 0 0;font-size:12px;color:rgba(255,255,255,.48)">to start, forever</p></div>
+      <div class="tcard rv" style="--g:rgba(34,197,94,.24);transition-delay:80ms">
+        <span class="k">Bills</span>
+        <p class="num" style="color:#86efac"><span data-count="492" data-pre="£">£0</span><span style="font-size:.4em;letter-spacing:0">/yr</span></p>
+        <h3>What you could save</h3>
+        <p>Every bill and subscription, business and personal, with the ones worth switching flagged.</p>
+      </div>
+      <div class="tcard rv" style="--g:rgba(129,140,248,.28);transition-delay:160ms">
+        <span class="k">Life</span>
+        <p class="num" style="color:#c7d2fe"><span data-count="9">0</span> days</p>
+        <h3>What’s about to lapse</h3>
+        <p>Road tax, MOT, insurance, passport — counted down, with the document one tap away.</p>
       </div>
     </div>
+    <p class="note center">Figures from the Finrock demo account.</p>
+  </div>
+</section>
 
-    <div class="rv in" style="justify-self:center;position:relative">
-      <div aria-hidden="true" class="phone-glow" style="position:absolute;inset:-10px -50px -40px;background:radial-gradient(closest-side,rgba(99,102,241,.22),rgba(246,146,26,.07),transparent);filter:blur(42px);pointer-events:none"></div>
-      <div class="float heroph" style="position:relative;width:318px;border-radius:44px;padding:9px;background:#0e0f16;box-shadow:0 40px 90px rgba(15,23,42,.34),0 0 0 1px rgba(255,255,255,.08)">
-        <div style="border-radius:36px;overflow:hidden;background:#f6f5f1">
-          <img src="assets/app/mobile-home-light.webp" width="780" height="1688" alt="Finrock Home on a phone: cash position, owed to you, you owe and tax owed" fetchpriority="high" style="display:block;width:100%;height:auto">
-        </div>
+<section class="sec" id="tour" style="padding-top:0">
+  <div class="wrap">
+    <div class="rv" style="max-width:640px">
+      <p class="eyebrow">A tour in six screens</p>
+      <h2 class="big">Everything you’d open four apps for.</h2>
+    </div>
+    <div class="tour"><div class="stage-m"><div class="phone"><div class="screen"><img class="on" src="assets/app/mobile-home-light.webp" alt="" width="780" height="1688"><img src="assets/app/mobile-activity-light.webp" alt="" width="780" height="1688" loading="lazy"><img src="assets/app/mobile-bills-light.webp" alt="" width="780" height="1688" loading="lazy"><img src="assets/app/mobile-filing-light.webp" alt="" width="780" height="1688" loading="lazy"><img src="assets/app/mobile-vehicle-light.webp" alt="" width="780" height="1688" loading="lazy"><img src="assets/app/mobile-ask-light.webp" alt="" width="780" height="1688" loading="lazy"></div></div><div class="stage-lbl"><span class="on">Home</span><span>Activity</span><span>Bills</span><span>Filing</span><span>My Life</span><span>Ask</span></div></div>
+      <div class="steps">
+        <article class="step on">
+          <p class="n">01 · Home</p>
+          <h3>Your whole position, at a glance.</h3>
+          <p>Cash across every account, who owes you, what you owe, and the tax bill building in the background — before you’ve had a coffee.</p>
+          <ul><li><i data-lucide="check"></i>Business and personal in one ledger</li><li><i data-lucide="check"></i>Tax owed updates with every transaction</li></ul>
+          </article>
+        <article class="step">
+          <p class="n">02 · Activity</p>
+          <h3>Sorted in a tap, not a Sunday.</h3>
+          <p>Every transaction from every account. Finrock suggests business or personal and the category; you confirm. Your own past picks answer most rows before you see them.</p>
+          <ul><li><i data-lucide="check"></i>Receipts matched automatically</li><li><i data-lucide="check"></i>Split one payment across business and home</li></ul>
+          </article>
+        <article class="step">
+          <p class="n">03 · Bills</p>
+          <h3>Every bill. Every due date.</h3>
+          <p>What you owe suppliers and what you pay at home — in one list, with the overdue ones on top and the receipt attached.</p>
+          <ul><li><i data-lucide="check"></i>Business and household bills together</li><li><i data-lucide="check"></i>Price rises and forgotten subscriptions flagged</li></ul>
+          </article>
+        <article class="step">
+          <p class="n">04 · Filing</p>
+          <h3>Deadlines counted down. Figures ready.</h3>
+          <p>Self Assessment, MTD quarterly updates and VAT — built from your books, checked on screen, ready to file. Add an accountant to sign them off for £10 a month.</p>
+          <ul><li><i data-lucide="check"></i>Every trade and every property in one return</li><li><i data-lucide="check"></i>Direct HMRC submission switches on with recognition</li></ul>
+          </article>
+        <article class="step">
+          <p class="n">05 · My Life</p>
+          <h3>The rest of your life, remembered.</h3>
+          <p>The car, the house, the pension, the insurance, the passport. Every renewal counted down and every document in one vault.</p>
+          <ul><li><i data-lucide="check"></i>MOT, road tax and insurance reminders</li><li><i data-lucide="check"></i>Passport, will, warranties — found in seconds</li></ul>
+          </article>
+        <article class="step">
+          <p class="n">06 · Ask</p>
+          <h3>Ask it anything about your money.</h3>
+          <p>“What’s left to sort?” “Can I afford my tax bill?” “Who owes me money?” Answers from your own books — not a guess.</p>
+          <ul><li><i data-lucide="check"></i>Snap a receipt or forward an email</li><li><i data-lucide="check"></i>Answers cite the transactions behind them</li></ul>
+          </article>
       </div>
-      <div class="float fbadge" style="position:absolute;right:-148px;top:118px;animation-delay:1.4s;display:flex;align-items:center;gap:9px;padding:11px 14px;border-radius:15px;background:#fff;border:1px solid rgba(20,22,28,.09);box-shadow:0 2px 4px rgba(15,23,42,.06),0 20px 44px rgba(15,23,42,.14)">
-        <span style="width:30px;height:30px;border-radius:10px;background:rgba(15,124,58,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="shield-check" style="width:15px;height:15px;color:#0f7c3a"></i></span>
-        <span><span style="display:block;font-size:11.5px;font-weight:700">VAT return prepared</span><span style="display:block;font-size:10px;color:rgba(21,22,26,.48)">1 Jan – 31 Mar · ready to file</span></span>
-      </div>
-      <div class="float fbadge" style="position:absolute;left:-148px;bottom:132px;animation-delay:2.8s;display:flex;align-items:center;gap:9px;padding:11px 14px;border-radius:15px;background:#fff;border:1px solid rgba(20,22,28,.09);box-shadow:0 2px 4px rgba(15,23,42,.06),0 20px 44px rgba(15,23,42,.14)">
-        <span style="width:30px;height:30px;border-radius:10px;background:rgba(15,124,58,.10);display:flex;align-items:center;justify-content:center"><i data-lucide="arrow-down-left" style="width:15px;height:15px;color:#0f7c3a"></i></span>
-        <span><span style="display:block;font-size:11.5px;font-weight:700">+£2,400 · Hollins &amp; Co</span><span style="display:block;font-size:10px;color:rgba(21,22,26,.48)">Matched to INV-0142</span></span>
+      <div class="stage" aria-hidden="true">
+        <div class="phone tilt"><div class="screen">
+          <img class="on" src="assets/app/mobile-home-light.webp" alt="" width="780" height="1688">
+          <img src="assets/app/mobile-activity-light.webp" alt="" width="780" height="1688" loading="lazy">
+          <img src="assets/app/mobile-bills-light.webp" alt="" width="780" height="1688" loading="lazy">
+          <img src="assets/app/mobile-filing-light.webp" alt="" width="780" height="1688" loading="lazy">
+          <img src="assets/app/mobile-vehicle-light.webp" alt="" width="780" height="1688" loading="lazy">
+          <img src="assets/app/mobile-ask-light.webp" alt="" width="780" height="1688" loading="lazy">
+        </div></div>
       </div>
     </div>
   </div>
 </section>
 
-<section style="background:#fbfaf6;border-bottom:1px solid rgba(20,22,28,.07)">
-  <div class="mqwrap" style="position:relative;max-width:1280px;margin:0 auto;padding:22px 0;overflow:hidden">
-    <div aria-hidden="true" style="position:absolute;left:0;top:0;bottom:0;width:120px;background:linear-gradient(90deg,#fbfaf6,transparent);z-index:1;pointer-events:none"></div>
-    <div aria-hidden="true" style="position:absolute;right:0;top:0;bottom:0;width:120px;background:linear-gradient(270deg,#fbfaf6,transparent);z-index:1;pointer-events:none"></div>
-    <div class="mq">
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="landmark" style="width:16px;height:16px;color:#1e1b4b"></i>Making Tax Digital figures</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="credit-card" style="width:16px;height:16px;color:#1e1b4b"></i>Open Banking feeds (soon)</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="building-2" style="width:16px;height:16px;color:#1e1b4b"></i>Companies House</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="banknote" style="width:16px;height:16px;color:#1e1b4b"></i>Stripe</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="banknote" style="width:16px;height:16px;color:#1e1b4b"></i>GoCardless</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="banknote" style="width:16px;height:16px;color:#1e1b4b"></i>Pay-by-Bank (soon)</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="shield-check" style="width:16px;height:16px;color:#1e1b4b"></i>Read-only access</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="flag" style="width:16px;height:16px;color:#1e1b4b"></i>UK GDPR</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="file-check-2" style="width:16px;height:16px;color:#1e1b4b"></i>Every return prepared</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="landmark" style="width:16px;height:16px;color:#1e1b4b"></i>Making Tax Digital figures</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="credit-card" style="width:16px;height:16px;color:#1e1b4b"></i>Open Banking feeds (soon)</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="building-2" style="width:16px;height:16px;color:#1e1b4b"></i>Companies House</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="banknote" style="width:16px;height:16px;color:#1e1b4b"></i>Stripe</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="banknote" style="width:16px;height:16px;color:#1e1b4b"></i>GoCardless</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="banknote" style="width:16px;height:16px;color:#1e1b4b"></i>Pay-by-Bank (soon)</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="shield-check" style="width:16px;height:16px;color:#1e1b4b"></i>Read-only access</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="flag" style="width:16px;height:16px;color:#1e1b4b"></i>UK GDPR</span>
-      <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.62);white-space:nowrap"><i data-lucide="file-check-2" style="width:16px;height:16px;color:#1e1b4b"></i>Every return prepared</span>
+<section class="sec" style="background:var(--paper2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="center rv">
+      <p class="eyebrow">Pricing</p>
+      <h2 class="big">One person. One price.</h2>
+      <p class="lede">Priced by what HMRC asks of you — never by how many ways you earn. Self-employed, landlord, or both: one plan. Company director: your personal plan is included.</p>
+    </div>
+    <div class="plans rv">
+      <div class="plan">
+        <h3>My Life</h3>
+        <p class="who">Salary, pension, savings, dividends. Not self-employed.</p>
+        <p class="price">£9.99<small>/mo</small></p>
+        <p class="per">incl. VAT</p>
+        <ul><li><i data-lucide="check"></i>Every account and bill in one view</li><li><i data-lucide="check"></i>Renewals, documents, net worth</li><li><i data-lucide="check"></i>Unlimited receipt scans</li></ul>
+        <a class="btn btn-line" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free</a>
+      </div>
+      <div class="plan">
+        <h3>Sole trader &amp; Landlord</h3>
+        <p class="who">Trade and/or lets, under the MTD threshold. One plan.</p>
+        <p class="price">£14.99<small>/mo</small></p>
+        <p class="per">incl. VAT · 7-day free trial</p>
+        <ul><li><i data-lucide="check"></i>Everything in My Life</li><li><i data-lucide="check"></i>Self Assessment prepared</li><li><i data-lucide="check"></i>Invoices, mileage, receipts</li></ul>
+        <a class="btn btn-line" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Try 7 days free</a>
+      </div>
+      <div class="plan hot">
+        <span class="tag">Most popular</span>
+        <h3>Sole trader &amp; Landlord · MTD</h3>
+        <p class="who">Inside MTD. Every trade and every property — one price.</p>
+        <p class="price">£24.99<small>/mo</small></p>
+        <p class="per">incl. VAT · tax-deductible</p>
+        <ul><li><i data-lucide="check"></i>Everything under the threshold</li><li><i data-lucide="check"></i>Quarterly updates prepared</li><li><i data-lucide="check"></i>Trade + lettings, no second plan</li></ul>
+        <a class="btn btn-ink" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Try 7 days free</a>
+      </div>
+      <div class="plan">
+        <span class="tag g">Accountant included</span>
+        <h3>Limited company</h3>
+        <p class="who">Company books, signed off by a qualified accountant.</p>
+        <p class="price">£49.99<small>/mo</small></p>
+        <p class="per">incl. VAT · per company</p>
+        <ul><li><i data-lucide="check"></i>Year-end accounts and CT600</li><li><i data-lucide="check"></i>Payroll, dividends, director’s loan</li><li><i data-lucide="check"></i>Director’s personal plan included — <b>+£10 if personally inside MTD</b></li></ul>
+        <a class="btn btn-line" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Try 7 days free</a>
+      </div>
+    </div>
+    <p class="center" style="margin-top:26px"><a href="finrock-pricing.html" style="font-weight:700">Find your plan in two taps →</a></p>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="rv" style="max-width:640px">
+      <p class="eyebrow">Trust</p>
+      <h2 class="big">Your money, read — never moved.</h2>
+    </div>
+    <div class="trust rv">
+      <div><i data-lucide="eye"></i><b>Read-only access</b><p>Finrock can see your accounts. It can never move a penny.</p></div>
+      <div><i data-lucide="lock"></i><b>Encrypted end to end</b><p>In transit and at rest. Documents in the vault stay yours.</p></div>
+      <div><i data-lucide="flag"></i><b>UK GDPR</b><p>Built in the UK for UK rules. Your data is never sold.</p></div>
+      <div><i data-lucide="file-check-2"></i><b>Honest about filing</b><p>Returns are prepared and ready to file. Direct submission switches on the day HMRC recognition lands.</p></div>
     </div>
   </div>
 </section>
 
-<section id="how" style="max-width:1280px;margin:0 auto;padding:112px 32px 0">
-  <div class="rv" style="text-align:center">
-    <p style="margin:0;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f6921a">How it works</p>
-    <h2 style="margin:12px 0 0;font-size:clamp(30px,3.6vw,46px);line-height:1.05;letter-spacing:-.04em;font-weight:800">Three steps. No Sundays lost.</h2>
-    <p style="margin:16px auto 0;max-width:520px;font-size:16px;line-height:1.6;color:rgba(21,22,26,.62)">Every figure — profit, VAT, the Self Assessment estimate, the quarterly update — is derived from one sorted ledger.</p>
-  </div>
-  <div class="g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px">
-    <div class="rv card-h" style="background:#fff;border:1px solid rgba(20,22,28,.10);border-radius:20px;padding:28px;box-shadow:0 1px 2px rgba(15,23,42,.04)">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-        <span style="width:44px;height:44px;border-radius:13px;background:rgba(30,27,75,.07);display:flex;align-items:center;justify-content:center"><i data-lucide="plug-zap" style="width:21px;height:21px;color:#1e1b4b"></i></span>
-        <span class="num" style="font-size:15px;color:rgba(21,22,26,.28)">01</span>
-      </div>
-      <p style="margin:0;font-size:17.5px;font-weight:700;letter-spacing:-.02em">Connect once</p>
-      <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:rgba(21,22,26,.62)">Import bank statements or snap receipts today — Open Banking feeds are coming soon. Every transaction lands in one ledger — business and personal together.</p>
-      <div style="margin-top:18px;border-radius:14px;border:1px solid rgba(20,22,28,.08);background:#fbfaf6;padding:12px 14px;display:flex;align-items:center;gap:10px">
-        <span style="width:30px;height:30px;border-radius:9999px;background:#1e1b4b;display:flex;align-items:center;justify-content:center"><i data-lucide="file-up" style="width:15px;height:15px;color:#fff"></i></span>
-        <span style="flex:1"><span style="display:block;font-size:12px;font-weight:700">Starling statement imported</span><span style="display:block;font-size:10.5px;color:rgba(21,22,26,.48)">In your books · ready to sort</span></span>
-      </div>
-    </div>
-    <div class="rv card-h" style="background:#fff;border:1px solid rgba(20,22,28,.10);border-radius:20px;padding:28px;box-shadow:0 1px 2px rgba(15,23,42,.04);transition-delay:70ms">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-        <span style="width:44px;height:44px;border-radius:13px;background:rgba(30,27,75,.07);display:flex;align-items:center;justify-content:center"><i data-lucide="sparkles" style="width:21px;height:21px;color:#1e1b4b"></i></span>
-        <span class="num" style="font-size:15px;color:rgba(21,22,26,.28)">02</span>
-      </div>
-      <p style="margin:0;font-size:17.5px;font-weight:700;letter-spacing:-.02em">Sort in a tap</p>
-      <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:rgba(21,22,26,.62)">Business or personal, category suggested, receipt attached. Your own past picks and a shared merchant memory pre-answer most rows.</p>
-      <div style="margin-top:18px;border-radius:14px;border:1px solid rgba(20,22,28,.08);background:#fbfaf6;padding:12px 14px;display:flex;align-items:center;gap:10px">
-        <span style="width:30px;height:30px;border-radius:10px;background:#d4652f;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff">T</span>
-        <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700">Travis Perkins</span><span style="display:flex;align-items:center;gap:3px;font-size:10.5px;color:#1e1b4b;font-weight:600"><i data-lucide="sparkles" style="width:10px;height:10px"></i>Business · Materials &amp; Stock</span></span>
-        <span class="tab" style="font-size:12.5px;font-weight:800;color:#c83247">−£184.20</span>
-      </div>
-    </div>
-    <div class="rv card-h" style="background:#fff;border:1px solid rgba(20,22,28,.10);border-radius:20px;padding:28px;box-shadow:0 1px 2px rgba(15,23,42,.04);transition-delay:140ms">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-        <span style="width:44px;height:44px;border-radius:13px;background:rgba(30,27,75,.07);display:flex;align-items:center;justify-content:center"><i data-lucide="send" style="width:21px;height:21px;color:#1e1b4b"></i></span>
-        <span class="num" style="font-size:15px;color:rgba(21,22,26,.28)">03</span>
-      </div>
-      <p style="margin:0;font-size:17.5px;font-weight:700;letter-spacing:-.02em">Ready to file</p>
-      <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:rgba(21,22,26,.62)">VAT, quarterly updates, Self Assessment — built from your books, reviewed on screen, ready to file. Mark it filed in Finrock when it’s done.</p>
-      <div style="margin-top:18px;border-radius:14px;border:1px solid rgba(15,124,58,.18);background:rgba(15,124,58,.06);padding:12px 14px;display:flex;align-items:center;gap:10px">
-        <span style="width:30px;height:30px;border-radius:9999px;background:#0f7c3a;display:flex;align-items:center;justify-content:center"><i data-lucide="shield-check" style="width:15px;height:15px;color:#fff"></i></span>
-        <span style="flex:1"><span style="display:block;font-size:12px;font-weight:700">VAT return · 1 Jan – 31 Mar</span><span style="display:block;font-size:10.5px;color:rgba(21,22,26,.48)">Nine boxes from your books · review the figures</span></span>
-      </div>
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="center rv"><h2 class="big">Questions</h2></div>
+    <div class="faq">
+      <details><summary>I’m a sole trader and a landlord. Do I pay twice?</summary><p>No. You’re one taxpayer, so it’s one plan. Every trade and every property sits on the same subscription — £14.99 under the MTD threshold, £24.99 inside it.</p></details>
+      <details><summary>Which plan do I need?</summary><p>Not self-employed: My Life. Self-employed or letting with qualifying income under £50,000 (£30,000 from April 2027): Sole trader &amp; Landlord. Over it: the MTD plan. A limited company: £49.99 per company, with your personal plan included.</p></details>
+      <details><summary>Does Finrock file to HMRC?</summary><p>Finrock prepares your Self Assessment, quarterly updates and VAT return from your books, ready to file. Direct submission switches on when HMRC recognition lands — until then you file the figures in one step.</p></details>
+      <details><summary>Why does a limited company include an accountant?</summary><p>Company accounts and a CT600 carry director liability. Every Limited company plan has a qualified UK accountant review and sign off the year end — it’s in the £49.99.</p></details>
+      <details><summary>Can I start without a card?</summary><p>Yes. Start free — renewals, documents, net worth and statement import. Paid plans come with a 7-day free trial and cancel any time.</p></details>
     </div>
   </div>
 </section>
 
-<section style="max-width:1280px;margin:0 auto;padding:112px 32px 0">
-  <div class="rv" style="text-align:center;max-width:560px;margin:0 auto">
-    <p style="margin:0;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f6921a">Who it's for</p>
-    <h2 style="margin:12px 0 0;font-size:clamp(28px,3.4vw,42px);line-height:1.06;letter-spacing:-.035em;font-weight:800">Built for the way you actually earn.</h2>
+<section class="final">
+  <div class="wrap rv">
+    <h2>Your whole life,<br><span class="grad">sorted by Sunday.</span></h2>
+    <p class="lede center" style="margin-left:auto;margin-right:auto">Three minutes to set up. Free to start.</p>
+    <div class="ctas" style="justify-content:center"><a class="btn btn-or" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free <i data-lucide="arrow-right"></i></a></div>
   </div>
-  <div class="rv g4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px">
-    
-      <a href="finrock-business.html" class="card-h" style="display:block;border-radius:20px;background:#fff;border:1px solid rgba(20,22,28,.10);padding:26px;box-shadow:0 1px 2px rgba(15,23,42,.04)">
-        <span style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;background:rgba(246,146,26,.12)"><i data-lucide="hammer" style="width:20px;height:20px;color:#f6921a"></i></span>
-        <p style="margin:0;font-size:16px;font-weight:700;letter-spacing:-.02em;color:#15161a">Sole traders</p>
-        <p style="margin:7px 0 0;font-size:13.5px;line-height:1.6;color:rgba(21,22,26,.62)">The van, the tools, the CIS deductions — books done from the cab, Self Assessment ready from the sofa.</p>
-        <p style="margin:13px 0 0;font-size:13px;font-weight:700;color:#1e1b4b">See Business →</p>
-      </a>
-    
-
-      <a href="finrock-pricing.html" class="card-h" style="display:block;border-radius:20px;background:#fff;border:1px solid rgba(20,22,28,.10);padding:26px;box-shadow:0 1px 2px rgba(15,23,42,.04)">
-        <span style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;background:rgba(30,27,75,.07)"><i data-lucide="sparkles" style="width:20px;height:20px;color:#1e1b4b"></i></span>
-        <p style="margin:0;font-size:16px;font-weight:700;letter-spacing:-.02em;color:#15161a">Side hustles</p>
-        <p style="margin:7px 0 0;font-size:13.5px;line-height:1.6;color:rgba(21,22,26,.62)">Etsy, eBay, weekend jobs. Know when you cross the £1,000 trading allowance — and what to do next.</p>
-        <p style="margin:13px 0 0;font-size:13px;font-weight:700;color:#1e1b4b">Start free →</p>
-      </a>
-    
-
-      <a href="finrock-personal.html" class="card-h" style="display:block;border-radius:20px;background:#fff;border:1px solid rgba(20,22,28,.10);padding:26px;box-shadow:0 1px 2px rgba(15,23,42,.04)">
-        <span style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;background:rgba(15,124,58,.10)"><i data-lucide="home" style="width:20px;height:20px;color:#0f7c3a"></i></span>
-        <p style="margin:0;font-size:16px;font-weight:700;letter-spacing:-.02em;color:#15161a">Landlords</p>
-        <p style="margin:7px 0 0;font-size:13.5px;line-height:1.6;color:rgba(21,22,26,.62)">Rents, repairs and mortgage interest attributed to each property — the SA105 derives itself.</p>
-        <p style="margin:13px 0 0;font-size:13px;font-weight:700;color:#1e1b4b">See Personal →</p>
-      </a>
-    
-
-      <a href="finrock-business.html" class="card-h" style="display:block;border-radius:20px;background:#fff;border:1px solid rgba(20,22,28,.10);padding:26px;box-shadow:0 1px 2px rgba(15,23,42,.04)">
-        <span style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;background:rgba(200,50,71,.08)"><i data-lucide="building-2" style="width:20px;height:20px;color:#c83247"></i></span>
-        <p style="margin:0;font-size:16px;font-weight:700;letter-spacing:-.02em;color:#15161a">Ltd directors</p>
-        <p style="margin:7px 0 0;font-size:13.5px;line-height:1.6;color:rgba(21,22,26,.62)">A separate workspace for the company — payroll, dividends and clean books your accountant can sign.</p>
-        <p style="margin:13px 0 0;font-size:13px;font-weight:700;color:#1e1b4b">See Business →</p>
-      </a>
-    
-  </div>
+  <div class="phone"><div class="screen"><img src="assets/app/mobile-home-dark.webp" alt="Finrock Home in dark mode" width="780" height="1688" loading="lazy"></div></div>
 </section>
+</main>
 
-<section id="personal" style="max-width:1280px;margin:0 auto;padding:124px 32px 0">
-  <div class="g2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center">
-    <div>
-      <p class="rv" style="margin:0;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f6921a">Personal · My Life</p>
-      <h2 class="rv" style="margin:12px 0 0;font-size:clamp(28px,3.2vw,42px);line-height:1.06;letter-spacing:-.035em;font-weight:800;transition-delay:50ms">Everything an adult has to keep track of.</h2>
-      <p class="rv" style="margin:16px 0 0;font-size:15.5px;line-height:1.65;color:rgba(21,22,26,.62);text-wrap:pretty;transition-delay:90ms">Property, pension, vehicle, insurance, health, family, will, warranties, documents — each record with its paperwork, dates and figures. Rental income flows straight to your SA105; nothing expires unnoticed.</p>
-      <div class="rv" style="margin-top:22px;display:flex;flex-direction:column;gap:11px;transition-delay:130ms">
-        <span style="display:flex;align-items:flex-start;gap:10px;font-size:14.5px;color:rgba(21,22,26,.75)"><i data-lucide="bell-ring" style="width:17px;height:17px;color:#f6921a;flex-shrink:0;margin-top:2px"></i><span><b>Expiry radar.</b> MOT, insurance, passport — reminded before renewal, not after.</span></span>
-        <span style="display:flex;align-items:flex-start;gap:10px;font-size:14.5px;color:rgba(21,22,26,.75)"><i data-lucide="trending-up" style="width:17px;height:17px;color:#0f7c3a;flex-shrink:0;margin-top:2px"></i><span><b>Net worth, live.</b> Rolled up from every record and account.</span></span>
-        <span style="display:flex;align-items:flex-start;gap:10px;font-size:14.5px;color:rgba(21,22,26,.75)"><i data-lucide="piggy-bank" style="width:17px;height:17px;color:#1e1b4b;flex-shrink:0;margin-top:2px"></i><span><b>Spending &amp; bills.</b> Recurring payments detected, and likely overpaying flagged where we have benchmark prices — you switch with the provider.</span></span>
-      </div>
-      <a href="finrock-personal.html" style="display:inline-flex;align-items:center;gap:7px;margin-top:20px;font-size:14px;font-weight:700;color:#1e1b4b">Explore Personal <i data-lucide="arrow-right" style="width:15px;height:15px"></i></a>
+<footer class="foot">
+  <div class="wrap">
+    <div class="cols">
+      <div class="brand"><img src="assets/finrock-logo-white.svg" alt="Finrock" width="110" height="22" style="height:22px;width:auto"><p>One life. One app. Money, tax and life admin for the UK — one price per person.</p></div>
+      <div><h4>Product</h4><a href="finrock-personal.html">My Life</a><a href="finrock-pricing.html">Pricing</a><a href="finrock-security.html">Security</a><a href="finrock-banking.html">Banking · planned</a><a href="finrock-status.html">Status</a></div>
+      <div><h4>For</h4><a href="finrock-sole-traders.html">Sole traders &amp; landlords</a><a href="finrock-side-hustlers.html">Side hustlers</a><a href="finrock-business.html">Limited companies</a><a href="finrock-accountants.html">For accountants</a></div>
+      <div><h4>Company</h4><a href="finrock-about.html">About</a><a href="finrock-careers.html">Careers</a><a href="finrock-contact.html">Contact</a><a href="finrock-help.html">Help centre</a></div>
     </div>
-    <div class="rv" style="transition-delay:100ms">
-      <div style="border-radius:20px;overflow:hidden;background:#f6f5f1;border:1px solid rgba(20,22,28,.12);box-shadow:0 2px 4px rgba(15,23,42,.06),0 30px 60px rgba(15,23,42,.14)">
-        <div style="display:flex;align-items:center;gap:6px;padding:9px 14px;background:#f0eee9;border-bottom:1px solid rgba(20,22,28,.08)"><span style="width:9px;height:9px;border-radius:9999px;background:#e0433a;opacity:.75"></span><span style="width:9px;height:9px;border-radius:9999px;background:#fbbf24;opacity:.75"></span><span style="width:9px;height:9px;border-radius:9999px;background:#a3e635;opacity:.75"></span><span style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;font-size:10.5px;font-weight:600;color:rgba(21,22,26,.45);background:#fff;border-radius:8px;padding:4px 12px;margin:0 18px"><i data-lucide="lock" style="width:9px;height:9px"></i>app.gofinrock.com</span></div>
-        <img src="assets/app/desktop-life.webp" width="2240" height="1400" alt="Finrock My Life on desktop: net worth, the renewals coming up, what you own and what you pay" loading="lazy" decoding="async" style="display:block;width:100%;height:auto">
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="business" style="max-width:1280px;margin:0 auto;padding:124px 32px 0">
-  <div class="g2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center">
-    <div class="rv" style="order:1">
-      <div style="border-radius:20px;overflow:hidden;background:#f6f5f1;border:1px solid rgba(20,22,28,.12);box-shadow:0 2px 4px rgba(15,23,42,.06),0 30px 60px rgba(15,23,42,.14)">
-        <div style="display:flex;align-items:center;gap:6px;padding:9px 14px;background:#f0eee9;border-bottom:1px solid rgba(20,22,28,.08)"><span style="width:9px;height:9px;border-radius:9999px;background:#e0433a;opacity:.75"></span><span style="width:9px;height:9px;border-radius:9999px;background:#fbbf24;opacity:.75"></span><span style="width:9px;height:9px;border-radius:9999px;background:#a3e635;opacity:.75"></span><span style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;font-size:10.5px;font-weight:600;color:rgba(21,22,26,.45);background:#fff;border-radius:8px;padding:4px 12px;margin:0 18px"><i data-lucide="lock" style="width:9px;height:9px"></i>app.gofinrock.com</span></div>
-        <img src="assets/app/desktop-home.webp" width="2240" height="1400" alt="The Finrock workspace on desktop: Home with cash position, what you are owed, what you owe, tax owed and where your money goes" loading="lazy" decoding="async" style="display:block;width:100%;height:auto">
-      </div>
-      
-      <p style="margin:12px 0 0;font-size:12px;color:rgba(21,22,26,.45);text-align:center">The business workspace — cash position live from your accounts, and VAT ready to file.</p>
-    </div>
-    <div style="order:2">
-      <p class="rv" style="margin:0;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f6921a">Business</p>
-      <h2 class="rv" style="margin:12px 0 0;font-size:clamp(28px,3.2vw,42px);line-height:1.06;letter-spacing:-.035em;font-weight:800;transition-delay:50ms">Books done by the time you reach the van.</h2>
-      <p class="rv" style="margin:16px 0 0;font-size:15.5px;line-height:1.65;color:rgba(21,22,26,.62);text-wrap:pretty;transition-delay:90ms">Invoices and quotes with payment links, bills, receipts by photo, spends by voice, GPS mileage, projects and payroll — all posting to a real double-entry ledger your accountant can stand behind.</p>
-      <div class="rv" style="margin-top:22px;display:flex;flex-direction:column;gap:11px;transition-delay:130ms">
-        <span style="display:flex;align-items:flex-start;gap:10px;font-size:14.5px;color:rgba(21,22,26,.75)"><i data-lucide="file-text" style="width:17px;height:17px;color:#1e1b4b;flex-shrink:0;margin-top:2px"></i><span><b>Get paid faster.</b> Connect Stripe or GoCardless and your invoices carry a pay-online link, auto-matched when the money lands.</span></span>
-        <span style="display:flex;align-items:flex-start;gap:10px;font-size:14.5px;color:rgba(21,22,26,.75)"><i data-lucide="scan-line" style="width:17px;height:17px;color:#c83247;flex-shrink:0;margin-top:2px"></i><span><b>Receipts in seconds.</b> Snap it and OCR reads it — or just say what you spent — the ledger posts it, the receipt stays attached.</span></span>
-        <span style="display:flex;align-items:flex-start;gap:10px;font-size:14.5px;color:rgba(21,22,26,.75)"><i data-lucide="route" style="width:17px;height:17px;color:#0f7c3a;flex-shrink:0;margin-top:2px"></i><span><b>Every business mile, captured.</b> Tap to start a trip, tap when you arrive — the claim writes itself.</span></span>
-      </div>
-      <a href="finrock-business.html" style="display:inline-flex;align-items:center;gap:7px;margin-top:20px;font-size:14px;font-weight:700;color:#1e1b4b">Explore Business <i data-lucide="arrow-right" style="width:15px;height:15px"></i></a>
-    </div>
-  </div>
-</section>
-
-<section id="filing" style="max-width:1280px;margin:0 auto;padding:124px 32px 0">
-  <div class="rv" style="position:relative;overflow:hidden;border-radius:28px;background:linear-gradient(160deg,#0b0b12 0%,#111119 55%,#191927 100%);color:#fff;padding:54px 48px">
-    <div aria-hidden="true" style="position:absolute;width:460px;height:460px;border-radius:9999px;background:#f6921a;opacity:.14;filter:blur(120px);right:-150px;top:-170px"></div>
-    <div class="g2" style="position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:48px;align-items:center">
-      <div>
-        <p style="margin:0;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f6921a">What Finrock prepares</p>
-        <h2 style="margin:14px 0 0;font-size:clamp(26px,3vw,40px);line-height:1.07;letter-spacing:-.035em;font-weight:800">Every return, prepared from one ledger.</h2>
-        <p style="margin:16px 0 0;font-size:15px;line-height:1.65;color:rgba(255,255,255,.62)">Finrock builds each return from your books and shows the workings, ready to file. Every figure links back to the entries it was built from — and once it’s filed, mark it filed in Finrock.</p>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:24px;padding:12px 15px;border-radius:14px;background:rgba(163,230,53,.10);border:1px solid rgba(163,230,53,.24)">
-          <i data-lucide="shield-check" style="width:17px;height:17px;color:#a3e635;flex-shrink:0"></i>
-          <span style="font-size:12.5px;font-weight:600;color:rgba(255,255,255,.85)">Direct filing from the app is planned. For now, you or your accountant file the prepared figures.</span>
-        </div>
-      </div>
-      <div style="border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);overflow:hidden;backdrop-filter:blur(6px)">
-        
-          <div style="display:flex;align-items:center;gap:13px;padding:12.5px 18px;border-bottom:1px solid rgba(255,255,255,.08)">
-            <i data-lucide="check-circle-2" style="width:15px;height:15px;color:#a3e635;flex-shrink:0"></i>
-            <span style="width:148px;flex-shrink:0;font-size:13.5px;font-weight:700">Self Assessment</span>
-            <span style="font-size:12.5px;color:rgba(255,255,255,.55)">SA100 + SA103 figures, with the workings shown</span>
-          </div>
-        
-
-          <div style="display:flex;align-items:center;gap:13px;padding:12.5px 18px;border-bottom:1px solid rgba(255,255,255,.08)">
-            <i data-lucide="check-circle-2" style="width:15px;height:15px;color:#a3e635;flex-shrink:0"></i>
-            <span style="width:148px;flex-shrink:0;font-size:13.5px;font-weight:700">Income Tax updates</span>
-            <span style="font-size:12.5px;color:rgba(255,255,255,.55)">Making Tax Digital for Income Tax quarterly updates + tax return, prepared</span>
-          </div>
-        
-
-          <div style="display:flex;align-items:center;gap:13px;padding:12.5px 18px;border-bottom:1px solid rgba(255,255,255,.08)">
-            <i data-lucide="check-circle-2" style="width:15px;height:15px;color:#a3e635;flex-shrink:0"></i>
-            <span style="width:148px;flex-shrink:0;font-size:13.5px;font-weight:700">VAT</span>
-            <span style="font-size:12.5px;color:rgba(255,255,255,.55)">9-box figures from your ledger</span>
-          </div>
-        
-
-          <div style="display:flex;align-items:center;gap:13px;padding:12.5px 18px;border-bottom:1px solid rgba(255,255,255,.08)">
-            <i data-lucide="check-circle-2" style="width:15px;height:15px;color:#a3e635;flex-shrink:0"></i>
-            <span style="width:148px;flex-shrink:0;font-size:13.5px;font-weight:700">Corporation Tax</span>
-            <span style="font-size:12.5px;color:rgba(255,255,255,.55)">CT600 draft + FRS 105 accounts</span>
-          </div>
-        
-
-          <div style="display:flex;align-items:center;gap:13px;padding:12.5px 18px;border-bottom:1px solid rgba(255,255,255,.08)">
-            <i data-lucide="check-circle-2" style="width:15px;height:15px;color:#a3e635;flex-shrink:0"></i>
-            <span style="width:148px;flex-shrink:0;font-size:13.5px;font-weight:700">Companies House</span>
-            <span style="font-size:12.5px;color:rgba(255,255,255,.55)">Confirmation statement prep — you file on WebFiling</span>
-          </div>
-        
-
-          <div style="display:flex;align-items:center;gap:13px;padding:12.5px 18px;border-bottom:1px solid rgba(255,255,255,.08)">
-            <i data-lucide="check-circle-2" style="width:15px;height:15px;color:#a3e635;flex-shrink:0"></i>
-            <span style="width:148px;flex-shrink:0;font-size:13.5px;font-weight:700">Payroll</span>
-            <span style="font-size:12.5px;color:rgba(255,255,255,.55)">Payslips + FPS figures</span>
-          </div>
-        
-
-          <div style="display:flex;align-items:center;gap:13px;padding:12.5px 18px;border-bottom:1px solid rgba(255,255,255,.08)">
-            <i data-lucide="check-circle-2" style="width:15px;height:15px;color:#a3e635;flex-shrink:0"></i>
-            <span style="width:148px;flex-shrink:0;font-size:13.5px;font-weight:700">CIS</span>
-            <span style="font-size:12.5px;color:rgba(255,255,255,.55)">CIS monthly deduction totals</span>
-          </div>
-        
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="accountants" style="max-width:1280px;margin:0 auto;padding:124px 32px 0">
-  <div class="g2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center">
-    <div>
-      <p class="rv" style="margin:0;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f6921a">For accountants</p>
-      <h2 class="rv" style="margin:12px 0 0;font-size:clamp(28px,3.2vw,42px);line-height:1.06;letter-spacing:-.035em;font-weight:800;transition-delay:50ms">A working portal, not a read-only export.</h2>
-      <p class="rv" style="margin:16px 0 0;font-size:15.5px;line-height:1.65;color:rgba(21,22,26,.62);transition-delay:90ms">Every client's ledger, P&amp;L, VAT position, receipts and tax workings in one place — with messaging pinned to entries, quarterly review and approval, year-end sign-off and a full review and sign-off trail.</p>
-      <div class="rv" style="margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:11px;transition-delay:130ms">
-        <span style="display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.75)"><i data-lucide="check-circle-2" style="width:15px;height:15px;color:#0f7c3a;flex-shrink:0"></i>Practice home: what needs you now</span>
-        <span style="display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.75)"><i data-lucide="check-circle-2" style="width:15px;height:15px;color:#0f7c3a;flex-shrink:0"></i>Firm accounts for colleagues</span>
-        <span style="display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.75)"><i data-lucide="check-circle-2" style="width:15px;height:15px;color:#0f7c3a;flex-shrink:0"></i>Per-client fee tracking</span>
-        <span style="display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.75)"><i data-lucide="check-circle-2" style="width:15px;height:15px;color:#0f7c3a;flex-shrink:0"></i>Review and sign-off trail</span>
-      </div>
-      <p class="rv" style="margin:18px 0 0;font-size:13px;color:rgba(21,22,26,.48);transition-delay:160ms">Client invites their accountant from Settings — access is free for practices. <a href="finrock-accountants.html" style="font-weight:700">Explore the portal →</a></p>
-    </div>
-    <div class="rv" style="transition-delay:100ms">
-      <div style="border-radius:20px;border:1px solid rgba(20,22,28,.10);background:#fff;box-shadow:0 2px 4px rgba(15,23,42,.05),0 24px 48px rgba(15,23,42,.08);overflow:hidden">
-        <div style="display:flex;align-items:center;gap:6px;padding:9px 14px;background:#f0eee9;border-bottom:1px solid rgba(20,22,28,.08)"><span style="width:9px;height:9px;border-radius:9999px;background:#e0433a;opacity:.75"></span><span style="width:9px;height:9px;border-radius:9999px;background:#fbbf24;opacity:.75"></span><span style="width:9px;height:9px;border-radius:9999px;background:#a3e635;opacity:.75"></span><span style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;font-size:10.5px;font-weight:600;color:rgba(21,22,26,.45);background:#fff;border-radius:8px;padding:4px 12px;margin:0 18px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:9px;height:9px"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>app.gofinrock.com/accountant</span></div>
-        <div style="padding:14px 18px;border-bottom:1px solid rgba(20,22,28,.07);display:flex;align-items:center;justify-content:space-between">
-          <p style="margin:0;font-size:14px;font-weight:700">Clients</p>
-          <span style="font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:9999px;background:rgba(200,50,71,.10);color:#c83247;border:1px solid rgba(200,50,71,.2)">1 overdue</span>
-        </div>
-        
-          <div style="display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid rgba(20,22,28,.06)">
-            <span style="flex-shrink:0;width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;background:#1e1b4b">BP</span>
-            <span style="min-width:0;flex:1"><span style="display:block;font-size:13px;font-weight:600">Bridges Plumbing Ltd</span><span style="display:block;font-size:11px;color:rgba(21,22,26,.48)">VAT · 3 need review · 2 missing receipts</span></span>
-            <span style="font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:9999px;background:rgba(200,50,71,.10);color:#c83247">Overdue</span>
-          </div>
-        
-
-          <div style="display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid rgba(20,22,28,.06)">
-            <span style="flex-shrink:0;width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;background:#2f7d5b">SW</span>
-            <span style="min-width:0;flex:1"><span style="display:block;font-size:13px;font-weight:600">Sam Whitfield</span><span style="display:block;font-size:11px;color:rgba(21,22,26,.48)">Sole trader · quarterly update due 7 Aug</span></span>
-            <span style="font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:9999px;background:rgba(154,107,0,.12);color:#9a6b00">Due soon</span>
-          </div>
-        
-
-          <div style="display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid rgba(20,22,28,.06)">
-            <span style="flex-shrink:0;width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;background:#4a5b8c">KM</span>
-            <span style="min-width:0;flex:1"><span style="display:block;font-size:13px;font-weight:600">K. Mensah Electrical</span><span style="display:block;font-size:11px;color:rgba(21,22,26,.48)">Company · 1 unread message</span></span>
-            <span style="font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:9999px;background:rgba(154,107,0,.12);color:#9a6b00">Due soon</span>
-          </div>
-        
-
-          <div style="display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid rgba(20,22,28,.06)">
-            <span style="flex-shrink:0;width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;background:#d4652f">LT</span>
-            <span style="min-width:0;flex:1"><span style="display:block;font-size:13px;font-weight:600">Lakeview Trades</span><span style="display:block;font-size:11px;color:rgba(21,22,26,.48)">Sole trader · Self Assessment marked filed 14 Jul</span></span>
-            <span style="font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:9999px;background:rgba(15,124,58,.10);color:#0f7c3a">Current</span>
-          </div>
-        
-        <div style="padding:12px 18px;display:flex;align-items:center;gap:9px;background:#fbfaf6">
-          <i data-lucide="message-square" style="width:14px;height:14px;color:#1e1b4b"></i>
-          <span style="font-size:12px;color:rgba(21,22,26,.62)"><b>Messages · Bridges Plumbing:</b> "Receipt for the £184.20 Travis Perkins entry?" — pinned to the transaction</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="inside" style="max-width:1280px;margin:0 auto;padding:124px 32px 0">
-  <div class="rv" style="text-align:center;max-width:620px;margin:0 auto">
-    <p style="margin:0;font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f6921a">Inside the app</p>
-    <h2 style="margin:12px 0 0;font-size:clamp(30px,3.6vw,46px);line-height:1.05;letter-spacing:-.04em;font-weight:800">Three things nobody else does together.</h2>
-    <p style="margin:16px auto 0;font-size:16px;line-height:1.6;color:rgba(21,22,26,.62)">The books, the filings and the life admin — one app, one login, one bill.</p>
-  </div>
-  <div class="rv g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:46px">
-    <div class="card-h" style="border-radius:22px;background:#fbfaf6;border:1px solid rgba(20,22,28,.10);padding:28px 24px;text-align:center;box-shadow:0 1px 2px rgba(15,23,42,.04)">
-      <div style="width:238px;max-width:100%;margin:0 auto;border-radius:34px;padding:7px;background:#0e0f16;box-shadow:0 16px 40px rgba(15,23,42,.22),0 0 0 1px rgba(255,255,255,.07)">
-        <div style="border-radius:28px;overflow:hidden;background:#f6f5f1">
-          <img src="assets/app/mobile-life-light.webp" width="780" height="1688" alt="Finrock My Life on a phone: net worth and the renewals coming up" loading="lazy" decoding="async" style="display:block;width:100%;height:auto">
-        </div>
-      </div>
-      <p style="margin:20px 0 0;font-size:15.5px;font-weight:700;letter-spacing:-.02em">My Life</p>
-      <p style="margin:6px auto 0;max-width:280px;font-size:13px;line-height:1.55;color:rgba(21,22,26,.60)">Every part of life admin — property, pension, vehicle, insurance — with every renewal tracked.</p>
-    </div>
-    <div class="card-h" style="border-radius:22px;background:linear-gradient(170deg,#0d0d14,#16161f);border:1px solid rgba(0,0,0,.5);padding:28px 24px;text-align:center">
-      <div style="width:238px;max-width:100%;margin:0 auto;border-radius:34px;padding:7px;background:#0e0f16;box-shadow:0 16px 40px rgba(15,23,42,.22),0 0 0 1px rgba(255,255,255,.07)">
-        <div style="border-radius:28px;overflow:hidden;background:#101018">
-          <img src="assets/app/mobile-home-dark.webp" width="780" height="1688" alt="Finrock Home on a phone in dark mode: cash position, owed to you, you owe and tax owed" loading="lazy" decoding="async" style="display:block;width:100%;height:auto">
-        </div>
-      </div>
-      <p style="margin:20px 0 0;font-size:15.5px;font-weight:700;letter-spacing:-.02em;color:#fff">Home</p>
-      <p style="margin:6px auto 0;max-width:280px;font-size:13px;line-height:1.55;color:rgba(255,255,255,.55)">Cash position and the three things needing attention — one screen each morning.</p>
-    </div>
-    <div class="card-h" style="border-radius:22px;background:#fbfaf6;border:1px solid rgba(20,22,28,.10);padding:28px 24px;text-align:center;box-shadow:0 1px 2px rgba(15,23,42,.04)">
-      <div style="width:238px;max-width:100%;margin:0 auto;border-radius:34px;padding:7px;background:#0e0f16;box-shadow:0 16px 40px rgba(15,23,42,.22),0 0 0 1px rgba(255,255,255,.07)">
-        <div style="border-radius:28px;overflow:hidden;background:#f6f5f1">
-          <img src="assets/app/mobile-filing-light.webp" width="780" height="1688" alt="Finrock Filing and deadlines on a phone: the next deadline, upcoming filings and what HMRC needs from you" loading="lazy" decoding="async" style="display:block;width:100%;height:auto">
-        </div>
-      </div>
-      <p style="margin:20px 0 0;font-size:15.5px;font-weight:700;letter-spacing:-.02em">Filing</p>
-      <p style="margin:6px auto 0;max-width:280px;font-size:13px;line-height:1.55;color:rgba(21,22,26,.60)">VAT and quarterly updates prepared from your records, ready to file.</p>
-    </div>
-  </div>
-</section>
-
-
-<section style="max-width:1280px;margin:0 auto;padding:116px 32px 112px">
-  <div class="rv" style="position:relative;overflow:hidden;border-radius:30px;text-align:center;padding:72px 46px;background:linear-gradient(160deg,#0b0b12 0%,#111119 55%,#191927 100%);color:#fff">
-    <div aria-hidden="true" style="position:absolute;width:560px;height:560px;border-radius:9999px;background:#f6921a;opacity:.15;filter:blur(130px);left:50%;transform:translateX(-50%);bottom:-360px"></div>
-    <div style="position:relative">
-      <h2 style="margin:0;font-size:clamp(32px,4vw,52px);line-height:1.03;letter-spacing:-.045em;font-weight:800">Stop dreading January.</h2>
-      <p style="margin:18px auto 0;max-width:440px;font-size:16px;line-height:1.6;color:rgba(255,255,255,.66)">Import a statement, sort a week of transactions, and watch your tax figure appear.</p>
-      <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:32px;flex-wrap:wrap">
-        <a href="https://app.gofinrock.com/register" class="btn-p" style="display:inline-flex;align-items:center;gap:9px;background:#f6921a;color:#140d02;font-size:15px;font-weight:800;padding:15px 28px;border-radius:14px;box-shadow:0 14px 36px rgba(246,146,26,.32)">Get started free <i data-lucide="arrow-right" style="width:16px;height:16px"></i></a>
-        <a href="https://app.gofinrock.com/login" style="font-size:15px;font-weight:600;color:rgba(255,255,255,.85);padding:15px 22px;border-radius:14px;border:1px solid rgba(255,255,255,.20)">Sign in</a>
-      </div>
-      <p style="margin:18px 0 0;font-size:12px;color:rgba(255,255,255,.42)">Works on your phone — add it to your home screen and it works like the app it is.</p>
-    </div>
-  </div>
-</section>
-
-<section style="background:#f6f5f1;border-top:1px solid rgba(20,22,28,.07)">
-  <div style="max-width:1280px;margin:0 auto;padding:20px 32px;display:flex;align-items:center;justify-content:center;gap:10px 34px;flex-wrap:wrap">
-    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="landmark" style="width:15px;height:15px;color:#1e1b4b"></i>Quarterly updates &amp; VAT — prepared, ready to file</span>
-    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="building-2" style="width:15px;height:15px;color:#0f7c3a"></i>Open Banking feeds via TrueLayer (FCA-regulated) — coming soon</span>
-    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="lock" style="width:15px;height:15px;color:#f6921a"></i>Encrypted in transit · documents encrypted at rest</span>
-    <span style="display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:rgba(21,22,26,.62)"><i data-lucide="monitor-smartphone" style="width:15px;height:15px;color:#1e1b4b"></i>iPhone, Android &amp; desktop — nothing to install</span>
-  </div>
-</section>
-<footer style="background:#fbfaf6;border-top:1px solid rgba(20,22,28,.08)">
-  <div style="max-width:1280px;margin:0 auto;padding:64px 32px 30px">
-    <div class="g4" style="display:grid;grid-template-columns:minmax(0,1.4fr) repeat(4,minmax(0,1fr));gap:32px">
-      <div>
-        <a href="#top" aria-label="Finrock" style="display:inline-flex;align-items:center;gap:8px">
-          <svg viewBox="0 0 280.83 56.13" style="height:22px;width:auto;display:block" role="img" aria-label="Finrock"><g transform="translate(-40.81 -146.87)"><g fill="#15161a"><path d="M62.57,203l24.78-40.52a2.06,2.06,0,0,1,.22.25q2.66,4.34,5.29,8.68a.69.69,0,0,1,0,.64c-2.85,4.7-5.72,9.38-8.64,14.16-1-1.55-1.88-3-2.85-4.64L79.87,184q-5.28,8.59-10.54,17.2c-.29.48-.56,1-.88,1.44a.67.67,0,0,1-.45.27C66.24,203,64.48,203,62.57,203Z"></path><path d="M40.81,202.8l34-55.93,3.41,5.61c1.36,2.25,2.74,4.5,4.09,6.76a1,1,0,0,1,.08.82c-3.9,6.47-8.13,12.65-12.06,19.11,0,0,0,0-.15.13-1.27-2.09-2.24-3.86-3.56-6l-.6,1q-8.49,14-17,28a1.14,1.14,0,0,1-1.13.61C45.59,202.78,43.28,202.8,40.81,202.8Z"></path><path d="M96.38,178.11c1.84,3,3.61,5.93,5.41,8.82a.86.86,0,0,1,0,1q-4.17,6.76-8.31,13.56c-.06.1-.14.2-.24.35l-2.84-4.62c-.78,1.29-1.53,2.51-2.28,3.73-.35.57-.69,1.15-1.06,1.7a.67.67,0,0,1-.46.27c-1.7,0-3.41,0-5.11,0a1.52,1.52,0,0,1-.27-.06Z"></path><path d="M205.13,165.72c.52-.09,1-.16,1.48-.21s1-.07,1.48-.07,1,0,1.55.07a13,13,0,0,1,1.42.21q.21,1.07.42,2.79a24.91,24.91,0,0,1,.21,2.93,14.46,14.46,0,0,1,3.92-4.16,10.34,10.34,0,0,1,6.24-1.77c.38,0,.77,0,1.17,0s.74.06,1,.1a11,11,0,0,1,.21,1.34,14.19,14.19,0,0,1,.07,1.49,15.45,15.45,0,0,1-.1,1.76c-.07.61-.16,1.2-.25,1.76a5,5,0,0,0-1.16-.14h-1a12.4,12.4,0,0,0-3.63.53,7.77,7.77,0,0,0-3.11,1.87,9.43,9.43,0,0,0-2.18,3.67,18.3,18.3,0,0,0-.81,6v18a16,16,0,0,1-1.73.22c-.64,0-1.22.07-1.73.07s-1.1,0-1.73-.07-1.24-.12-1.8-.22Z"></path><path d="M240.7,202.77a17.75,17.75,0,0,1-7.41-1.44,14.82,14.82,0,0,1-5.3-4,16.61,16.61,0,0,1-3.14-6,27.94,27.94,0,0,1,0-15,16.53,16.53,0,0,1,3.14-6,15.13,15.13,0,0,1,5.3-4,19.29,19.29,0,0,1,14.82,0,15.18,15.18,0,0,1,5.29,4,16.53,16.53,0,0,1,3.14,6,27.94,27.94,0,0,1,0,15,16.61,16.61,0,0,1-3.14,6,14.87,14.87,0,0,1-5.29,4A17.81,17.81,0,0,1,240.7,202.77Zm0-5.57q4.86,0,7.19-3.53t2.33-9.81q0-6.29-2.33-9.77t-7.19-3.5q-4.87,0-7.17,3.5t-2.29,9.77q0,6.28,2.29,9.81T240.7,197.2Z"></path><path d="M286.56,195.64a11.12,11.12,0,0,1,1,2.47,13,13,0,0,1,.5,3,26.15,26.15,0,0,1-9.53,1.62q-9,0-13.62-5.11t-4.59-13.8a24.07,24.07,0,0,1,1.13-7.48,16.92,16.92,0,0,1,3.35-6,16,16,0,0,1,5.54-4,18.69,18.69,0,0,1,7.7-1.48,33.68,33.68,0,0,1,5.22.35,21.56,21.56,0,0,1,4.3,1.13,13.87,13.87,0,0,1-.32,2.79,12,12,0,0,1-.88,2.78,24,24,0,0,0-7.9-1.2q-5.43,0-8.12,3.6t-2.68,9.53q0,6.78,3,9.91a11,11,0,0,0,8.32,3.14,25.09,25.09,0,0,0,3.92-.28A17.24,17.24,0,0,0,286.56,195.64Z"></path><path d="M291.57,150.2a13.89,13.89,0,0,1,1.73-.21c.64-.05,1.21-.07,1.73-.07s1.11,0,1.77.07a13.72,13.72,0,0,1,1.76.21v51.72a15.62,15.62,0,0,1-1.76.22c-.66,0-1.25.07-1.77.07s-1.09,0-1.73-.07a16,16,0,0,1-1.73-.22Zm8.9,33L312,165.72q.91-.14,1.83-.21c.61,0,1.25-.07,1.91-.07s1.38,0,2,.07,1.28.12,1.94.21l-11.5,16.94,13.48,19.26c-.66.1-1.3.17-1.91.22s-1.25.07-1.9.07-1.32,0-2-.07-1.32-.12-2-.22Z"></path></g><g fill="#f6921a"><path d="M118.47,151.19h28.79a21.26,21.26,0,0,1,.43,4.3,22.1,22.1,0,0,1-.43,4.45H128.77v11.92h14.68a23.2,23.2,0,0,1,.43,4.38,22.66,22.66,0,0,1-.43,4.44H128.77v21.24a31,31,0,0,1-10.3,0Z"></path><path d="M151.92,173.06h-4.73a16,16,0,0,1-.32-1.94,19,19,0,0,1-.1-1.94,16.75,16.75,0,0,1,.42-3.74h14.54v36.48a29.2,29.2,0,0,1-4.94.43,28.84,28.84,0,0,1-4.87-.43Zm-1.48-13.76a27.35,27.35,0,0,1-.42-4.73,28.12,28.12,0,0,1,.42-4.72,24,24,0,0,1,2.57-.32c.92-.07,1.76-.11,2.51-.11s1.67,0,2.61.11a23.88,23.88,0,0,1,2.61.32,19.44,19.44,0,0,1,.28,2.36c0,.78.07,1.56.07,2.36s0,1.53-.07,2.33a19.61,19.61,0,0,1-.28,2.4,20,20,0,0,1-2.57.28c-.92,0-1.78.07-2.58.07s-1.6,0-2.54-.07A20.08,20.08,0,0,1,150.44,159.3Z"></path><path d="M167.3,165.44a19.42,19.42,0,0,1,2-.32,21,21,0,0,1,2.19-.1,19.09,19.09,0,0,1,2.12.1c.61.07,1.24.18,1.9.32a4.36,4.36,0,0,1,.39,1c.12.45.22.92.32,1.42s.17,1,.24,1.44l.18,1.2a17.22,17.22,0,0,1,1.69-2.12,12.32,12.32,0,0,1,2.3-1.9,12.77,12.77,0,0,1,2.93-1.38,11.61,11.61,0,0,1,3.59-.53q6.21,0,9.35,3.39t3.14,10.66v23.28a29.4,29.4,0,0,1-10,0v-20.6a12,12,0,0,0-1.16-5.86,4.28,4.28,0,0,0-4.06-2,9,9,0,0,0-2.47.35,5.15,5.15,0,0,0-2.29,1.37A7.48,7.48,0,0,0,178,178a15.12,15.12,0,0,0-.63,4.8v19.12a29.46,29.46,0,0,1-10,0Z"></path><path d="M99.82,203l5.58-9.09L111,203Z"></path></g></g></svg>
-        </a>
-        <p style="margin:12px 0 0;font-size:13px;line-height:1.6;color:rgba(21,22,26,.55);max-width:240px">One ledger for your business, your personal money, and the filings that fall out of both.</p>
-        <div style="display:flex;gap:10px;margin-top:16px">
-          <a href="https://x.com/gofinrock" aria-label="X" style="width:32px;height:32px;border-radius:9px;border:1px solid rgba(20,22,28,.12);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">𝕏</a>
-          <a href="https://linkedin.com/company/gofinrock" aria-label="LinkedIn" style="width:32px;height:32px;border-radius:9px;border:1px solid rgba(20,22,28,.12);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">in</a>
-          <a href="https://instagram.com/gofinrock" aria-label="Instagram" style="width:32px;height:32px;border-radius:9px;border:1px solid rgba(20,22,28,.12);display:flex;align-items:center;justify-content:center"><i data-lucide="instagram" style="width:14px;height:14px"></i></a>
-        </div>
-      </div>
-      
-        <div>
-          <p style="margin:0 0 14px;font-size:11.5px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:rgba(21,22,26,.40)">Product</p>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            
-              <a href="finrock-personal.html" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">Personal · My Life</a>
-            
-
-              <a href="finrock-business.html" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">Business</a>
-            
-
-              <a href="finrock-sole-traders.html" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">Sole traders</a>
-            
-
-              <a href="finrock-accountants.html" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">For accountants</a>
-            
-
-              <a href="finrock-banking.html" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">Banking · soon</a>
-            
-
-              <a href="finrock-pricing.html" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">Pricing</a>
-            
-          </div>
-        </div>
-      
-
-        <div>
-          <p style="margin:0 0 14px;font-size:11.5px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:rgba(21,22,26,.40)">Company</p>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            
-              <a href="finrock-about.html" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">About</a>
-            
-
-              <a href="finrock-careers.html" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">Careers</a>
-            
-
-              <a href="finrock-contact.html" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">Contact</a>
-            
-          </div>
-        </div>
-      
-
-        <div>
-          <p style="margin:0 0 14px;font-size:11.5px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:rgba(21,22,26,.40)">Resources</p>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            
-              <a href="finrock-help.html" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">Help centre</a>
-            
-
-              <a href="finrock-status.html" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">System status</a>
-            
-
-              <a href="finrock-security.html" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">Security</a>
-            
-          </div>
-        </div>
-      
-
-        <div>
-          <p style="margin:0 0 14px;font-size:11.5px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:rgba(21,22,26,.40)">Legal</p>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            
-              <a href="finrock-legal.html#privacy" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">Privacy</a>
-            
-
-              <a href="finrock-legal.html#terms" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">Terms</a>
-            
-
-              <a href="finrock-legal.html#cookies" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">Cookies</a>
-            
-
-              <a href="finrock-legal.html#gdpr" style="font-size:13.5px;font-weight:500;color:rgba(21,22,26,.66)">GDPR</a>
-            
-          </div>
-        </div>
-      
-    </div>
-    <div style="margin-top:44px;padding-top:22px;border-top:1px solid rgba(20,22,28,.08);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
-      <p style="margin:0;font-size:12px;color:rgba(21,22,26,.45)">© 2026 Finrock Ltd · Made in Britain</p>
-      <p style="margin:0;font-size:12px;color:rgba(21,22,26,.45)">hi@gofinrock.com · Cancel anytime · UK &amp; Northern Ireland</p>
-    </div>
+    <div class="legal"><span>© <span data-year>2026</span> Finrock Ltd. Prices include VAT.</span><a href="finrock-legal.html" style="display:inline;padding:0;font-size:12.5px;color:rgba(255,255,255,.5)">Terms &amp; privacy</a></div>
   </div>
 </footer>
-
-</div>
-<script src="site.js"></script>
 </body>
 </html>
