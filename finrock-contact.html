@@ -9,8 +9,8 @@
 <link rel="canonical" href="https://gofinrock.com/finrock-contact.html">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Finrock">
 <meta property="og:title" content="Contact Finrock — talk to a person who knows the tax rules"><meta property="og:description" content="Support, press and security contacts. One reply from one person, usually the same working day.">
-<meta property="og:url" content="https://gofinrock.com/finrock-contact.html"><meta property="og:image" content="https://gofinrock.com/assets/og-card.png"><meta property="og:locale" content="en_GB">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Contact Finrock — talk to a person who knows the tax rules"><meta name="twitter:description" content="Support, press and security contacts. One reply from one person, usually the same working day."><meta name="twitter:image" content="https://gofinrock.com/assets/og-card.png">
+<meta property="og:url" content="https://gofinrock.com/finrock-contact.html"><meta property="og:image" content="https://gofinrock.com/assets/og-card.jpg"><meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Contact Finrock — talk to a person who knows the tax rules"><meta name="twitter:description" content="Support, press and security contacts. One reply from one person, usually the same working day."><meta name="twitter:image" content="https://gofinrock.com/assets/og-card.jpg">
 <meta name="theme-color" content="#0b0b10">
 <link rel="alternate" type="text/plain" href="https://gofinrock.com/llms.txt" title="llms.txt">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -58,9 +58,31 @@
     <a class="btn btn-or" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Try 7 days free — no card</a>
   </nav>
 </header><main><section class="hero"><div class="wrap phero center"><p class="eyebrow">Contact</p><h1 style="margin-top:14px">Talk to a person who<br><span class="grad">knows the tax rules.</span></h1><p class="lede" style="margin-left:auto;margin-right:auto">No ticket carousel. Support is staffed by people who use the app and understand UK self-employment — half of them are accountants.</p></div></section><section class="sec"><div class="wrap"><div class="trust rv" style="margin-top:0"><div><i data-lucide="life-buoy"></i><b>Support</b><p>Using the app, imports, filing, invoicing — anything not working the way you expect.<br><a href="mailto:help@gofinrock.com">help@gofinrock.com</a><small>Free: within 24h · Paid: same working day</small></p></div><div><i data-lucide="shield"></i><b>Security &amp; data</b><p>Vulnerability reports, data questions, DPA requests.<br><a href="mailto:security@gofinrock.com">security@gofinrock.com</a><small>Acknowledged within 24h</small></p></div><div><i data-lucide="briefcase"></i><b>Accountants &amp; practices</b><p>Client portal, onboarding a book of clients.<br><a href="mailto:practices@gofinrock.com">practices@gofinrock.com</a><small>A conversation, not a demo funnel</small></p></div><div><i data-lucide="megaphone"></i><b>Press &amp; partnerships</b><p><a href="mailto:hello@gofinrock.com">hello@gofinrock.com</a><small>Finrock Ltd · registered in England &amp; Wales</small></p></div></div>
-<form class="cform rv" action="mailto:help@gofinrock.com" method="post" enctype="text/plain"><div style="max-width:640px"><p class="eyebrow">Send a message</p><h2 class="big" style="font-size:clamp(28px,4vw,40px)">One reply, from one person.</h2></div>
-<div class="fgrid"><label>Your name<input name="name" type="text" required autocomplete="name"></label><label>Email<input name="email" type="email" required autocomplete="email"></label><label>What’s it about?<select name="topic"><option>Choosing a plan</option><option>Bank connections &amp; imports</option><option>Self Assessment, MTD or VAT</option><option>Invoicing &amp; payments</option><option>Limited company or payroll</option><option>Billing or account</option><option>I’m an accountant</option><option>Something else</option></select></label><label>Which describes you?<select name="who"><option>Sole trader</option><option>Landlord</option><option>Side hustle</option><option>Limited company</option><option>Not self-employed</option><option>Accountant</option><option>Just curious</option></select></label><label class="full">Message<textarea name="message" rows="5" required></textarea></label></div>
-<div class="ctas" style="justify-content:flex-start;margin-top:18px"><button class="btn btn-ink" type="submit">Send message <i data-lucide="send"></i></button><span class="note" style="margin:0">We only use this to answer you. Nothing else, ever.</span></div></form>
+<form class="cform rv" id="contact-form" action="https://app.gofinrock.com/api/public/contact" method="post"><div style="max-width:640px"><p class="eyebrow">Send a message</p><h2 class="big" style="font-size:clamp(28px,4vw,40px)">One reply, from one person.</h2></div>
+<div class="fgrid"><label>Your name<input name="name" type="text" required maxlength="100" autocomplete="name"></label><label>Email<input name="email" type="email" required maxlength="254" autocomplete="email"></label><label>What’s it about?<select name="topic"><option>Choosing a plan</option><option>Bank connections &amp; imports</option><option>Self Assessment, MTD or VAT</option><option>Invoicing &amp; payments</option><option>Limited company or payroll</option><option>Billing or account</option><option>I’m an accountant</option><option>Something else</option></select></label><label>Which describes you?<select name="who"><option>Sole trader</option><option>Landlord</option><option>Side hustle</option><option>Limited company</option><option>Not self-employed</option><option>Accountant</option><option>Just curious</option></select></label><label class="full">Message<textarea name="message" rows="5" required maxlength="5000"></textarea></label><label class="hp" aria-hidden="true">Leave this empty<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+<div class="ctas" style="justify-content:flex-start;margin-top:18px"><button class="btn btn-ink" type="submit">Send message <i data-lucide="send"></i></button><span class="note" style="margin:0">We only use this to answer you. Nothing else, ever.</span></div><p class="cform-status" id="contact-status" role="status" hidden></p></form>
+<script>
+(function(){
+  // The form posts to the app, which sends the visitor back here with
+  // ?contact=<result>. Each result is said in a sentence beside the button.
+  var said = {
+    sent: ["ok", "Thank you. Your message has reached us, and a person will reply by email."],
+    missing: ["bad", "Please fill in your name, your email and a message."],
+    email: ["bad", "That email address doesn't look right. Check it and send again."],
+    long: ["bad", "That message is over 5,000 characters. Please shorten it and send again."],
+    links: ["bad", "Please include no more than three web links."],
+    invalid: ["bad", "Something in the form couldn't be read. Please check it and send again."],
+    busy: ["bad", "You've sent several messages in the last hour. Please try again later, or email help@gofinrock.com."],
+    failed: ["bad", "Sorry, your message couldn't be sent just now. Please email help@gofinrock.com."]
+  };
+  var result = new URLSearchParams(location.search).get("contact");
+  var el = document.getElementById("contact-status");
+  if (!result || !said[result] || !el) return;
+  el.textContent = said[result][1];
+  el.setAttribute("data-tone", said[result][0]);
+  el.hidden = false;
+})();
+</script>
 <p class="note">Monday to Friday, 9am–6pm UK. Filing-deadline weeks we staff weekends too.</p></div></section><section class="final"><div class="wrap rv"><h2>Or just<br><span class="grad">try it.</span></h2><p class="lede center" style="margin-left:auto;margin-right:auto">Free for 7 days, no card, no conversation needed.</p><div class="ctas" style="justify-content:center"><a class="btn btn-or" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free <i data-lucide="arrow-right"></i></a><a class="btn btn-ghost" href="finrock-pricing.html">See pricing</a></div></div><div class="phone "><div class="screen"><img src="assets/app/mobile-ask-light.webp" alt="Ask Finrock" width="780" height="1688" loading="lazy"></div></div></section></main>
 <div class="mcta"><span class="p"><b>From £9.99/mo</b>incl. VAT · no card</span><a class="btn btn-or" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free</a></div><footer class="foot">
   <div class="wrap">
