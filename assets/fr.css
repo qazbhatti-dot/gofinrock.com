@@ -248,7 +248,7 @@ html.js .rv.in{opacity:1;transform:none}
 .wl button.btn,.cform button.btn{border:0;cursor:pointer;font-family:Inter,sans-serif}
 .cform{margin-top:56px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px 24px}
 @media(min-width:760px){.cform{padding:40px}}
-.cform .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.cform .hp,.wl .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .cform-status{margin-top:16px;font-size:14px;font-weight:600;line-height:1.5}
 .cform-status[data-tone=ok]{color:var(--ok)}
 .cform-status[data-tone=bad]{color:#b42318}

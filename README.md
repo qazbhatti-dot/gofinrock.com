@@ -23,13 +23,25 @@ into a sentence beside the button:
 |---|---|
 | `sent` | Thank you, a person will reply by email |
 | `missing`, `email`, `long`, `links`, `invalid` | What to fix and send again |
-| `busy` | Too many messages this hour; try later or email help@ |
-| `failed` | It could not be sent; email help@ |
+| `busy` | Too many messages this hour; try later or email support@ |
+| `failed` | It could not be sent; email support@ |
+
+The banking waitlist on `finrock-banking.html` posts to the same address,
+naming itself with a hidden `form=banking-waitlist`, and is answered back on
+its own page (`#waitlist`). A new form needs its name added to `websiteForms`
+in the app first; an unknown name is answered on the contact page.
 
 The hidden `website` field is a trap for scripts: keep it in the form, empty
 and off screen (`.cform .hp`). The fields' `maxlength` values match the
 limits the app holds. A new field needs the app to read it too, or it is
 dropped.
+
+## Email addresses
+
+Every address the site shows is support@gofinrock.com, which Cloudflare Email
+Routing forwards to the tawk.to ticket inbox. Only support@ and admin@ are
+live: an address with no routing rule falls to the catch-all, which is the
+bills worker, and reaches nobody.
 
 ## Analytics
 
