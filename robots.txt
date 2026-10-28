@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://gofinrock.com/sitemap.xml
-
-# LLM discoverability
-# https://gofinrock.com/llms.txt
