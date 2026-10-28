@@ -13,7 +13,7 @@ My Life £9.99 · Sole trader & Landlord £14.99 · Sole trader & Landlord · MT
 - Never name a competitor.
 
 ## Contact form and waitlist
-`finrock-contact.html` posts to `https://app.gofinrock.com/api/contact`; `finrock-banking.html` posts to `https://app.gofinrock.com/api/waitlist`. Both send a hidden `redirect` back to the page; the app appends `?contact=ok|error|missing|spam` (waitlist also accepts `exists`) and a small inline script shows the result beside the button. Mail goes to support@gofinrock.com. Only support@ and admin@ are routed — never use help@ or hello@.
+`finrock-contact.html` and `finrock-banking.html` both post to `https://app.gofinrock.com/api/public/contact` (`backend/internal/handlers/public_contact.go` in the app), each naming itself in a hidden `form` field (`contact`, `banking-waitlist`); the waitlist needs only an email address. The app redirects back to the page with `?contact=sent|failed|missing|email|long|links|invalid|busy`, and a small inline script shows the result beside the button. Mail goes to support@gofinrock.com. Only support@ and admin@ are routed — never use help@ or hello@.
 
 ## Share card
 `assets/og-card-v2.png` (1200×630, "Your books, ready to file."). Referenced by og:image and twitter:image on every page. Replace with a <150 KB JPG when one is available and update the tags.
