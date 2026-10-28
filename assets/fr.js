@@ -1,5 +1,6 @@
 (function () {
   document.documentElement.classList.add('js');
+  if (matchMedia('(prefers-color-scheme: dark)').matches) document.querySelectorAll('img[data-dark]').forEach(function (im) { im.src = im.dataset.dark; var s = im.closest('.screen'); if (s) s.style.background = '#0b0b10'; });
   var paint = function () { if (window.lucide) window.lucide.createIcons(); };
   paint(); window.addEventListener('load', paint);
 
@@ -44,8 +45,8 @@
       if (trade && over === null) { out.innerHTML = 'One more — is your <b>self-employed and rental income together</b> over £50,000?'; pick(null); return; }
       if (sel.ltd) {
         k = 'ltd';
-        if (trade && over) msg = '<b>Limited company</b> · <span class="num">£59.99</span>/mo — the company (accountant included) plus your personal MTD plan. Trade, lets, salary and life admin all in.';
-        else if (trade) msg = '<b>Limited company</b> · <span class="num">£49.99</span>/mo — includes your personal plan. Your trade and lets are covered, nothing extra.';
+        if (trade && over) msg = '<b>Limited company</b> · <span class="num">£59.99</span>/mo — the company (accountant sign-off included) plus your personal MTD quarterly updates (+£10). Want the accountant to check and submit your personal return too? +£10 more.';
+        else if (trade) msg = '<b>Limited company</b> · <span class="num">£49.99</span>/mo — includes your personal plan, so your trade and lets are covered. Accountant sign-off covers the company; add +£10 for them to check and submit your personal return.';
         else msg = '<b>Limited company</b> · <span class="num">£49.99</span>/mo per company — accountant sign-off and your personal My Life included.';
       } else {
         if (trade) k = over ? 'se' : 'st'; else k = 'life';
@@ -56,6 +57,12 @@
         else if (k === 'st') msg += ' — Self Assessment incl. property pages, no quarterly updates yet.';
         else msg += ' — every trade and every property, quarterly updates included.';
       }
+      var them = 0, bits = [];
+      if (sel.ltd) { them += 76; bits.push('company software + accountant retainer'); }
+      if (sel.se) { them += 22.80; bits.push('a sole trader app'); }
+      if (sel.prop) { them += 12; bits.push('a landlord add-on'); }
+      them += 9.99; bits.push('a budgeting app');
+      msg += '<small class="els">Elsewhere: ' + bits.join(' + ') + ' ≈ <b>£' + them.toFixed(2) + '</b>/mo</small>';
       out.innerHTML = msg; pick(k); go.href = '#plans';
     }
     ch.querySelectorAll('[data-k]').forEach(function (o) {
@@ -71,13 +78,18 @@
     run();
   }
   
-  // hero cycle
-  var cyc = document.querySelector('.cyc');
-  if (cyc) {
-    var imgs = cyc.querySelectorAll('.c .screen img'), chips = cyc.querySelectorAll('.chip'), dots = cyc.querySelectorAll('.dots button'), ci = 0, ct;
-    var setC = function (i) { ci = i; imgs.forEach(function (x, j) { x.classList.toggle('on', j === i); }); chips.forEach(function (x) { x.classList.toggle('on', +x.dataset.i === i); }); dots.forEach(function (x, j) { x.setAttribute('aria-selected', j === i); }); };
-    var tick = function () { ct = setTimeout(function () { setC((ci + 1) % imgs.length); tick(); }, 3600); };
+  // hero demo sequence
+  var demo = document.querySelector('.demo');
+  if (demo) {
+    var imgs = demo.querySelectorAll('.seq img'), caps = demo.querySelectorAll('.cap span'), dots = demo.querySelectorAll('.dots button'), tap = demo.querySelector('.tap'), ci = 0, ct;
+    var taps = [[50, 86], [50, 60], [50, 50], [50, 40], [50, 58]];
+    var setC = function (i, anim) {
+      var go = function () { imgs.forEach(function (x, j) { x.classList.toggle('on', j === i); x.classList.toggle('out', j === ci && i !== ci); }); caps.forEach(function (x, j) { x.classList.toggle('on', j === i); }); dots.forEach(function (x, j) { x.setAttribute('aria-selected', j === i); }); ci = i; };
+      if (anim && tap) { tap.style.left = taps[ci][0] + '%'; tap.style.top = taps[ci][1] + '%'; tap.classList.remove('go'); void tap.offsetWidth; tap.classList.add('go'); setTimeout(go, 260); } else go();
+    };
+    var tick = function () { ct = setTimeout(function () { setC((ci + 1) % imgs.length, true); tick(); }, 3800); };
     dots.forEach(function (d, j) { d.addEventListener('click', function () { clearTimeout(ct); setC(j); tick(); }); });
+    var refl = demo.querySelector('.refl img'); if (refl) { var _s = setC; setC = function (i, a) { _s(i, a); refl.src = imgs[i].src; }; }
     setC(0); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) tick();
   }
   var md = document.querySelector('.mode');
@@ -116,5 +128,32 @@
   if (mc && hero) { var onS = function () { mc.classList.toggle('show', scrollY > hero.offsetHeight * .7 && scrollY + innerHeight < document.body.scrollHeight - 200); }; addEventListener('scroll', onS, { passive: true }); onS(); }
   var seg = document.querySelector('.seg');
   if (seg) seg.querySelectorAll('button').forEach(function (b) { b.addEventListener('click', function () { seg.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-selected', x === b); }); document.querySelectorAll('.cmp-list').forEach(function (l) { l.classList.toggle('on', l.dataset.p === b.dataset.p); }); }); });
+  // pricing calculator
+  var calc = document.querySelector('.calc');
+  if (calc) {
+    var fmt = function (n) { return '£' + n.toFixed(2); };
+    var run2 = function () {
+      var s = {}; calc.querySelectorAll('.opt2').forEach(function (o) { s[o.dataset.c] = o.getAttribute('aria-pressed') === 'true'; });
+      var rows = [], them = 0;
+      if (s.se) { rows.push(['A sole trader app', 22.80]); them += 22.80; }
+      if (s.prop) { rows.push(['A landlord add-on', 12.00]); them += 12.00; }
+      if (s.ltd) { rows.push(['Company accounting software', 16.00]); them += 16.00; rows.push(['Accountant retainer (from)', 60.00]); them += 60.00; }
+      if (s.life) { rows.push(['A budgeting app', 9.99]); them += 9.99; }
+      if (!rows.length) { rows.push(['Nothing selected', 0]); }
+      var me, plan;
+      if (s.ltd) { plan = 'Finrock Limited company' + ((s.se || s.prop) ? '' : ''); me = ((s.se || s.prop) && over) ? 59.99 : 49.99; }
+      else if (s.se || s.prop) { plan = 'Finrock Sole trader & Landlord · MTD'; me = 24.99; }
+      else { plan = 'Finrock My Life'; me = 9.99; }
+      document.getElementById('calc-rows').innerHTML = rows.map(function (r) { return '<div class="row"><span>' + r[0] + '</span><b>' + (r[1] ? fmt(r[1]) : '—') + '</b></div>'; }).join('');
+      document.getElementById('calc-them').textContent = fmt(them);
+      document.getElementById('calc-me').textContent = fmt(me);
+      document.getElementById('calc-plan').textContent = plan;
+      var sv = them - me; document.getElementById('calc-save').textContent = sv > 0 ? 'Save ' + fmt(sv) + ' a month — ' + fmt(sv * 12) + ' a year — and keep one app.' : (them ? 'Similar price — but one app, and your whole life in it.' : '');
+    };
+    calc.querySelectorAll('.opt2').forEach(function (o) { o.addEventListener('click', function () { o.setAttribute('aria-pressed', o.getAttribute('aria-pressed') !== 'true'); run2(); }); });
+    run2();
+  }
+  // scrollSnapInit
+  if (matchMedia('(max-width:759px)').matches) document.querySelectorAll('.plans').forEach(function (p) { var h = p.querySelector('.plan.hot'); if (h) p.scrollLeft = h.offsetLeft - (p.clientWidth - h.clientWidth) / 2 - 22; });
   var y = document.querySelector('[data-year]'); if (y) y.textContent = new Date().getFullYear();
 })();
