@@ -1405,3 +1405,99 @@ h1,h2.big,.final h2,.phero h1{letter-spacing:-.045em;font-weight:700}
 .qt figcaption{display:flex;align-items:center;gap:12px;margin-top:auto}
 .qt .av{width:40px;height:40px;border-radius:50%;background:var(--ind);color:#fff;display:flex;align-items:center;justify-content:center;font:700 15px var(--disp);flex:0 0 auto}
 .qt b{display:block;font-size:15px}.qt small{display:block;font-size:13px;color:var(--mute);margin-top:1px}
+
+/* mobile hero + tour final */
+@media(max-width:759px){
+ .fan3 .side{display:none!important}
+ .fan3 .chip{display:none!important}
+ .fan3{--pw:min(230px,60vw)}
+ .fan3 .stack{height:calc(var(--pw)*2.16)}
+ .steps .step,.steps .step.on{opacity:1!important}
+ .ph-m .phone{opacity:1!important}
+}
+
+/* ===== mobile: same hero, sticky tour ===== */
+@media(max-width:759px){
+ .fan3{--pw:min(170px,44vw)}
+ .fan3 .side{display:block!important;top:8%}
+ .fan3 .l{transform:translateX(-50%) translateX(calc(var(--pw)*-.6)) rotate(-6deg) scale(.86)!important}
+ .fan3 .r{transform:translateX(-50%) translateX(calc(var(--pw)*.6)) rotate(6deg) scale(.86)!important}
+ .fan3 .stack{height:calc(var(--pw)*2.18);width:calc(var(--pw)*2.3);margin:0 auto}
+ .hero-g{padding-bottom:28px}
+ /* sticky tour */
+ .ph-m{display:none!important}
+ .tour{position:relative}
+ .stage{display:flex!important;position:sticky;top:60px;z-index:1;height:auto;justify-content:center;padding:10px 0 8px;background:linear-gradient(var(--paper) 78%,transparent);pointer-events:none}
+ .stage .phone{width:min(180px,46vw);--pr:30px;--pp:6px;box-shadow:0 20px 50px rgba(15,23,42,.22),0 0 0 1px rgba(20,22,28,.08)}
+ .stage .screen img{opacity:0;transition:opacity .4s}
+ .stage .screen img.on{opacity:1}
+ .steps{order:2}
+ .steps .step{min-height:0;padding:28px 0 36px;border-top:1px solid var(--line)}
+ .steps .step:first-child{border-top:0;padding-top:16px}
+ .step h3{font-size:26px}
+}
+
+@media(min-width:1040px){.tour .stage{order:2}.tour .steps{order:1}}
+
+.sheet.open>a:nth-child(7){transition-delay:.29s}
+
+/* ===== MOBILE FINAL: vertical only ===== */
+@media(max-width:759px){
+ html,body{overflow-x:hidden}
+ .stage{display:none!important}
+ .ph-m{display:block!important;width:min(200px,54vw);height:calc(min(200px,54vw)*1.5);margin:22px auto 0}
+ .ph-m .phone{--pr:30px;--pp:6px}
+ .steps .step{padding:26px 0 30px}
+ .step h3{font-size:24px}
+ .step p{font-size:15px}
+ .step li{font-size:14px}
+ .plans{display:grid!important;grid-template-columns:1fr!important;overflow:visible!important;scroll-snap-type:none!important;margin-left:0!important;margin-right:0!important;padding:0!important;gap:12px}
+ .plan{flex:none!important;width:auto!important;scroll-snap-align:none}
+ .plan.hot{order:-1}
+ .plans-hint{display:none!important}
+ .tblw{display:none!important}
+ .cmp-m{display:block!important}
+ .once,.rows,.row{min-width:0}
+ .once .row{flex-wrap:wrap}
+ .rep{justify-content:flex-start}
+ .quotes{grid-template-columns:1fr}
+ .fan3{--pw:min(160px,42vw)}
+ .fan3 .stack{width:100%;height:calc(var(--pw)*2.12)}
+ .hero h1{font-size:52px}
+ .hero .lede{font-size:16px}
+}
+
+@media(max-width:759px){
+ .sec{padding:48px 0}
+ .steps .step{padding:22px 0 26px}
+ .ph-m{width:min(180px,50vw);height:calc(min(180px,50vw)*1.42);margin-top:18px}
+ .quotes .qt{padding:22px 20px 20px}
+ .qt blockquote{font-size:18px}
+ .faq summary{padding:16px 2px;font-size:15.5px}
+ .foot a{min-height:40px;display:flex;align-items:center}
+ .final{padding-top:56px}
+ .final .phone{width:min(200px,54vw);margin-top:32px}
+ .final .phone .screen{aspect-ratio:780/640}
+ .note,.fine{font-size:12.5px}
+ .hdr .cta{min-height:40px}
+ .burger{width:44px;height:44px}
+}
+
+/* ===== mobile compression ===== */
+.m-teaser{display:none}
+@media(max-width:759px){
+ .m-hide{display:none!important}
+ .m-teaser{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;margin-top:28px;padding:26px 22px;background:#fff;border:1px solid var(--line);border-radius:22px}
+ .m-teaser .price{font-family:var(--disp);font-weight:700;font-size:40px;letter-spacing:-.04em;line-height:1}
+ .m-teaser .price small{font-family:Inter,sans-serif;font-size:14px;font-weight:600;letter-spacing:0;opacity:.55}
+ .m-teaser .per{font-size:13px;color:var(--mute)}
+ .m-teaser .btn{margin-top:14px;width:100%}
+ .quotes{margin-top:0}
+ .steps .step{padding:24px 0 28px}
+ .step ul{display:none}
+ .step p{font-size:15.5px}
+ .proof .wrap{padding-top:20px;padding-bottom:20px;gap:12px}
+ .proof .pts{display:none}
+ .sec{padding:44px 0}
+ .rep{display:none}
+}

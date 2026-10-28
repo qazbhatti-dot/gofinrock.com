@@ -29,10 +29,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Sans:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/app/mobile-home-light.webp" fetchpriority="high">
-<link rel="stylesheet" href="assets/fr.css?v=20261028c">
+<link rel="stylesheet" href="assets/fr.css?v=20261028h">
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer fetchpriority="low"></script>
-<script src="assets/fr.js?v=20261028c" defer></script>
+<script src="assets/fr.js?v=20261028h" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -50,12 +50,13 @@
       <a href="finrock-help.html">Help</a>
     </nav>
     <div class="sp">
-      <a class="signin" href="https://app.gofinrock.com/login" target="_blank" rel="noopener">Sign in</a>
-      <a class="btn btn-or cta" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free</a>
+      <a class="signin" href="https://app.gofinrock.com/login">Sign in</a>
+      <a class="btn btn-or cta" href="https://app.gofinrock.com/register">Start free</a>
       <button class="burger" type="button" aria-label="Menu" aria-expanded="false"><i data-lucide="menu"></i></button>
     </div>
   </div>
   <nav class="sheet" aria-label="Mobile">
+    <a href="index.html">Home</a>
     <a href="finrock-personal.html">My Life</a>
     <a href="finrock-sole-traders.html">Sole traders &amp; landlords</a>
     <a href="finrock-side-hustlers.html">Side hustlers</a>
@@ -70,9 +71,9 @@
       <a href="finrock-careers.html">Careers</a>
       <a href="finrock-status.html">Status</a>
       <a href="finrock-accountants.html">For accountants</a>
-      <a href="https://app.gofinrock.com/login" target="_blank" rel="noopener">Sign in</a>
+      <a href="https://app.gofinrock.com/login">Sign in</a>
     </div>
-    <a class="btn btn-or" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free — no card</a>
+    <a class="btn btn-or" href="https://app.gofinrock.com/register">Start free — no card</a>
   </nav>
 </header>
 
@@ -83,7 +84,7 @@
       <h1><span style="white-space:nowrap">One life.</span><br><span class="grad" style="white-space:nowrap">One app.</span></h1>
       <p class="lede">Your money, your tax and your life admin — in one place, telling you what you owe before HMRC does.</p>
       <div class="ctas">
-        <a class="btn btn-or" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free <i data-lucide="arrow-right"></i></a>
+        <a class="btn btn-or" href="https://app.gofinrock.com/register">Start free <i data-lucide="arrow-right"></i></a>
         <a class="btn btn-ghost" href="#tour">See the app</a>
       </div>
       <p class="fine">No card · From £9.99/mo incl. VAT · One price per person</p>
@@ -126,10 +127,19 @@
 <section class="sec" id="tour">
   <div class="wrap">
     <div class="rv" style="max-width:640px">
-      <p class="eyebrow">A tour in six screens</p>
-      <h2 class="big">Six screens. Four apps you can delete.</h2>
+      <p class="eyebrow">A tour in five screens</p>
+      <h2 class="big"><span class="m-hide">Five screens. </span>Four apps you can delete.</h2>
     </div>
     <div class="tour">
+      <div class="stage" aria-hidden="true">
+        <div class="phone tilt"><div class="screen">
+          <img class="on" src="assets/app/mobile-home-light.webp" data-dark="assets/app/mobile-home-dark.webp" alt="" width="780" height="1688">
+          <img src="assets/app/mobile-activity-light.webp" alt="" width="780" height="1688" loading="lazy">
+          <img src="assets/app/mobile-bills-light.webp" alt="" width="780" height="1688" loading="lazy">
+          <img src="assets/app/mobile-filing-light.webp" data-dark="assets/app/mobile-filing-dark.webp" alt="" width="780" height="1688" loading="lazy">
+          <img src="assets/app/mobile-vehicle-light.webp" data-dark="assets/app/mobile-vehicle-dark.webp" alt="" width="780" height="1688" loading="lazy">
+        </div></div>
+      </div>
       <div class="steps">
         <article class="step on">
           <p class="n">01 · Home</p>
@@ -138,14 +148,14 @@
           <ul><li><i data-lucide="check"></i><span>Business and personal in one ledger</span></li><li><i data-lucide="check"></i><span>Tax owed updates with every transaction</span></li></ul>
           <div class="ph-m"><div class="phone"><div class="screen"><img src="assets/app/mobile-home-light.webp" data-dark="assets/app/mobile-home-dark.webp" alt="" width="780" height="1688" loading="lazy"></div></div></div>
         </article>
-        <article class="step">
+        <article class="step m-hide">
           <p class="n">02 · Activity</p>
           <h3>Sorted in a tap, not a Sunday.</h3>
           <p>Every transaction from every account. Finrock suggests business or personal and the category; you confirm. Your own past picks answer most rows before you see them.</p>
           <ul><li><i data-lucide="check"></i><span>Receipts matched automatically</span></li><li><i data-lucide="check"></i><span>Split one payment across business and home</span></li></ul>
           <div class="ph-m"><div class="phone"><div class="screen"><img src="assets/app/mobile-activity-light.webp" alt="" width="780" height="1688" loading="lazy"></div></div></div>
           </article>
-        <article class="step">
+        <article class="step m-hide">
           <p class="n">03 · Bills</p>
           <h3>Every bill. Every due date.</h3>
           <p>What you owe suppliers and what you pay at home — in one list, with the overdue ones on top and the receipt attached.</p>
@@ -166,24 +176,8 @@
           <ul><li><i data-lucide="check"></i><span>MOT, road tax and insurance reminders</span></li><li><i data-lucide="check"></i><span>Passport, will, warranties — found in seconds</span></li></ul>
           <div class="ph-m"><div class="phone"><div class="screen"><img src="assets/app/mobile-vehicle-light.webp" data-dark="assets/app/mobile-vehicle-dark.webp" alt="" width="780" height="1688" loading="lazy"></div></div></div>
           </article>
-        <article class="step">
-          <p class="n">06 · Ask</p>
-          <h3>Ask it anything about your money.</h3>
-          <p>“What’s left to sort?” “Can I afford my tax bill?” “Who owes me money?” Answers from your own books — not a guess.</p>
-          <ul><li><i data-lucide="check"></i><span>Snap a receipt or forward an email</span></li><li><i data-lucide="check"></i><span>Answers cite the transactions behind them</span></li></ul>
-          <div class="ph-m"><div class="phone"><div class="screen"><img src="assets/app/mobile-ask-light.webp" alt="" width="780" height="1688" loading="lazy"></div></div></div>
-          </article>
-      </div>
-      <div class="stage" aria-hidden="true">
-        <div class="phone tilt"><div class="screen">
-          <img class="on" src="assets/app/mobile-home-light.webp" data-dark="assets/app/mobile-home-dark.webp" alt="" width="780" height="1688">
-          <img src="assets/app/mobile-activity-light.webp" alt="" width="780" height="1688" loading="lazy">
-          <img src="assets/app/mobile-bills-light.webp" alt="" width="780" height="1688" loading="lazy">
-          <img src="assets/app/mobile-filing-light.webp" data-dark="assets/app/mobile-filing-dark.webp" alt="" width="780" height="1688" loading="lazy">
-          <img src="assets/app/mobile-vehicle-light.webp" data-dark="assets/app/mobile-vehicle-dark.webp" alt="" width="780" height="1688" loading="lazy">
-          <img src="assets/app/mobile-ask-light.webp" alt="" width="780" height="1688" loading="lazy">
-        </div></div>
-      </div>
+        </div>
+      
     </div>
   </div>
 </section>
@@ -192,8 +186,8 @@
   <div class="wrap">
     <div class="quotes rv">
       <figure class="qt"><blockquote>“I run the books for a security firm. Before, that was three apps and a spreadsheet. Now it’s one.”</blockquote><figcaption><span class="av">A</span><span><b>Adam</b><small>Finance, security services</small></span></figcaption></figure>
-      <figure class="qt"><blockquote>“I just wanted to see where the money goes each month. Now I know, I budget better, and I can see what’s coming before it hits the account. It caught the MOT I’d forgotten too — and now it watches the road tax and home insurance for me.”</blockquote><figcaption><span class="av">S</span><span><b>Saira</b><small>Household budgeting</small></span></figcaption></figure>
-      <p class="note center" style="grid-column:1/-1;margin-top:4px">Budgeting, forecasting and renewals — the things you’d buy a budgeting app for, included in every plan.</p>
+      <figure class="qt m-hide"><blockquote>“I just wanted to see where the money goes each month. Now I know, I budget better, and I can see what’s coming before it hits the account. It caught the MOT I’d forgotten too — and now it watches the road tax and home insurance for me.”</blockquote><figcaption><span class="av">S</span><span><b>Saira</b><small>Household budgeting</small></span></figcaption></figure>
+      <p class="note center m-hide" style="grid-column:1/-1;margin-top:4px">Budgeting, forecasting and renewals — the things you’d buy a budgeting app for, included in every plan.</p>
     </div>
   </div>
 </section>
@@ -205,14 +199,15 @@
       <h2 class="big">One person. One price.</h2>
       <p class="lede">Priced by what HMRC asks of you — never by how many ways you earn. Self-employed, landlord, or both: one plan. Company director: your personal plan is included.</p>
     </div>
-    <div class="plans rv">
+    <div class="m-teaser"><p class="price">From £9.99<small>/mo</small></p><p class="per">incl. VAT · 7 days free · one price per person</p><a class="btn btn-or" href="finrock-pricing.html">Find your plan in two taps</a></div>
+    <div class="plans rv m-hide">
       <div class="plan">
         <h3>My Life</h3>
         <p class="who">Salary, pension, savings, dividends. Not self-employed.</p>
         <p class="price">£9.99<small>/mo</small></p>
         <p class="per">incl. VAT</p>
         <ul><li><i data-lucide="check"></i><span>Every account and bill in one view</span></li><li><i data-lucide="check"></i><span>Renewals, documents, net worth</span></li><li><i data-lucide="check"></i><span>Unlimited receipt scans</span></li></ul>
-        <a class="btn btn-line" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free</a>
+        <a class="btn btn-line" href="https://app.gofinrock.com/register">Start free</a>
       </div>
       <div class="plan">
         <h3>Sole trader &amp; Landlord</h3>
@@ -220,7 +215,7 @@
         <p class="price">£14.99<small>/mo</small></p>
         <p class="per">incl. VAT · 7-day free trial</p>
         <ul><li><i data-lucide="check"></i><span>Everything in My Life</span></li><li><i data-lucide="check"></i><span>Self Assessment prepared</span></li><li><i data-lucide="check"></i><span>Invoices, mileage, receipts</span></li></ul>
-        <a class="btn btn-line" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Try 7 days free</a>
+        <a class="btn btn-line" href="https://app.gofinrock.com/register">Try 7 days free</a>
       </div>
       <div class="plan hot">
         <span class="tag">Most popular</span>
@@ -229,7 +224,7 @@
         <p class="price">£24.99<small>/mo</small></p>
         <p class="per">incl. VAT · tax-deductible</p>
         <ul><li><i data-lucide="check"></i><span>Everything under the threshold</span></li><li><i data-lucide="check"></i><span>Quarterly updates prepared</span></li><li><i data-lucide="check"></i><span>Trade + lettings, no second plan</span></li></ul>
-        <a class="btn btn-ink" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Try 7 days free</a>
+        <a class="btn btn-ink" href="https://app.gofinrock.com/register">Try 7 days free</a>
       </div>
       <div class="plan">
         <span class="tag g">Accountant included</span>
@@ -238,15 +233,15 @@
         <p class="price">£49.99<small>/mo</small></p>
         <p class="per">incl. VAT · per company</p>
         <ul><li><i data-lucide="check"></i><span>Year-end accounts and CT600</span></li><li><i data-lucide="check"></i><span>Payroll, dividends, director’s loan</span></li><li><i data-lucide="check"></i><span>Director’s personal plan included, quarterly updates too</span></li></ul>
-        <a class="btn btn-line" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Try 7 days free</a>
+        <a class="btn btn-line" href="https://app.gofinrock.com/register">Try 7 days free</a>
       </div>
     </div>
     <span class="plans-hint">Swipe for more plans →</span>
-    <p class="center" style="margin-top:26px"><a href="finrock-pricing.html" style="font-weight:700">Find your plan in two taps →</a></p>
+    <p class="center m-hide" style="margin-top:26px"><a href="finrock-pricing.html" style="font-weight:700">Find your plan in two taps →</a></p>
   </div>
 </section>
 
-<section class="sec" style="padding-top:0">
+<section class="sec m-hide" style="padding-top:0">
   <div class="wrap">
     <div class="center rv"><h2 class="big">Questions</h2></div>
     <div class="faq">
@@ -265,12 +260,12 @@
   <div class="wrap rv">
     <h2>Your whole life,<br><span class="grad">sorted by Sunday.</span></h2>
     <p class="lede center" style="margin-left:auto;margin-right:auto">Three minutes to set up. 7 days free, no card.</p>
-    <div class="ctas" style="justify-content:center"><a class="btn btn-or" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free <i data-lucide="arrow-right"></i></a></div>
+    <div class="ctas" style="justify-content:center"><a class="btn btn-or" href="https://app.gofinrock.com/register">Start free <i data-lucide="arrow-right"></i></a></div>
   </div>
   <div class="phone"><div class="screen"><img src="assets/app/mobile-home-dark.webp" alt="Finrock Home in dark mode" width="780" height="1688" loading="lazy"></div></div>
 </section>
 </main>
-<div class="mcta"><span class="p"><b>From £9.99/mo</b>incl. VAT · no card</span><a class="btn btn-or" href="https://app.gofinrock.com/register" target="_blank" rel="noopener">Start free</a></div>
+<div class="mcta"><span class="p"><b>From £9.99/mo</b>incl. VAT · no card</span><a class="btn btn-or" href="https://app.gofinrock.com/register">Start free</a></div>
 
 <footer class="foot">
   <div class="wrap">
