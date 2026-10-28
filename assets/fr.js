@@ -34,7 +34,7 @@
   if (ch) {
     var sel = {}, over = null;
     var q2 = ch.querySelector('.q2'), out = ch.querySelector('.answer p'), go = ch.querySelector('.answer a');
-    var plans = { life: ['My Life', '£9.99'], st: ['Sole trader & Landlord', '£14.99'], se: ['Sole trader & Landlord · MTD', '£24.99'], ltd: ['Limited company', '£39.99'] };
+    var plans = { life: ['My Life', '£9.99'], st: ['Sole trader & Landlord', '£14.99'], se: ['Sole trader & Landlord · MTD', '£24.99'], ltd: ['Limited company', '£49.99'] };
     function pick(k) { document.querySelectorAll('.plan').forEach(function (p) { p.classList.toggle('pick', p.dataset.plan === k); }); }
     function run() {
       var trade = sel.se || sel.prop;
@@ -44,9 +44,9 @@
       if (trade && over === null) { out.innerHTML = 'One more — is your <b>self-employed and rental income together</b> over £50,000?'; pick(null); return; }
       if (sel.ltd) {
         k = 'ltd';
-        if (trade && over) msg = '<b>Limited company</b> · <span class="num">£49.99</span>/mo — the company plus your personal MTD plan. Trade, lets, salary and life admin all in. Add an accountant for £10.';
-        else if (trade) msg = '<b>Limited company</b> · <span class="num">£39.99</span>/mo — includes your personal plan. Your trade and lets are covered, nothing extra.';
-        else msg = '<b>Limited company</b> · <span class="num">£39.99</span>/mo per company — your personal My Life included. Add an accountant for £10.';
+        if (trade && over) msg = '<b>Limited company</b> · <span class="num">£59.99</span>/mo — the company (accountant included) plus your personal MTD plan. Trade, lets, salary and life admin all in.';
+        else if (trade) msg = '<b>Limited company</b> · <span class="num">£49.99</span>/mo — includes your personal plan. Your trade and lets are covered, nothing extra.';
+        else msg = '<b>Limited company</b> · <span class="num">£49.99</span>/mo per company — accountant sign-off and your personal My Life included.';
       } else {
         if (trade) k = over ? 'se' : 'st'; else k = 'life';
         var p = plans[k];

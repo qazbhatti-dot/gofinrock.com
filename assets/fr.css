@@ -248,10 +248,6 @@ html.js .rv.in{opacity:1;transform:none}
 .wl button.btn,.cform button.btn{border:0;cursor:pointer;font-family:Inter,sans-serif}
 .cform{margin-top:56px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px 24px}
 @media(min-width:760px){.cform{padding:40px}}
-.cform .hp,.wl .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.cform-status{margin-top:16px;font-size:14px;font-weight:600;line-height:1.5}
-.cform-status[data-tone=ok]{color:var(--ok)}
-.cform-status[data-tone=bad]{color:#b42318}
 .fgrid{display:grid;gap:16px;margin-top:24px}
 @media(min-width:760px){.fgrid{grid-template-columns:1fr 1fr}.fgrid .full{grid-column:1/-1}}
 .fgrid label{display:grid;gap:7px;font-size:13.5px;font-weight:600;color:rgba(21,22,26,.7)}
@@ -531,8 +527,6 @@ a.opt:hover{color:#fff}
 /* phones: realistic glass */
 .phone{background:linear-gradient(160deg,#1a1b22,#07080b);box-shadow:0 60px 120px -30px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.12),inset 0 0 0 1.5px rgba(255,255,255,.06)}
 .screen::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.12) 0%,rgba(255,255,255,0) 28%);z-index:3}
-.screen::before{content:'';position:absolute;top:2.2%;left:50%;transform:translateX(-50%);width:26%;height:3%;border-radius:99px;background:#07080b;z-index:4}
-.final .phone .screen::before,.ph-m .screen::before,.zz-ph .screen::before{top:2.6%}
 /* hero fan: staggered entrance */
 @keyframes fr-rise{from{opacity:0;translate:0 40px}to{opacity:1;translate:0 0}}
 .fan .phone{animation:fr-rise 1.1s cubic-bezier(.16,1,.3,1) both}
@@ -578,3 +572,6 @@ a.opt:hover{color:#fff}
 @media(min-width:760px){.sec{padding:clamp(72px,9vw,120px) 0}}
 .eyebrow{white-space:nowrap}
 .once .eyebrow{white-space:normal}
+
+.screen::before{display:none}
+.screen img{object-position:top center}
