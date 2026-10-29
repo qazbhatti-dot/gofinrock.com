@@ -1,7 +1,8 @@
 /* Finrock website analytics. One file, loaded in the <head> of every page.
    Nothing loads until the visitor says yes in the cookie banner (assets/fr.js):
    Google Analytics needs "Analytics", the Meta pixel needs "Advertising".
-   GA4 property: "Finrock website" (stream gofinrock.com), Google account qazbhatti@gmail.com.
+   GA4: account "GoFinrock" (413977459), property "GoFinrock website" (561408689), stream gofinrock.com,
+   under the Google login qazbhatti@gmail.com. The other "Finrock" account there is finrock.io.
    Fill in META_PIXEL_ID when the Meta ad account exists (Week 00). */
 (function () {
   var GA4_ID = 'G-GMLD2R6RT7';
