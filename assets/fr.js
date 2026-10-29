@@ -157,3 +157,57 @@
   if (matchMedia('(max-width:759px)').matches) document.querySelectorAll('.plans').forEach(function (p) { var h = p.querySelector('.plan.hot'); if (h) p.scrollLeft = h.offsetLeft - (p.clientWidth - h.clientWidth) / 2 - 22; });
   var y = document.querySelector('[data-year]'); if (y) y.textContent = new Date().getFullYear();
 })();
+
+/* Cookie consent. Essential cookies always; analytics and advertising only after a yes.
+   The choice is kept in localStorage under 'fr-consent' and announced with a 'fr-consent' event,
+   which the analytics block on each page listens for. Footer "Cookie settings" reopens it.
+   The banner only opens by itself on a page whose analytics block has an ID filled in
+   (window.FR_TRACKING); with no trackers configured there is nothing to ask about. */
+(function () {
+  var KEY = 'fr-consent', VERSION = 1;
+  function read() { try { var c = JSON.parse(localStorage.getItem(KEY) || 'null'); return c && c.v === VERSION ? c : null; } catch (e) { return null; } }
+  function save(analytics, marketing) {
+    var c = { v: VERSION, analytics: !!analytics, marketing: !!marketing, at: new Date().toISOString() };
+    try { localStorage.setItem(KEY, JSON.stringify(c)); } catch (e) {}
+    window.frConsentState = c;
+    try { window.dispatchEvent(new CustomEvent('fr-consent', { detail: c })); } catch (e) {}
+    close();
+  }
+  var root = null;
+  function legalHref() { var a = document.querySelector('a[href$="finrock-legal.html"]'); return (a ? a.getAttribute('href') : 'finrock-legal.html') + '#cookies'; }
+  function close() { if (root) { root.remove(); root = null; } document.body.classList.remove('cc-open'); }
+  function open(showSettings) {
+    close();
+    var c = read() || { analytics: false, marketing: false };
+    root = document.createElement('div');
+    root.className = 'cc'; root.setAttribute('role', 'dialog'); root.setAttribute('aria-live', 'polite'); root.setAttribute('aria-label', 'Cookie choices');
+    root.innerHTML =
+      '<div class="cc-in">' +
+        '<p class="cc-t">Cookies, plainly</p>' +
+        '<p class="cc-p">We use essential cookies to run this site. With your OK we’d also measure visits and see which of our ads work. Never tied to your financial data. <a href="' + legalHref() + '">Details</a></p>' +
+        '<div class="cc-set"' + (showSettings ? '' : ' hidden') + '>' +
+          '<label class="cc-row"><span><b>Essential</b><small>Sign-in, security, your choices here. Always on.</small></span><input type="checkbox" checked disabled></label>' +
+          '<label class="cc-row"><span><b>Analytics</b><small>Google Analytics: which pages help and which confuse.</small></span><input type="checkbox" name="analytics"' + (c.analytics ? ' checked' : '') + '></label>' +
+          '<label class="cc-row"><span><b>Advertising</b><small>Meta and Google Ads: whether an ad led to a sign-up.</small></span><input type="checkbox" name="marketing"' + (c.marketing ? ' checked' : '') + '></label>' +
+        '</div>' +
+        '<div class="cc-b">' +
+          '<button type="button" class="btn btn-or" data-cc="all">Accept all</button>' +
+          '<button type="button" class="btn cc-no" data-cc="none">Reject non-essential</button>' +
+          '<button type="button" class="cc-link" data-cc="' + (showSettings ? 'save' : 'settings') + '">' + (showSettings ? 'Save my choices' : 'Choose') + '</button>' +
+        '</div>' +
+      '</div>';
+    root.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-cc]'); if (!b) return;
+      var k = b.getAttribute('data-cc');
+      if (k === 'all') save(true, true);
+      else if (k === 'none') save(false, false);
+      else if (k === 'settings') open(true);
+      else if (k === 'save') save(root.querySelector('[name=analytics]').checked, root.querySelector('[name=marketing]').checked);
+    });
+    document.body.appendChild(root);
+    document.body.classList.add('cc-open');
+  }
+  window.frConsent = { get: read, open: function () { open(true); } };
+  document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('[data-cookie-settings]'); if (a) { e.preventDefault(); open(true); } });
+  if (!read() && window.FR_TRACKING) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { open(false); }); else open(false); }
+})();
