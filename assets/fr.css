@@ -111,7 +111,7 @@ h2.big{font-size:clamp(34px,5.6vw,60px);line-height:1.0;margin-top:14px}
 .hdr>.wrap{position:relative;z-index:61;display:flex;align-items:center;gap:32px;height:64px}
 
 
-.logo img{height:23px;width:auto}
+.logo img{height:31px;width:auto}
 
 
 .hdr nav:not(.sheet){display:none;gap:26px}
