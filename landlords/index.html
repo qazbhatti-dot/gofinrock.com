@@ -19,10 +19,10 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Sans:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/fr.css?v=20261029e">
+<link rel="stylesheet" href="../assets/fr.css?v=20261029f">
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer fetchpriority="low"></script>
-<script src="../assets/fr.js?v=20261029e" defer></script>
+<script src="../assets/fr.js?v=20261029f" defer></script>
 <style>
 .hero .lede.ll{max-width:34em}
 .hero .fine b{color:rgba(255,255,255,.75)}
@@ -43,42 +43,7 @@
 @media(max-width:759px){.tli.ll{grid-template-columns:40px minmax(0,1fr);gap:12px}}
 .fine.dark{color:var(--mute)}
 </style>
-<script>
-/* Analytics. Fill in the IDs when the Meta and Google Ads accounts exist.
-   Nothing loads while an ID is empty, and nothing loads until the visitor says yes
-   in the cookie banner (assets/fr.js): Meta needs 'Advertising', GA4 needs 'Analytics'. */
-(function () {
-  const META_PIXEL_ID = '';
-  const GA4_ID = '';
-  var meta = false, ga = false;
-  window.FR_TRACKING = !!(META_PIXEL_ID || GA4_ID);  /* the cookie banner only appears once a tracker is configured */
-  function consent() { try { var c = JSON.parse(localStorage.getItem('fr-consent') || 'null'); return c && c.v === 1 ? c : {}; } catch (e) { return {}; } }
-  function load(c) {
-  if (META_PIXEL_ID && c.marketing && !meta) {
-    !function (f, b, e, v, n, t, s) { if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments) }; if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s) }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', META_PIXEL_ID); fbq('track', 'PageView'); meta = true;
-  }
-  if (GA4_ID && c.analytics && !ga) {
-    var g = document.createElement('script'); g.async = true; g.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA4_ID); document.head.appendChild(g);
-    window.dataLayer = window.dataLayer || []; window.gtag = function () { window.dataLayer.push(arguments); };
-    gtag('js', new Date()); gtag('config', GA4_ID); ga = true;
-  }
-  }
-  load(consent());
-  window.addEventListener('fr-consent', function (e) { load(e.detail || {}); });
-  /* frTrack('lead') when a checker shows a result (the check lives on /mtd-check/); frTrack('checkout') when a Start free button is clicked. */
-  window.frTrack = function (ev, data) {
-    try {
-      if (meta && window.fbq) fbq('track', ev === 'lead' ? 'Lead' : 'InitiateCheckout', data || {});
-      if (ga && window.gtag) gtag('event', ev === 'lead' ? 'generate_lead' : 'begin_checkout', data || {});
-    } catch (e) {}
-  };
-  document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href^="https://app.gofinrock.com/register"]') : null;
-    if (a) window.frTrack('checkout', { content_name: 'landlords' });
-  });
-})();
-</script>
+<script src="../assets/fr-analytics.js?v=20261029f"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
