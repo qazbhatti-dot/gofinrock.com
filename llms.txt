@@ -38,6 +38,8 @@ Sole traders and freelancers · side hustlers and landlords · limited company d
 - [Home](https://gofinrock.com/): positioning and overview
 - [Sole traders](https://gofinrock.com/finrock-sole-traders.html): Self Assessment, MTD quarterly updates, expenses
 - [Side hustlers & landlords](https://gofinrock.com/finrock-side-hustlers.html)
+- [MTD check](https://gofinrock.com/mtd-check/): free two-minute check of whether you are in Making Tax Digital for Income Tax and from which April (qualifying income = self-employment turnover + your share of gross rent, before expenses); no account needed
+- [Landlords](https://gofinrock.com/landlords/): every let on its own page (rent, costs, mortgage, Section 24, certificates, tenancy dates), nation-specific rules, SA105 and quarterly updates prepared; £14.99/mo every property included
 - [Business (sole trader & Ltd)](https://gofinrock.com/finrock-business.html): invoices, bills, VAT, payroll
 - [My Life — personal](https://gofinrock.com/finrock-personal.html): property, pension, vehicle, insurance, documents, renewals
 - [Accountants](https://gofinrock.com/finrock-accountants.html): the practice portal
