@@ -1518,4 +1518,4 @@ h1,h2.big,.final h2,.phero h1{letter-spacing:-.045em;font-weight:700}
 .cc-open .mcta{display:none}
 @media(max-width:520px){.cc{left:10px;right:10px;bottom:10px}.cc-b .btn{flex:1 1 0}.cc-link{margin:2px auto 0;flex-basis:100%;text-align:center}}
 .foot-cc{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:none}
-.foot .soc{margin-top:14px}.foot .soc a{display:inline-flex;align-items:center;gap:8px;padding:0}.foot .soc svg{flex:none}
+.foot .soc{margin-top:14px;display:flex;flex-direction:column;gap:8px}.foot .soc a{display:inline-flex;align-items:center;gap:8px;padding:0}.foot .soc svg{flex:none}
