@@ -3,10 +3,10 @@
    Google Analytics needs "Analytics", the Meta pixel needs "Advertising".
    GA4: account "GoFinrock" (413977459), property "GoFinrock website" (561408689), stream gofinrock.com,
    under the Google login qazbhatti@gmail.com. The other "Finrock" account there is finrock.io.
-   Fill in META_PIXEL_ID when the Meta ad account exists (Week 00). */
+   Meta pixel: dataset "GoFinrock website" (1657294219341778) in the GoFinrock business portfolio (260233768309677). */
 (function () {
   var GA4_ID = 'G-GMLD2R6RT7';
-  var META_PIXEL_ID = '';
+  var META_PIXEL_ID = '1657294219341778';
   var meta = false, ga = false;
   window.FR_TRACKING = !!(META_PIXEL_ID || GA4_ID);  /* the cookie banner only appears once a tracker is configured */
   function consent() { try { var c = JSON.parse(localStorage.getItem('fr-consent') || 'null'); return c && c.v === 1 ? c : {}; } catch (e) { return {}; } }
