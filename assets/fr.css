@@ -791,7 +791,7 @@ a.opt:hover{color:#fff}
 
 @media(max-width:759px){
  body{font-size:17px}
- .bar{display:none}
+ .bar{font-size:12.5px;padding:8px 14px}
  .hdr>.wrap{height:60px}
  .hdr .cta{display:none}
  .wrap{padding:0 22px}
