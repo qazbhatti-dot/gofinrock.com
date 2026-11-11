@@ -231,6 +231,7 @@
     if (loaded) { if (open) openChat(); return; }
     loaded = true; if (open) btn.classList.add('busy');
     T = window.Tawk_API = window.Tawk_API || {}; window.Tawk_LoadStart = new Date();
+    T.onBeforeLoad = function () { if (!wantOpen && T.hideWidget) T.hideWidget(); };
     T.onLoad = function () { btn.classList.remove('busy'); if (wantOpen) openChat(); else if (T.hideWidget) T.hideWidget(); };
     T.onChatMaximized = function () { root.classList.add('chat-open'); btn.classList.remove('new'); };
     T.onChatMinimized = function () { root.classList.remove('chat-open'); if (T.hideWidget) T.hideWidget(); };
