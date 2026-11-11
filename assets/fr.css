@@ -1582,3 +1582,9 @@ html.has-chat .chatbox{display:block;margin-bottom:28px}
 .cmp .fr{background:var(--ind);color:#fff;font-weight:700;border-bottom-color:rgba(255,255,255,.12)}
 .cmp th.fr{background:var(--or);color:#140d02;letter-spacing:.1em}
 .cmp tr:last-child td.fr{border-bottom:0}
+
+/* phones and tablets: a hero with two phones sat left of centre because only the left side phone exists. Centre the pair. */
+@media(max-width:1039px){
+ .fan.duo .c{transform:translateX(-50%) translateX(calc(var(--pw)*.31))!important}
+ .fan.duo .l{transform:translateX(-50%) translateX(calc(var(--pw)*-.29)) rotate(-6deg) scale(.86)!important}
+}
