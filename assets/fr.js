@@ -219,14 +219,22 @@
 (function () {
   var PROPERTY = '6ab6afe0d617803446f5ca67', WIDGET = '1k3cpu1lo';
   if (!PROPERTY || !WIDGET) return;
-  document.documentElement.classList.add('has-chat');
-  var loaded = false, wantOpen = false;
+  var root = document.documentElement; root.classList.add('has-chat');
+  var loaded = false, wantOpen = false, T;
+  /* Our own launcher in the site's colours. Tawk's default bubble (and its "We are here" sticker) stays hidden. */
+  var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fr-chat'; btn.setAttribute('data-chat', ''); btn.setAttribute('aria-label', 'Chat with us');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.3 8.7 8.7 0 0 1-3.7-.8L3 20.5l1.600-4.700A8.200 8.200 0 0 1 4 11.5 8.400 8.400 0 0 1 12.500 3.200 8.400 8.400 0 0 1 21 11.500Z"/><path d="M8.500 11.500h.01M12.500 11.500h.01M16.500 11.500h.01"/></svg><i></i>';
+  function add() { document.body.appendChild(btn); } if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
+  function openChat() { if (!T || !T.maximize) return; if (T.showWidget) T.showWidget(); T.maximize(); root.classList.add('chat-open'); btn.classList.remove('new'); }
   function load(open) {
     if (open) wantOpen = true;
-    if (loaded) { if (open && window.Tawk_API && window.Tawk_API.maximize) window.Tawk_API.maximize(); return; }
-    loaded = true;
-    window.Tawk_API = window.Tawk_API || {}; window.Tawk_LoadStart = new Date();
-    window.Tawk_API.onLoad = function () { if (wantOpen) window.Tawk_API.maximize(); };
+    if (loaded) { if (open) openChat(); return; }
+    loaded = true; if (open) btn.classList.add('busy');
+    T = window.Tawk_API = window.Tawk_API || {}; window.Tawk_LoadStart = new Date();
+    T.onLoad = function () { btn.classList.remove('busy'); if (wantOpen) openChat(); else if (T.hideWidget) T.hideWidget(); };
+    T.onChatMaximized = function () { root.classList.add('chat-open'); btn.classList.remove('new'); };
+    T.onChatMinimized = function () { root.classList.remove('chat-open'); if (T.hideWidget) T.hideWidget(); };
+    T.onChatMessageAgent = function () { if (!root.classList.contains('chat-open')) btn.classList.add('new'); };
     var s = document.createElement('script'); s.async = true; s.src = 'https://embed.tawk.to/' + PROPERTY + '/' + WIDGET;
     s.charset = 'UTF-8'; s.setAttribute('crossorigin', '*'); document.head.appendChild(s);
   }
