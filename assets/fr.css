@@ -1589,14 +1589,3 @@ html.has-chat .chatbox{display:block;margin-bottom:28px}
  .fan.duo .l{transform:translateX(-50%) translateX(calc(var(--pw)*-.29)) rotate(-6deg) scale(.86)!important}
 }
 
-/* our chat launcher (replaces the Tawk bubble) */
-.fr-chat{position:fixed;right:18px;bottom:18px;z-index:55;width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;background:var(--or);color:#140d02;box-shadow:0 10px 28px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.18) inset;transition:transform .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent}
-.fr-chat:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 14px 34px rgba(0,0,0,.34),0 0 0 1px rgba(255,255,255,.18) inset}
-.fr-chat:focus-visible{outline:3px solid #fff;outline-offset:3px}
-.fr-chat i{display:none;position:absolute;top:2px;right:2px;width:13px;height:13px;border-radius:50%;background:#e5484d;border:2px solid #fff}
-.fr-chat.new i{display:block}
-.fr-chat.busy svg{animation:frchat 1s ease-in-out infinite}
-@keyframes frchat{50%{opacity:.35}}
-html.chat-open .fr-chat{display:none}
-@media(max-width:759px){.fr-chat{right:14px;bottom:14px;width:52px;height:52px}}
-@media print{.fr-chat{display:none}}
