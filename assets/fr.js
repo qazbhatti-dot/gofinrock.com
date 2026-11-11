@@ -211,3 +211,35 @@
   document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('[data-cookie-settings]'); if (a) { e.preventDefault(); open(true); } });
   if (!read() && window.FR_TRACKING) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { open(false); }); else open(false); }
 })();
+
+/* Live chat (Tawk.to). Set the two ids from the Tawk dashboard (Administration > Chat Widget > Direct Chat Link:
+   https://tawk.to/chat/<PROPERTY>/<WIDGET>). While either is empty nothing loads and the contact form stays.
+   The widget sets its own cookies, so it loads only after the visitor accepts non-essential cookies, or when
+   they press a "Chat with us" button (which is them asking for it). */
+(function () {
+  var PROPERTY = '6ab6afe0d617803446f5ca67', WIDGET = '1k3cpu1lo';
+  if (!PROPERTY || !WIDGET) return;
+  document.documentElement.classList.add('has-chat');
+  var loaded = false, wantOpen = false;
+  function load(open) {
+    if (open) wantOpen = true;
+    if (loaded) { if (open && window.Tawk_API && window.Tawk_API.maximize) window.Tawk_API.maximize(); return; }
+    loaded = true;
+    window.Tawk_API = window.Tawk_API || {}; window.Tawk_LoadStart = new Date();
+    window.Tawk_API.onLoad = function () { if (wantOpen) window.Tawk_API.maximize(); };
+    var s = document.createElement('script'); s.async = true; s.src = 'https://embed.tawk.to/' + PROPERTY + '/' + WIDGET;
+    s.charset = 'UTF-8'; s.setAttribute('crossorigin', '*'); document.head.appendChild(s);
+  }
+  function allowed() { try { var c = JSON.parse(localStorage.getItem('fr-consent') || 'null'); return !!(c && (c.analytics || c.ads || c.all)); } catch (e) { return false; } }
+  if (allowed()) load(false);
+  window.addEventListener('fr-consent', function () { if (allowed()) load(false); });
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-chat]'); if (b) { e.preventDefault(); load(true); } });
+})();
+
+/* Films marked data-lazy load and play only when scrolled into view, and pause when out of it. */
+(function () {
+  var vids = document.querySelectorAll('video[data-lazy]'); if (!vids.length) return;
+  if (!('IntersectionObserver' in window)) { vids.forEach(function (v) { v.setAttribute('controls', ''); }); return; }
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { var v = e.target; if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () { v.setAttribute('controls', ''); }); } else v.pause(); }); }, { threshold: 0.35 });
+  vids.forEach(function (v) { io.observe(v); });
+})();

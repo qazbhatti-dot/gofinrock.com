@@ -1519,3 +1519,66 @@ h1,h2.big,.final h2,.phero h1{letter-spacing:-.045em;font-weight:700}
 @media(max-width:520px){.cc{left:10px;right:10px;bottom:10px}.cc-b .btn{flex:1 1 0}.cc-link{margin:2px auto 0;flex-basis:100%;text-align:center}}
 .foot-cc{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:none}
 .foot .soc{margin-top:14px;display:flex;flex-direction:column;gap:8px}.foot .soc a{display:inline-flex;align-items:center;gap:8px;padding:0}.foot .soc svg{flex:none}
+
+/* ---- November 2026: footer legal row. The links used inline styles that fought the mobile rule making every footer link a 40px flex row, so they sat on different baselines. */
+.foot .legal{align-items:center}
+.foot .legal .legal-links{display:flex;align-items:center;gap:6px 20px;flex-wrap:wrap}
+.foot .legal a,.foot .legal .foot-cc{display:inline-flex;align-items:center;min-height:0;padding:0;margin:0;font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.5)}
+.foot .legal a:hover,.foot .legal .foot-cc:hover{color:#fff}
+@media(max-width:759px){
+ .foot .legal{flex-direction:column;align-items:flex-start;gap:10px}
+ .foot .legal a,.foot .legal .foot-cc{min-height:32px}
+ .foot .soc{flex-direction:row;flex-wrap:wrap;gap:4px 20px}
+ .foot .cols>div:last-child{grid-column:1/-1}
+}
+/* ---- Why one app (film + three questions) */
+.why{background:radial-gradient(90% 80% at 85% 0%,#23233d 0%,#12121c 45%,var(--ink) 75%);color:#fff}
+.why .lede{color:rgba(255,255,255,.72)}
+.why-g{display:grid;gap:36px;align-items:center}
+@media(min-width:1040px){.why-g{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:64px}}
+.why-list{list-style:none;margin:26px 0 0;padding:0;display:grid;gap:14px}
+.why-list li{padding:16px 18px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-size:15px;line-height:1.5;color:rgba(255,255,255,.74)}
+.why-list b{display:block;color:#fff;font-size:16px;margin-bottom:2px}
+.why-film{border-radius:22px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.1);background:#0b0b10;aspect-ratio:16/9}
+.why-film video{display:block;width:100%;height:100%;object-fit:cover}
+/* ---- Five apps out. One in. */
+.swap-g{display:grid;gap:16px;margin-top:40px}
+@media(min-width:900px){.swap-g{grid-template-columns:1fr 1fr;gap:20px;margin-top:56px}}
+.swap-col{border-radius:22px;padding:26px 24px;border:1px solid var(--line);background:#fff}
+.swap-col h3{font-family:var(--disp);font-size:20px;letter-spacing:-.02em}
+.swap-col ul{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
+.swap-col li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.45}
+.swap-col li:before{content:'';flex:none;width:8px;height:8px;border-radius:50%;margin-top:7px;background:rgba(21,22,26,.28)}
+.swap-col.new{background:var(--ink);color:#fff;border-color:transparent;box-shadow:0 30px 70px rgba(11,11,16,.25)}
+.swap-col.new li:before{background:var(--or)}
+.swap-n{margin-top:18px;font-size:13.5px;font-weight:600;color:var(--mute)}.swap-col.new .swap-n{color:rgba(255,255,255,.66)}
+.swap-more{display:inline-flex;align-items:center;gap:8px;margin-top:28px;font-weight:700;color:var(--ind);border-bottom:2px solid var(--or);padding-bottom:2px}
+/* ---- Switch page table */
+.cmp{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff;border-radius:18px;overflow:hidden;border:1px solid var(--line)}
+.cmp th,.cmp td{padding:13px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.cmp th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);background:var(--paper2)}
+.cmp tr:last-child td{border-bottom:0}.cmp td:first-child{font-weight:600}.cmp .fr{background:rgba(246,146,26,.08);font-weight:600}
+.cmp-w{overflow-x:auto;margin-top:36px;-webkit-overflow-scrolling:touch}
+.cmp-note{font-size:12.5px;color:var(--mute);margin-top:12px;line-height:1.55}
+/* ---- Live chat button on the contact page */
+.chatbox{display:none;border-radius:22px;padding:28px 24px;background:var(--ink);color:#fff;max-width:640px}
+.chatbox p{color:rgba(255,255,255,.72);margin-top:8px;font-size:15px;line-height:1.55}.chatbox .btn{margin-top:18px}
+html.has-chat .chatbox{display:block;margin-bottom:28px}
+
+@media(max-width:759px){.cmp{font-size:12.5px;table-layout:fixed}.cmp th,.cmp td{padding:10px 8px}.cmp th{font-size:9.5px;letter-spacing:.03em}.cmp th:first-child,.cmp td:first-child{width:34%}.cmp th:nth-child(2),.cmp th:nth-child(3){width:20%}.cmp td{overflow-wrap:anywhere}.cmp-w{overflow-x:visible}}
+
+/* tablet: the popular plan's glow pushed the page 27px wider than the screen */
+.plan.hot{overflow:hidden}
+/* long section labels on the legal page were cut off on phones */
+.art .eyebrow{white-space:normal;line-height:1.5}
+/* a tall film beside words */
+.filmrow{display:grid;gap:32px;align-items:center;justify-items:center;text-align:center}
+.filmrow .lede{margin-left:auto;margin-right:auto}
+@media(min-width:900px){.filmrow{grid-template-columns:auto minmax(0,1fr);gap:72px;justify-items:start;text-align:left}.filmrow .lede{margin-left:0}.filmrow.flip .vphone{order:2}}
+.vphone{width:min(300px,72vw);aspect-ratio:9/16;border-radius:34px;overflow:hidden;background:#0b0b10;box-shadow:0 40px 90px rgba(11,11,16,.35),0 0 0 8px #111,0 0 0 9px rgba(255,255,255,.12)}
+.vphone video{display:block;width:100%;height:100%;object-fit:cover}
+
+/* the Finrock column stands out: indigo with white type, orange header */
+.cmp .fr{background:var(--ind);color:#fff;font-weight:700;border-bottom-color:rgba(255,255,255,.12)}
+.cmp th.fr{background:var(--or);color:#140d02;letter-spacing:.1em}
+.cmp tr:last-child td.fr{border-bottom:0}

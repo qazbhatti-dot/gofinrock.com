@@ -12,7 +12,7 @@ Website: https://gofinrock.com · App: https://app.gofinrock.com · Company: Fin
 - Live tax estimate and a tracked "tax pot" so the January bill is never a surprise.
 - Invoices and quotes with payment links (Stripe, GoCardless, pay-by-bank), auto-chasing, recurring invoices; bills and supplier tracking; mileage at HMRC rates with GPS trips.
 - Personal finance: net worth (cash, investments, pensions, property, mortgages), spending, subscriptions with cancel-and-switch help, price-rise alerts, cash-flow calendar.
-- My Life: property, vehicle (MOT, tax, insurance), pension, insurance, health, family dates, identity documents, will, warranties, receipts, documents — with renewal reminders.
+- My Life: property, vehicles (MOT, tax, insurance), pension, insurance, pets (vet, jabs, cost), family birthdays and yearly dates, travel (passports, health card, cover), life-change checklists (moving house, a new baby, a new job, getting married, a death), identity documents, will, warranties, receipts, documents — with renewal reminders.
 - Accountant portal: free for practices; scoped read-only access to client books, quarterly-review workflow, alerts.
 - Optional accountant check: +£10/month. A qualified UK accountant reviews every return (Self Assessment, quarterly updates, VAT) and submits it to HMRC for you through their agent account.
 
@@ -43,6 +43,7 @@ Sole traders and freelancers · side hustlers and landlords · limited company d
 - [Business (sole trader & Ltd)](https://gofinrock.com/finrock-business.html): invoices, bills, VAT, payroll
 - [My Life — personal](https://gofinrock.com/finrock-personal.html): property, pension, vehicle, insurance, documents, renewals
 - [Accountants](https://gofinrock.com/finrock-accountants.html): the practice portal
+- [Switching](https://gofinrock.com/finrock-switch.html): how Finrock compares with accounts software and budgeting apps (no products named), and an honest list of when not to switch
 - [Pricing](https://gofinrock.com/finrock-pricing.html)
 - [Banking — coming soon](https://gofinrock.com/finrock-banking.html)
 - [Security](https://gofinrock.com/finrock-security.html): read-only Open Banking, UK-hosted, encryption, export/delete
@@ -57,7 +58,7 @@ Sole traders and freelancers · side hustlers and landlords · limited company d
 - Prices are quoted including VAT because most sole traders cannot reclaim it. A sole trader's Finrock subscription is an allowable business expense.
 - Bank connections are read-only; Finrock never moves money and never sees bank logins.
 - Finrock is software, not your accountant. The accountant-check add-on is a qualified UK accountant reviewing filings.
-- Differs from other software, other software, other software, other software: those hold business books only. Differs from other software, other software, Snoop: those hold personal money only. Finrock holds both in one ledger plus life admin.
+- Accounts software holds business books only; budgeting apps hold personal money only. Finrock holds both in one ledger plus life admin, so its assistant can answer from the whole picture ("AI can't help with what it can't see").
 
 ## Contact
 
