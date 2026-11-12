@@ -222,9 +222,9 @@
   var root = document.documentElement; root.classList.add('has-chat');
   var loaded = false, wantOpen = false, T;
   /* Our own launcher: a pill in the site's colours with the Finrock mark. Tawk's default bubble stays hidden. */
-  var me = document.querySelector('script[src*="fr.js"]'), icon = (me ? me.getAttribute('src').replace(/fr\.js.*$/, '') : 'assets/') + 'favicon.svg';
-  var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fr-chat'; btn.setAttribute('data-chat', ''); btn.setAttribute('aria-label', 'Chat with us');
-  btn.innerHTML = '<span class="fr-chat-mark"><img src="' + icon + '" alt="" width="26" height="24"></span><span class="fr-chat-label">Chat with us</span><span class="fr-chat-x" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="fr-chat-close">Close</span><i></i>';
+  var me = document.querySelector('script[src*="fr.js"]'), icon = (me ? me.getAttribute('src').replace(/fr\.js.*$/, '') : 'assets/') + 'favicon.svg', finny = icon.replace(/favicon\.svg$/, 'finny.png');
+  var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fr-chat'; btn.setAttribute('data-chat', ''); btn.setAttribute('aria-label', 'Ask Finny');
+  btn.innerHTML = '<span class="fr-chat-mark"><img src="' + finny + '" alt="" width="40" height="40"></span><span class="fr-chat-label">Ask Finny</span><span class="fr-chat-x" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="fr-chat-close">Close</span><i></i>';
   function add() { document.body.appendChild(btn); } if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
   /* The pill opens our own help panel first: start a chat, six common questions answered in place, or the contact form.
      Nothing is fetched from Tawk until Start conversation is pressed. */
@@ -239,50 +239,61 @@
   var panel = null, CH = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   function txt(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
   function build() {
-    var base = icon.replace(/assets\/favicon\.svg$/, '');
-    panel = document.createElement('div'); panel.className = 'fr-cp'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Finrock help'); panel.tabIndex = -1;
-    panel.innerHTML = '<div class="fr-cp-home"><span class="fr-cp-av"><img src="' + icon + '" alt="" width="32" height="29"></span><h2>Hi there! 👋</h2>' +
-      '<p class="fr-cp-in">I’m the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.</p>' +
-      '<div class="fr-cp-card"><h3>Ask Finrock Assistant</h3><p>Instant answers from the Finrock help centre</p><button type="button" class="fr-cp-link" data-chat>Start conversation ' + CH + '</button></div>' +
+    var base = icon.replace(/assets\/favicon\.svg$/, ''), BK = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
+    panel = document.createElement('div'); panel.className = 'fr-cp'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Ask Finny'); panel.tabIndex = -1;
+    panel.innerHTML = '<div class="fr-cp-home"><span class="fr-cp-av"><img src="' + finny + '" alt="" width="56" height="56"></span><h2>Hi there! 👋</h2>' +
+      '<p class="fr-cp-in">I’m Finny, the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.</p>' +
+      '<div class="fr-cp-card"><h3>Ask Finny</h3><p>Instant answers from the Finrock help centre</p><button type="button" class="fr-cp-link" data-chat>Start conversation ' + CH + '</button></div>' +
       '<div class="fr-cp-card fr-cp-list"><h3>Popular questions</h3>' + QA.map(function (x, i) { return '<button type="button" class="fr-cp-q" data-q="' + i + '"><span>' + txt(x[0]) + '</span>' + CH + '</button>'; }).join('') + '</div>' +
       '<div class="fr-cp-card"><h3>Need a person?</h3><p>Send your question to the Finrock support team and we’ll reply by email.</p><a class="fr-cp-link" href="' + base + 'finrock-contact.html#contact-form">Contact support ' + CH + '</a></div>' +
       '<p class="fr-cp-note">AI answers can be wrong.</p></div>' +
-      '<div class="fr-cp-ans" hidden><button type="button" class="fr-cp-back"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg> Back</button><h3></h3><p></p>' +
-      '<button type="button" class="fr-cp-link" data-chat>Didn’t answer my question? Ask the assistant ' + CH + '</button></div>';
+      '<div class="fr-cp-ans" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><img src="' + finny + '" alt="" width="36" height="36"><div><b>Finny</b><span>Finrock AI assistant · Replies instantly</span></div></div>' +
+      '<div class="fr-cp-log" aria-live="polite"></div>' +
+      '<div class="fr-cp-foot"><button type="button" class="fr-cp-ask" data-chat><span>Ask a question about Finrock…</span><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></button>' +
+      '<p class="fr-cp-note">AI answers can be wrong. <a href="' + base + 'finrock-contact.html#contact-form">Contact support</a></p></div></div>';
     document.body.appendChild(panel);
-    var home = panel.querySelector('.fr-cp-home'), ans = panel.querySelector('.fr-cp-ans');
+    var home = panel.querySelector('.fr-cp-home'), ans = panel.querySelector('.fr-cp-ans'), log = panel.querySelector('.fr-cp-log');
+    function say(who, text) {
+      var m = document.createElement('div'); m.className = 'fr-cp-m ' + who;
+      m.innerHTML = (who === 'bot' ? '<img src="' + finny + '" alt="" width="28" height="28">' : '') + '<div>' + (text === null ? '<span class="fr-cp-dots"><i></i><i></i><i></i></span>' : txt(text)) + '</div>';
+      log.appendChild(m); log.scrollTop = log.scrollHeight; return m;
+    }
     panel.addEventListener('click', function (e) {
       var q = e.target.closest && e.target.closest('.fr-cp-q');
-      if (q) { var x = QA[+q.getAttribute('data-q')]; ans.querySelector('h3').textContent = x[0]; ans.querySelector('p').textContent = x[1]; home.hidden = true; ans.hidden = false; panel.scrollTop = 0; ans.querySelector('.fr-cp-back').focus(); return; }
-      if (e.target.closest && e.target.closest('.fr-cp-back')) { ans.hidden = true; home.hidden = false; panel.scrollTop = 0; }
+      if (q) {
+        var x = QA[+q.getAttribute('data-q')]; home.hidden = true; ans.hidden = false; say('user', x[0]); var w = say('bot', null);
+        setTimeout(function () { w.lastChild.textContent = x[1]; log.scrollTop = log.scrollHeight; }, 600);
+        ans.querySelector('.fr-cp-back').focus(); return;
+      }
+      if (e.target.closest && e.target.closest('.fr-cp-back')) { ans.hidden = true; home.hidden = false; home.scrollTop = 0; }
     });
   }
   function panelOpen() { return root.classList.contains('chat-panel'); }
   function showPanel() {
     if (!panel) build();
     panel.querySelector('.fr-cp-ans').hidden = true; panel.querySelector('.fr-cp-home').hidden = false;
-    root.classList.add('chat-panel', 'chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close'); panel.scrollTop = 0; panel.focus();
+    root.classList.add('chat-panel', 'chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close'); panel.querySelector('.fr-cp-home').scrollTop = 0; panel.focus();
   }
-  function hidePanel(keepOpen) { root.classList.remove('chat-panel'); if (!keepOpen) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Chat with us'); } }
+  function hidePanel(keepOpen) { root.classList.remove('chat-panel'); if (!keepOpen) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finny'); } }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && panelOpen()) { hidePanel(false); btn.focus(); } });
   function openChat() { if (!T || !T.maximize) return; if (T.showWidget) T.showWidget(); T.maximize(); opened(); }
   /* While the chat is open the pill is its Close button, as on a phone the window fills the screen. Tawk's own
      round minimise button is hidden under it, and a window that would sit under the pill is shortened to end above it. */
   /* The chat window is Tawk's, drawn in a same-origin frame, so it is given the same look as the panel: white bar,
      grey page, white answers, orange questions. Tawk names the assistant "Customer Support"; that is shown as Finrock Assistant. */
-  var ICON = 'https://gofinrock.com/assets/favicon.svg';
+  var ICON = 'https://gofinrock.com/assets/finny.png';
   var SKIN = '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
     '.tawk-toolbar,.tawk-toolbar *{color:#18181b!important}.tawk-toolbar svg,.tawk-toolbar svg *{fill:#18181b!important}' +
     '.tawk-toolbar-title,.tawk-toolbar-agent-name{font-weight:600!important;font-size:15px!important;line-height:1.3!important}' +
     '.tawk-toolbar-agent-name{position:relative;padding-left:46px!important;min-height:36px;display:flex!important;flex-direction:column;justify-content:center;margin:0 0 0 4px!important;overflow:visible!important}' +
-    '.tawk-toolbar-agent-name::before{content:"";position:absolute;left:0;top:50%;width:36px;height:36px;margin-top:-18px;border-radius:50%;background:#fff url(' + ICON + ') center/22px no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
-    '.tawk-toolbar-agent-name::after{content:"AI assistant \\00B7  Replies instantly";font-weight:400;font-size:12px;color:#71717a}' +
+    '.tawk-toolbar-agent-name::before{content:"";position:absolute;left:0;top:50%;width:36px;height:36px;margin-top:-18px;border-radius:50%;background:#fff url(' + ICON + ') center/cover no-repeat}' +
+    '.tawk-toolbar-agent-name::after{content:"Finrock AI assistant \\00B7  Replies instantly";font-weight:400;font-size:12px;color:#71717a}' +
     'html body .tawk-overlay,html body .tawk-router-view,html body .tawk-main-panel,html body .tawk-chat-panel.tawk-chat-panel.tawk-chat-panel.tawk-chat-panel{background:#f4f4f6!important}' +
     '.tawk-home-view .tawk-header-text,.tawk-home-view h1,.tawk-home-view h2,.tawk-home-view p{color:#18181b!important}' +
     '.tawk-agent-chat-bubble{background:#fff!important;color:#18181b!important;border:1px solid #e4e4e7!important;border-radius:16px 16px 16px 4px!important;padding:9px 13px!important}.tawk-agent-chat-bubble *{color:#18181b!important}.tawk-agent-chat-bubble a{color:#b45309!important}' +
     '.tawk-visitor-chat-bubble{background:#F6921A!important;color:#111!important;border-radius:16px 16px 4px 16px!important;padding:9px 13px!important}.tawk-visitor-chat-bubble *{color:#111!important}' +
     '.tawk-chat-name-margin{font-size:12px!important;color:#71717a!important}' +
-    '.tawk-message-profile .tawk-avatar-image{background:#fff url(' + ICON + ') center/60% no-repeat!important;border-radius:50%!important;box-shadow:0 0 0 1px #e4e4e7}.tawk-message-profile img{opacity:0!important}' +
+    '.tawk-message-profile .tawk-avatar-image{background:#fff url(' + ICON + ') center/cover no-repeat!important;border-radius:50%!important}.tawk-message-profile img{opacity:0!important}' +
     '.tawk-footer{background:#f4f4f6!important;box-shadow:none!important}.tawk-footer .tawk-chatinput{background:#fff!important;border-radius:14px!important;box-shadow:0 0 0 1px #e4e4e7!important;padding:4px 8px!important}' +
     '.tawk-footer .tawk-chatinput.tawk-chatinput-focused{box-shadow:0 0 0 1px #F6921A!important}.tawk-chatinput-editor{background:transparent!important}';
   function skin(f) {
@@ -292,29 +303,41 @@
     var busy = 0;
     function name() {
       busy = 0; var w = d.createTreeWalker(d.body, 4, null), n;
-      while ((n = w.nextNode())) if (n.nodeValue && n.nodeValue.trim() === 'Customer Support') n.nodeValue = 'Finrock Assistant';
+      while ((n = w.nextNode())) if (n.nodeValue && n.nodeValue.trim() === 'Customer Support') n.nodeValue = 'Finny';
     }
     name();
     try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
   }
-  var fitting = 0;
+  var fitting = 0, wantChat = false;
   function fit() {
-    if (!root.classList.contains('chat-open')) return;
-    var vh = window.innerHeight, room = 78;
+    if (!root.classList.contains('chat-open') || panelOpen()) return;
+    var vh = window.innerHeight, wide = window.innerWidth >= 760;
     [].slice.call(document.querySelectorAll('iframe[title="Chat widget"]')).forEach(function (f) {
       var r = f.getBoundingClientRect(); if (!r.width || !r.height) return;
       if (r.width <= 100 && r.height <= 100) { f.classList.add('fr-tawk-min'); return; }
       f.classList.remove('fr-tawk-min');
+      if (r.height <= 200) return;
       skin(f);
-      if (r.height > 200 && r.bottom > vh - room + 1) {
-        var h = Math.max(240, Math.round(vh - room - Math.max(r.top, 0)));
-        f.style.setProperty('height', h + 'px', 'important'); f.style.setProperty('max-height', h + 'px', 'important'); f.style.setProperty('min-height', '0px', 'important');
-        f.style.setProperty('top', 'auto', 'important'); f.style.setProperty('bottom', room + 'px', 'important');
+      /* The window sits exactly where the panel was, so the two read as one widget. */
+      var P = function (k, v) { if (f.style.getPropertyValue(k) !== v) f.style.setProperty(k, v, 'important'); };
+      var room = wide ? 84 : 74, side = wide ? 18 : 14, h = Math.max(240, Math.min(640, vh - room - (wide ? 20 : 16)));
+      P('height', h + 'px'); P('max-height', h + 'px'); P('min-height', '0px'); P('top', 'auto'); P('bottom', room + 'px'); P('right', side + 'px');
+      if (wide) { P('left', 'auto'); P('width', '384px'); P('min-width', '0px'); P('max-width', 'calc(100vw - 36px)'); }
+      else { P('left', side + 'px'); P('width', 'auto'); P('min-width', '0px'); P('max-width', 'none'); }
+      P('border-radius', '18px');
+      /* Tawk's own Home screen repeats our panel. Coming from Start conversation it is skipped; going back to it shows the panel. */
+      var d; try { d = f.contentDocument; } catch (e) { return; }
+      if (!d) return;
+      if (d.querySelector('.tawk-chat-view')) { wantChat = false; return; }
+      if (d.querySelector('.tawk-home-view') && !d.querySelector('.tawk-route-back')) {
+        var c = d.querySelector('.tawk-home-card-chat');
+        if (wantChat && c) c.click();
+        else if (!wantChat) { showPanel(); if (T && T.minimize) T.minimize(); }
       }
     });
   }
-  function opened() { root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 400); }
-  function closed() { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Chat with us'); if (fitting) { clearInterval(fitting); fitting = 0; } }
+  function opened() { root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 150); }
+  function closed() { if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finny'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
   function load(open) {
     if (open) wantOpen = true;
     if (loaded) { if (open) openChat(); return; }
@@ -335,7 +358,7 @@
   window.addEventListener('fr-consent', function () { if (allowed()) load(false); });
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-chat]'); if (!b) return; e.preventDefault();
     if (b === btn) { if (panelOpen()) hidePanel(false); else if (root.classList.contains('chat-open')) { if (T && T.minimize) T.minimize(); } else showPanel(); return; }
-    hidePanel(true); load(true);
+    hidePanel(true); wantChat = true; load(true);
   });
 })();
 
