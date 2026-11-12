@@ -348,7 +348,11 @@
     var busy = 0;
     function name() {
       busy = 0; var w = d.createTreeWalker(d.body, 4, null), n;
-      while ((n = w.nextNode())) if (n.nodeValue && n.nodeValue.trim() === 'Customer Support') n.nodeValue = 'Finrock Assistant';
+      while ((n = w.nextNode())) {
+        var v = n.nodeValue && n.nodeValue.trim();
+        if (v === 'Customer Support') n.nodeValue = 'Finrock Assistant';
+        else if (v === 'New messages' && n.parentElement && !n.parentElement.style.fontSize) n.parentElement.style.cssText += ';background:#f4f4f6;color:#71717a;font-size:12px;padding:0 0 0 8px';
+      }
     }
     name();
     try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
