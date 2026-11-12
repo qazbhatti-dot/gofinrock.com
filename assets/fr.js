@@ -341,6 +341,11 @@
     '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::before{content:"Hi! I\\2019m the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.";display:block!important;position:absolute;z-index:2;left:50px;top:78px;max-width:calc(100% - 96px);padding:9px 13px;background:#fff;border:1px solid #e4e4e7;border-radius:16px 16px 16px 4px;font:400 14px/1.5 Inter,system-ui,sans-serif;color:#18181b;box-shadow:0 1px 2px rgba(24,24,27,.04);animation:frm .22s ease both}' +
     '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::after{content:"";display:block!important;position:absolute;z-index:2;left:14px;top:78px;width:28px;height:28px;border-radius:50%;background:#fff url(' + ICON + ') center/60% no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
     '.tawk-toolbar .tawk-margin-auto-left{display:none!important}' +
+    '.tawk-footer .tawk-chatinput-action-buttons,.tawk-footer .tawk-chatinput-button{display:none!important}' +
+    '.tawk-footer .tawk-chatinput{padding:6px 6px 6px 14px!important;border-radius:14px!important}' +
+    '.tawk-footer .tawk-chatinput-wrap{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:8px}' +
+    '.tawk-footer .tawk-chatinput-editor{flex:1;margin:0!important;min-height:34px!important;height:34px;box-sizing:border-box!important;padding:6px 0!important;font-size:14.5px!important;line-height:1.45!important}' +
+    '.fr-send{flex:none;display:grid;place-items:center;width:34px;height:34px;border:0;border-radius:10px;background:#F6921A;color:#111;cursor:pointer;padding:0;transition:transform .15s}.fr-send:hover{transform:translateY(-1px)}' +
     '.fr-note{margin:8px 0 0;text-align:center;font:400 12px/1.4 Inter,system-ui,sans-serif;color:#71717a}.fr-note a,.fr-more a{color:#b45309;text-decoration:underline;cursor:pointer}' +
     '.fr-more{margin:-2px 0 6px 46px;font:400 12.5px/1.4 Inter,system-ui,sans-serif}' +
     'html body .tawk-overlay,html body .tawk-router-view,html body .tawk-main-panel,html body .tawk-chat-panel.tawk-chat-panel.tawk-chat-panel.tawk-chat-panel{background:#f4f4f6!important}' +
@@ -364,6 +369,13 @@
     function name() {
       busy = 0;
       var ci = [].filter.call(d.querySelectorAll('.tawk-footer .tawk-chatinput'), function (x) { return x.offsetWidth; })[0], nt = d.querySelector('.fr-note');
+      var wr = ci && ci.querySelector('.tawk-chatinput-wrap');
+      if (wr && !wr.querySelector('.fr-send')) {
+        var sb = d.createElement('button'); sb.type = 'button'; sb.className = 'fr-send'; sb.setAttribute('aria-label', 'Send');
+        sb.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+        sb.addEventListener('click', function () { var ta = wr.querySelector('textarea'); if (!ta || !ta.value.trim()) { if (ta) ta.focus(); return; } ta.focus(); var w = d.defaultView, o = { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true }; ta.dispatchEvent(new w.KeyboardEvent('keydown', o)); ta.dispatchEvent(new w.KeyboardEvent('keypress', o)); });
+        wr.appendChild(sb);
+      }
       if (ci && (!nt || nt.previousSibling !== ci)) { if (!nt) { nt = d.createElement('p'); nt.className = 'fr-note'; nt.innerHTML = 'AI answers can be wrong. <a class="fr-sup" href="#">Contact support</a>'; } ci.parentNode.insertBefore(nt, ci.nextSibling); }
       var blocks = d.querySelectorAll('.tawk-message-block'), lastA = null;
       for (var i = blocks.length - 1; i >= 0; i--) { if (blocks[i].querySelector('.tawk-agent-chat-bubble')) { lastA = blocks[i]; break; } }
