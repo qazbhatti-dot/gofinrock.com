@@ -330,6 +330,7 @@
     panel.__support = function (from) { support(from); };
     var box = panel.querySelector('.fr-cp-box'), ta = box && box.querySelector('textarea'), go = box && box.querySelector('.fr-cp-go'), busy = false;
     panel.__chat = function (focus) { view('chat'); if (focus && ta) ta.focus(); };
+    panel.__ended = function () { view('chat'); var m = say('bot', null); setTimeout(function () { reveal(m.lastChild, AI ? 'Your chat with the team has ended. I’m still here if there’s anything else.' : 'Your chat has ended.', log); }, 300); };
     msgs.forEach(function (m) { say(m.role === 'user' ? 'user' : 'bot', m.content); });
     function grow() { box.classList.toggle('has', !!ta.value.trim()); ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; }
     var HUMAN = /\b(human|real person|actual person|someone real|live (chat|agent|person|support)|(speak|talk|chat) (to|with) (someone|somebody|a person|a human|an agent|support|the team|your team|staff|a real)|customer (service|support)|(to|with) an agent|operator)\b/i;
@@ -444,7 +445,14 @@
   /* The chat window is Tawk's, drawn in a same-origin frame, so it is given the same look as the panel: white bar,
      grey page, white answers, orange questions. Tawk names the assistant "Customer Support"; that is shown as Finrock Assistant. */
   var ICON = 'https://gofinrock.com/assets/favicon.svg';
-  var SKIN = '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
+  /* Ending is the visitor's: Tawk closes the conversation for the agent too, and the panel says so where they were. */
+  function endLive() {
+    try { if (T && T.endChat) T.endChat(); } catch (e) {}
+    wantChat = false; showPanel(); if (T && T.minimize) T.minimize();
+    if (panel && panel.__ended) panel.__ended();
+  }
+  var SKIN = '.tawk-toolbar{position:relative}.fr-end{position:absolute;right:12px;top:50%;transform:translateY(-50%);height:30px;padding:0 12px;border:1px solid #e4e4e7;border-radius:9px;background:#fff;color:#18181b;font:600 13px/1 Inter,system-ui,sans-serif;cursor:pointer;z-index:2}.fr-end:hover{background:#fef2f2;border-color:#fecaca;color:#b91c1c}' +
+    '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
     '.tawk-toolbar,.tawk-toolbar *{color:#18181b!important}.tawk-toolbar button.tawk-header-text svg,.tawk-toolbar button.tawk-header-text svg *{fill:#18181b!important}.tawk-button.tawk-custom-color{color:#111!important}' +
     '.tawk-toolbar-title,.tawk-toolbar-agent-name{font-weight:600!important;font-size:15px!important;line-height:1.3!important}' +
     '.tawk-toolbar-agent-avatars,.tawk-toolbar-agent-name,.tawk-toolbar button[aria-label="Minimize"]{display:none!important}' +
@@ -495,6 +503,13 @@
       }
       if (ci && (!nt || nt.previousSibling !== ci)) { if (!nt) { nt = d.createElement('p'); nt.className = 'fr-note'; nt.innerHTML = AI ? 'Prefer email? <a class="fr-sup" href="#">Contact support</a>' : 'AI answers can be wrong. <a class="fr-sup" href="#">Contact support</a>'; } ci.parentNode.insertBefore(nt, ci.nextSibling); }
       var oldMore = d.querySelector('.fr-more'); if (oldMore) oldMore.parentNode.removeChild(oldMore);
+      /* Tawk's own menu, which held End chat, is hidden, so the chat carries its own End chat beside the title. */
+      var bar = [].filter.call(d.querySelectorAll('.tawk-toolbar'), function (x) { return x.offsetWidth; })[0];
+      if (bar && !bar.querySelector('.fr-end')) {
+        var eb = d.createElement('button'); eb.type = 'button'; eb.className = 'fr-end'; eb.textContent = 'End chat';
+        eb.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); endLive(); });
+        bar.appendChild(eb);
+      }
       var hm = d.querySelectorAll('.tawk-home-view .tawk-header-text'), g = hm[1] && hm[1].textContent.replace(/\s+/g, ' ').trim();
       if (g && g !== greet) { greet = g; gs.textContent = '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::before{content:' + JSON.stringify('Hi! ' + g) + '!important}'; } var w = d.createTreeWalker(d.body, 4, null), n;
       while ((n = w.nextNode())) {
@@ -573,7 +588,7 @@
     };
     T.onChatMaximized = function () { if (AI && !wantOpen) { if (T.minimize) T.minimize(); return; } opened(); };
     /* Tawk minimises itself as a chat ends, so a chat ended by the visitor is told from one that timed out by how recently the window closed. */
-    T.onChatEnded = function () { if (panelOpen()) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; showPanel(); if (T.minimize) T.minimize(); } };
+    T.onChatEnded = function () { if (panelOpen()) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; showPanel(); if (T.minimize) T.minimize(); if (AI && panel && panel.__ended) panel.__ended(); } };
     T.onChatMinimized = function () { closed(); if (T.hideWidget) T.hideWidget(); };
     T.onChatMessageAgent = function () { if (!root.classList.contains('chat-open')) btn.classList.add('new'); };
     /* The look goes on the moment Tawk's frame exists, before it has drawn anything. */
