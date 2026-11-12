@@ -339,13 +339,21 @@
     panel.__ended = function () { view('chat'); var m = say('bot', null); setTimeout(function () { reveal(m.lastChild, AI ? 'Your chat with the team has ended. I’m still here if there’s anything else.' : 'Your chat has ended.', log); }, 300); };
     msgs.forEach(function (m) { say(m.role === 'user' ? 'user' : 'bot', m.content); });
     function grow() { box.classList.toggle('has', !!ta.value.trim()); ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; }
-    var HUMAN = /\b(human|humans|real person|actual person|someone real|live (chat|agent|person|support)|(spe+a?k|spk|talk|tlk|chat)\s+(to|with|2)\s+(an?\s+|the\s+|your\s+|a\s+real\s+)?(someone|somebody|person|human|agent|advisor|adviser|support|team|staff|rep)|customer (service|support)|operator)\b|^\s*(agent|advisor|adviser|human|person|support)\s*[?!.]*\s*$/i;
+    var HUMAN = /\b(human|humans|real person|actual person|someone real|live (chat|agent|person|support)|(spe+a?k|spk|sk|spek|spak|talk|tlk|chat)\s+(to|with|2)\s+(an?\s+|the\s+|your\s+|a\s+real\s+)?(someone|somebody|person|human|agent|advisor|adviser|support|team|staff|rep)|(to|with)\s+(an?\s+)?(agent|human|advisor|adviser)|customer (service|support)|operator)\b|^\s*(agent|advisor|adviser|human|person|support)\s*[?!.]*\s*$/i,
+      YES = /^\s*(y|ye|yes|yea|yeah|yep|yup|ya|ok|okay|sure|please|yes please|ok please|go on|go ahead|do it|transfer( me)?|connect me|put me through)\s*[.!]*\s*$/i,
+      NO = /^\s*(n|no|nope|nah|no thanks|no thank you|not now|not yet|later)\s*[.!]*\s*$/i, asking = false;
+    var ASK = 'Would you like me to transfer you to someone on the team?';
+    /* The transfer is asked in words first; the button comes only once they have said yes. */
+    function askTransfer(before) {
+      asking = true; var m = say('bot', null);
+      setTimeout(function () { reveal(m.lastChild, txt((before ? before + ' ' : '') + ASK), log); chime(); }, 400);
+    }
     /* A person costs the team's time, so live chat is offered only when the assistant has said it can't help. Tawk is
        fetched as the offer appears, so Yes opens it straight away. */
-    function offer(text) {
+    function offer(text, agreed) {
       load(false);
       var o = document.createElement('div'); o.className = 'fr-cp-offer';
-      o.innerHTML = '<p>' + txt(text || 'Would you like me to transfer you to someone on the team?') + '</p><div><button type="button" class="fr-cp-yes">Yes, transfer me</button><button type="button" class="fr-cp-no">No thanks</button></div>';
+      o.innerHTML = (text ? '<p>' + txt(text) + '</p>' : '') + '<div><button type="button" class="fr-cp-yes">' + (agreed ? 'Transfer me' : 'Yes, transfer me') + '</button><button type="button" class="fr-cp-no">' + (agreed ? 'Not now' : 'No thanks') + '</button></div>';
       o.querySelector('.fr-cp-no').addEventListener('click', function () { o.remove(); if (ta) ta.focus(); });
       o.querySelector('.fr-cp-yes').addEventListener('click', function () {
         o.remove(); tick();
@@ -367,9 +375,16 @@
     }
     function ask(q) {
       q = q.trim().slice(0, 1500); if (!q || busy) return;
+      if (asking && (YES.test(q) || NO.test(q))) {
+        asking = false; ta.value = ''; grow(); say('user', q); tick();
+        if (YES.test(q)) { var y = say('bot', null); setTimeout(function () { reveal(y.lastChild, 'Great. Tap below and I’ll put you through.', log); chime(); offer('', true); }, 400); }
+        else { var n = say('bot', null); setTimeout(function () { reveal(n.lastChild, 'No problem. What else can I help with?', log); chime(); }, 400); }
+        return;
+      }
+      asking = false;
       if (HUMAN.test(q) && q.length < 160) {
-        ta.value = ''; grow(); lastQ = ''; say('user', q); tick(); var h = say('bot', null);
-        setTimeout(function () { reveal(h.lastChild, 'Happy to help. Tell me what it’s about and I’ll try to answer straight away. If I can’t, I’ll pass you to the team.', log); chime(); offer('Prefer to talk to a person now?'); }, 400);
+        ta.value = ''; grow(); lastQ = ''; say('user', q); tick();
+        askTransfer('Sure. I can also try to answer straight away if you tell me what it’s about.');
         return;
       } busy = true; go.disabled = true; lastQ = q; ta.value = ''; grow();
       msgs.push({ role: 'user', content: q }); save(); say('user', q); tick(); var w = say('bot', null);
@@ -377,11 +392,10 @@
       /* Sent as plain text so the browser asks no permission first: the answer arrives in one round trip. */
       fetch(AI, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ messages: msgs.slice(-10) }), signal: ctl ? ctl.signal : undefined })
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j.status = r.status; return j; }); })
-        .then(function (j) { if (!j.answer) throw j; msgs.push({ role: 'assistant', content: j.answer }); save(); reveal(w.lastChild, fmt(j.answer), log); chime(); if (j.handoff) setTimeout(function () { offer(); }, 700); })
+        .then(function (j) { if (!j.answer && !j.handoff) throw j; if (j.answer) { msgs.push({ role: 'assistant', content: j.answer }); save(); } if (j.handoff) { w.remove(); askTransfer(j.answer); return; } reveal(w.lastChild, fmt(j.answer), log); chime(); })
         .catch(function (j) {
           msgs.pop(); save();
-          w.lastChild.textContent = j && j.status === 429 ? 'That’s a lot of questions in a short time. Please wait a little and try again.' : 'Sorry, I couldn’t answer just now. Please try again.';
-          offer();
+          w.remove(); askTransfer(j && j.status === 429 ? 'That’s a lot of questions in a short time.' : 'Sorry, I couldn’t answer just now.');
         })
         .then(function () { clearTimeout(tm); busy = false; go.disabled = false; log.scrollTop = log.scrollHeight; });
     }
