@@ -1726,3 +1726,7 @@ html.chat-panel iframe[title="Visit tawk.to"],html:not(.chat-open) iframe[title=
 .fr-cp-m>div:last-child li{margin:3px 0;padding-left:2px}
 .fr-cp-m>div:last-child li::marker{color:#F6921A;font-weight:600}
 .fr-cp-m>div:last-child b{font-weight:600;color:#18181b}
+
+/* The panel fades out as the live chat fades in over the same spot. */
+html.chat-panel .fr-cp.fr-cp-fade{opacity:0;transition:opacity .22s ease}
+@media(prefers-reduced-motion:reduce){html.chat-panel .fr-cp.fr-cp-fade{transition:none}}

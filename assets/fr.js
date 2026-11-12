@@ -354,6 +354,7 @@
     panel.__chat = function (focus) { view('chat'); greet(); if (focus && ta) ta.focus(); };
     /* A chat that has ended is gone: the panel closes and the next one starts afresh with the greeting. */
     panel.__ended = function () {
+      try { sessionStorage.removeItem('fr-carry'); } catch (e) {}
       msgs = []; save(); log.innerHTML = ''; lastQ = ''; asking = false;
       try { sessionStorage.removeItem('fr-live'); } catch (e) {}
       view('home'); hidePanel(false); btn.focus();
@@ -493,7 +494,8 @@
     if (!panel) build();
     panel.__ended();
   }
-  var SKIN = '.tawk-toolbar{position:relative}.tawk-toolbar:has(.fr-end){padding-right:100px!important}.tawk-toolbar-nav:has(.tawk-route-back)::before,.tawk-toolbar-nav:has(.tawk-route-back)::after{min-width:0;overflow:hidden;text-overflow:ellipsis}.fr-end{position:absolute;right:12px;top:50%;transform:translateY(-50%);height:30px;padding:0 12px;border:1px solid #e4e4e7;border-radius:9px;background:#fff;color:#18181b;font:600 13px/1 Inter,system-ui,sans-serif;cursor:pointer;z-index:2}.fr-end:hover{background:#fef2f2;border-color:#fecaca;color:#b91c1c}' +
+  var SKIN = '.fr-carry{display:flex;flex-direction:column;gap:8px;padding:14px 12px 6px}.fr-carry-lbl{margin:0 0 2px;text-align:center;font:500 11.5px/1.3 Inter,system-ui,sans-serif;color:#a1a1aa}.fr-carry-m{max-width:84%;padding:8px 12px;border-radius:14px;font:400 13.5px/1.45 Inter,system-ui,sans-serif;opacity:.85}.fr-carry-m.u{align-self:flex-end;background:#F6921A;color:#111;border-bottom-right-radius:4px}.fr-carry-m.b{align-self:flex-start;background:#fff;border:1px solid #e4e4e7;color:#18181b;border-bottom-left-radius:4px}.fr-carry-m p{margin:0}.fr-carry-m p+p,.fr-carry-m p+ul,.fr-carry-m ul+p{margin-top:6px}.fr-carry-m ul,.fr-carry-m ol{margin:0;padding-left:18px}.fr-carry-sep{display:flex;align-items:center;gap:10px;margin:8px 0 2px;font:600 12px/1.3 Inter,system-ui,sans-serif;color:#16a34a}.fr-carry-sep::before,.fr-carry-sep::after{content:"";flex:1;height:1px;background:#e4e4e7}.tawk-router-view:has(.fr-carry)::before{display:none!important}' +
+    '.tawk-toolbar{position:relative}.tawk-toolbar:has(.fr-end){padding-right:100px!important}.tawk-toolbar-nav:has(.tawk-route-back)::before,.tawk-toolbar-nav:has(.tawk-route-back)::after{min-width:0;overflow:hidden;text-overflow:ellipsis}.fr-end{position:absolute;right:12px;top:50%;transform:translateY(-50%);height:30px;padding:0 12px;border:1px solid #e4e4e7;border-radius:9px;background:#fff;color:#18181b;font:600 13px/1 Inter,system-ui,sans-serif;cursor:pointer;z-index:2}.fr-end:hover{background:#fef2f2;border-color:#fecaca;color:#b91c1c}' +
     '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
     '.tawk-toolbar,.tawk-toolbar *{color:#18181b!important}.tawk-toolbar button.tawk-header-text svg,.tawk-toolbar button.tawk-header-text svg *{fill:#18181b!important}.tawk-button.tawk-custom-color{color:#111!important}' +
     '.tawk-toolbar-title,.tawk-toolbar-agent-name{font-weight:600!important;font-size:15px!important;line-height:1.3!important}' +
@@ -546,6 +548,20 @@
       }
       if (ci && (!nt || nt.previousSibling !== ci)) { if (!nt) { nt = d.createElement('p'); nt.className = 'fr-note'; nt.innerHTML = AI ? 'Prefer email? <a class="fr-sup" href="#">Contact support</a>' : 'AI answers can be wrong. <a class="fr-sup" href="#">Contact support</a>'; } ci.parentNode.insertBefore(nt, ci.nextSibling); }
       var oldMore = d.querySelector('.fr-more'); if (oldMore) oldMore.parentNode.removeChild(oldMore);
+      /* What the visitor asked the assistant comes with them, above the live chat, so it reads as one conversation. */
+      var carry = []; try { carry = AI ? JSON.parse(sessionStorage.getItem('fr-carry') || '[]') : []; } catch (e) {}
+      if (carry.length) {
+        var box = [].filter.call(d.querySelectorAll('.tawk-chat-message-container'), function (x) { return x.offsetWidth; })[0]
+          || [].filter.call(d.querySelectorAll('.tawk-max-content>.tawk-router-view'), function (x) { return x.offsetWidth && !x.querySelector('.tawk-main-panel'); })[0];
+        [].forEach.call(d.querySelectorAll('.fr-carry'), function (x) { if (!box || x.parentNode !== box) x.parentNode.removeChild(x); });
+        if (box && !box.querySelector(':scope > .fr-carry')) {
+          var cv = d.createElement('div'); cv.className = 'fr-carry';
+          cv.innerHTML = '<p class="fr-carry-lbl">Your conversation with the assistant</p>' + carry.map(function (m) {
+            return '<div class="fr-carry-m ' + (m.role === 'user' ? 'u' : 'b') + '">' + (m.role === 'user' ? txt(m.content) : fmt(m.content)) + '</div>';
+          }).join('') + '<p class="fr-carry-sep"><span>You’re through to the Finrock team</span></p>';
+          box.insertBefore(cv, box.firstChild);
+        }
+      }
       /* Tawk's own menu, which held End chat, is hidden, so the chat carries its own End chat beside the title. */
       var bar = [].filter.call(d.querySelectorAll('.tawk-toolbar'), function (x) { return x.offsetWidth; })[0];
       if (bar && !bar.querySelector('.fr-end')) {
@@ -571,7 +587,7 @@
     }, true);
     try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
   }
-  var swapping = false, fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0, closedAt = 0;
+  var swapReady = 0, swapping = false, fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0, closedAt = 0;
   function fit() {
     if (!root.classList.contains('chat-open') || (panelOpen() && !swapping)) return;
     var vh = window.innerHeight, wide = window.innerWidth >= 760;
@@ -589,7 +605,7 @@
       /* A frame given width:auto falls back to the browser's narrow default, so on a phone it is told the panel's width. */
       else { P('left', side + 'px'); P('width', (document.documentElement.clientWidth - 2 * side) + 'px'); P('min-width', '0px'); P('max-width', 'none'); }
       /* Hidden until Tawk has drawn the chat, so reopening never shows an empty window. */
-      if (f.style.getPropertyValue('visibility') === 'hidden') { var dd; try { dd = f.contentDocument; } catch (e) {} var rb = dd && dd.querySelector('.tawk-route-back'); if (!dd || (rb && rb.offsetWidth) || Date.now() - clickAt2 > 2500) f.style.setProperty('visibility', 'visible', 'important'); }
+      if (!swapping && f.style.getPropertyValue('visibility') === 'hidden') { var dd; try { dd = f.contentDocument; } catch (e) {} var rb = dd && dd.querySelector('.tawk-route-back'); if (!dd || (rb && rb.offsetWidth) || Date.now() - clickAt2 > 2500) f.style.setProperty('visibility', 'visible', 'important'); }
       P('border-radius', '18px'); P('box-shadow', '0 16px 48px rgba(0,0,0,.24)');
       /* Tawk's own Home screen repeats our panel. Coming from Start conversation it is skipped; going back to it shows the panel. */
       var d; try { d = f.contentDocument; } catch (e) { return; }
@@ -597,7 +613,20 @@
       var on = function (q) { var e = d.querySelector(q); return !!(e && e.offsetWidth); };
       var now = Date.now();
       /* A back arrow means a chat or Tawk's list of past chats is showing, not its Home. */
-      if (on('.tawk-chat-view') || on('.tawk-route-back')) { if (swapping) { swapping = false; f.style.setProperty('visibility', 'visible', 'important'); hidePanel(true); } wantChat = false; wantAt = 0; homeTicks = 0; chatAt = now; return; }
+      if (on('.tawk-chat-view') || on('.tawk-route-back')) {
+        /* The chat is drawn: it is given a moment to settle, dressed, and then the panel and the window cross-fade, so the
+           visitor sees one window change rather than two swap. */
+        if (swapping) {
+          if (!swapReady) swapReady = now;
+          if (now - swapReady < 150) return;
+          swapping = false; swapReady = 0; if (f.__frName) f.__frName();
+          f.style.setProperty('opacity', '0', 'important'); f.style.setProperty('transition', 'opacity .22s ease', 'important'); f.style.setProperty('visibility', 'visible', 'important');
+          if (panel) panel.classList.add('fr-cp-fade');
+          requestAnimationFrame(function () { requestAnimationFrame(function () { f.style.setProperty('opacity', '1', 'important'); }); });
+          setTimeout(function () { hidePanel(true); if (panel) panel.classList.remove('fr-cp-fade'); }, 230);
+        }
+        wantChat = false; wantAt = 0; homeTicks = 0; chatAt = now; return;
+      }
       if (!on('.tawk-home-view')) { homeTicks = 0; return; }
       if (wantChat) {
         /* After a chat has ended Tawk's Home has no chat card, so its Start New Chat is pressed; failing that, its Messages tab. */
@@ -655,6 +684,7 @@
   });
   /* The panel stays on top until Tawk has drawn the chat underneath it, then the two swap in one frame. */
   function goLive() {
+    try { if (AI) sessionStorage.setItem('fr-carry', JSON.stringify(msgs.slice(-6))); } catch (e) {}
     swapping = true; setTimeout(function () { if (swapping) { swapping = false; hidePanel(true); } }, 4000);
     wantChat = true; wantAt = 0; load(true);
   }
