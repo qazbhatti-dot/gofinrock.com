@@ -363,8 +363,8 @@
     var busy = 0, greet = '', gs = d.createElement('style'); d.head.appendChild(gs);
     function name() {
       busy = 0;
-      var ci = d.querySelector('.tawk-footer .tawk-chatinput');
-      if (ci && !d.querySelector('.fr-note')) { var nt = d.createElement('p'); nt.className = 'fr-note'; nt.innerHTML = 'AI answers can be wrong. <a class="fr-sup" href="#">Contact support</a>'; ci.parentNode.insertBefore(nt, ci.nextSibling); }
+      var ci = [].filter.call(d.querySelectorAll('.tawk-footer .tawk-chatinput'), function (x) { return x.offsetWidth; })[0], nt = d.querySelector('.fr-note');
+      if (ci && (!nt || nt.previousSibling !== ci)) { if (!nt) { nt = d.createElement('p'); nt.className = 'fr-note'; nt.innerHTML = 'AI answers can be wrong. <a class="fr-sup" href="#">Contact support</a>'; } ci.parentNode.insertBefore(nt, ci.nextSibling); }
       var blocks = d.querySelectorAll('.tawk-message-block'), lastA = null;
       for (var i = blocks.length - 1; i >= 0; i--) { if (blocks[i].querySelector('.tawk-agent-chat-bubble')) { lastA = blocks[i]; break; } }
       var mv = d.querySelector('.fr-more');
@@ -377,7 +377,7 @@
         else if (v === 'New messages' && n.parentElement && !n.parentElement.style.fontSize) n.parentElement.style.cssText += ';background:#f4f4f6;color:#71717a;font-size:12px;padding:0 0 0 8px';
       }
     }
-    name();
+    name(); f.__frName = function () { if (!busy) name(); };
     d.addEventListener('click', function (e) {
       if (e.target.closest && e.target.closest('.fr-sup')) { e.preventDefault(); e.stopPropagation(); f.style.setProperty('visibility', 'hidden', 'important'); showPanel(); if (panel && panel.__support) panel.__support('home'); if (T && T.minimize) T.minimize(); return; }
       var b = e.target.closest && e.target.closest('.tawk-route-back button, .tawk-route-back');
@@ -396,7 +396,7 @@
       if (r.width <= 100 && r.height <= 100) { f.classList.add('fr-tawk-min'); return; }
       f.classList.remove('fr-tawk-min');
       if (r.height <= 200) return;
-      skin(f);
+      skin(f); if (f.__frName) f.__frName();
       /* The window sits exactly where the panel was, so the two read as one widget. */
       var P = function (k, v) { if (f.style.getPropertyValue(k) !== v) f.style.setProperty(k, v, 'important'); };
       var room = wide ? 84 : 74, side = wide ? 18 : 14, h = Math.max(240, Math.min(640, vh - room - (wide ? 20 : 16)));
