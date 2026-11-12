@@ -1697,10 +1697,28 @@ html.chat-panel.chat-anim .fr-cp{animation:frcp .18s ease both}
 @keyframes frcpw{to{stroke-dashoffset:0}}
 @keyframes frcpp{50%{transform:scale(1.1)}}
 .fr-cp button:focus-visible,.fr-cp a:focus-visible{outline:2px solid #F6921A;outline-offset:2px;border-radius:6px}
-@media(max-width:759px){.fr-cp{right:14px;left:14px;bottom:74px;width:auto;max-width:none;max-height:calc(100vh - 90px);max-height:calc(100dvh - 90px)}}
-/* While a phone's keyboard is up (html.fr-kb, set from the visual viewport by fr.js) the panel covers what is still seen,
-   so its message box sits just above the keys; the pill would only sit under them. */
-@media(max-width:759px){html.fr-kb .fr-cp{top:calc(var(--fr-vt) + 8px);bottom:auto;height:calc(var(--fr-vh) - 16px);max-height:none}html.chat-open.fr-kb .fr-chat{visibility:hidden}}
+/* On a phone the open chat fills the screen as it is seen (--fr-vt and --fr-vh, the visual viewport, set by fr.js), so
+   with the keyboard up its box sits just above the keys. The way out is the header's close, as the pill would sit under
+   the keys or over the messages. The header is one line, and messages stack from the box upwards. While typing
+   (html.fr-kb) the note under the box goes, to leave the room to the messages. */
+.fr-cp-x{display:none}
+@media(max-width:759px){
+html.chat-open .fr-chat{display:none}
+.fr-cp{left:0;right:0;top:var(--fr-vt,0px);bottom:auto;width:auto;max-width:none;height:var(--fr-vh,100%);max-height:none;border-radius:0;box-shadow:none}
+.fr-cp-x{display:grid;place-items:center;flex:none;width:44px;height:44px;margin:0;background:none;border:0;border-radius:10px;padding:0;cursor:pointer;color:#18181b}
+.fr-cp-hero .fr-cp-x{position:absolute;top:6px;right:6px}
+.fr-cp-hero .fr-cp-mark{display:none}
+.fr-cp-head{gap:6px;min-height:52px;box-sizing:border-box;padding:4px}
+.fr-cp-head>div{flex:1;min-width:0}
+.fr-cp-head b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fr-cp-head div>span{display:none}
+.fr-cp-head .fr-cp-av{width:28px;height:28px}
+.fr-cp-back{width:44px;height:44px;margin:0}
+.fr-cp-log>:first-child{margin-top:auto}
+.fr-cp-foot{padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
+html.fr-kb .fr-cp-foot{padding-bottom:8px}
+html.fr-kb .fr-cp-foot .fr-cp-note{display:none}
+}
 /* A phone zooms the page into any box set smaller than 16px as it is focused, and a zoomed page moves the chat off screen. */
 @media(hover:none) and (pointer:coarse){.fr-cp-box textarea,.fr-cp-form input,.fr-cp-form textarea{font-size:16px}}
 @media(prefers-reduced-motion:reduce){html.chat-panel .fr-cp,.fr-cp-m,.fr-cp-more,.fr-cp-dots i,.fr-cp-tick{animation:none}.fr-cp-tick circle,.fr-cp-tick path{animation:none;stroke-dashoffset:0}}

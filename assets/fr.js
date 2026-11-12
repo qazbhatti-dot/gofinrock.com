@@ -342,19 +342,20 @@
   function build() {
     var base = icon.replace(/assets\/favicon\.svg$/, ''), BK = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
     var AV = '<span class="fr-cp-av"><img src="' + icon + '" alt="" width="32" height="29"></span>';
+    var XX = '<button type="button" class="fr-cp-x" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
     panel = document.createElement('div'); panel.className = 'fr-cp'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Finrock help'); panel.tabIndex = -1;
-    panel.innerHTML = '<div class="fr-cp-home" data-v="home"><div class="fr-cp-hero"><span class="fr-cp-mark"><img src="' + icon + '" alt="" width="22" height="20"></span><h2>Hi there 👋</h2>' +
+    panel.innerHTML = '<div class="fr-cp-home" data-v="home"><div class="fr-cp-hero">' + XX + '<span class="fr-cp-mark"><img src="' + icon + '" alt="" width="22" height="20"></span><h2>Hi there 👋</h2>' +
       '<p class="fr-cp-in">Ask anything about Finrock: plans and prices, banking, tax, invoices or your account.</p></div>' +
       '<button type="button" class="fr-cp-askcard" data-chat><span><b>' + (AI ? 'Ask Finrock' : 'Chat with the team') + '</b><small>' + (AI ? 'Instant answers, any time of day' : 'A person from Finrock replies here') + '</small></span><i>' + CH + '</i></button>' +
       '<div class="fr-cp-card fr-cp-list"><h3>Popular questions</h3>' + QA.map(function (x, i) { return '<button type="button" class="fr-cp-q" data-q="' + i + '"><span>' + txt(x[0]) + '</span>' + CH + '</button>'; }).join('') + '</div>' +
       '<div class="fr-cp-card"><h3>Need a person?</h3><p>Send your question to the Finrock support team and we’ll reply by email.</p><button type="button" class="fr-cp-link" data-sup="home">Contact support ' + CH + '</button></div>' +
       '<p class="fr-cp-note">AI answers can be wrong.</p></div>' +
-      '<div class="fr-cp-ans" data-v="chat" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" data-to="home" aria-label="Back">' + BK + '</button>' + AV + '<div><b>Finrock Assistant</b><span>AI assistant · Replies instantly</span></div></div>' +
+      '<div class="fr-cp-ans" data-v="chat" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" data-to="home" aria-label="Back">' + BK + '</button>' + AV + '<div><b>Finrock Assistant</b><span>AI assistant · Replies instantly</span></div>' + XX + '</div>' +
       '<div class="fr-cp-log" aria-live="polite"></div>' +
       '<div class="fr-cp-foot">' + (AI ? '<div class="fr-cp-ts"></div><form class="fr-cp-box"><textarea rows="1" maxlength="1500" placeholder="Ask a question about Finrock…" aria-label="Your question"></textarea><button type="submit" class="fr-cp-go" aria-label="Send"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></form>'
         : '<button type="button" class="fr-cp-ask" data-chat><span>Ask a question about Finrock…</span><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></button>') +
       '<p class="fr-cp-note">AI answers can be wrong. <button type="button" class="fr-cp-a" data-sup="chat">Contact support</button></p></div></div>' +
-      '<div class="fr-cp-ans fr-cp-sup" data-v="sup" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><div><b>Contact support</b><span>The Finrock support team replies by email</span></div></div>' +
+      '<div class="fr-cp-ans fr-cp-sup" data-v="sup" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><div><b>Contact support</b><span>The Finrock support team replies by email</span></div>' + XX + '</div>' +
       '<form class="fr-cp-form" novalidate>' + '<label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label>' +
       '<label>Your question<textarea name="query" rows="5" maxlength="5000" required></textarea></label>' +
       '<div class="fr-cp-ts"></div><button type="submit" class="fr-cp-send">Send to support</button><p class="fr-cp-status" role="status"></p></form>' +
@@ -387,6 +388,10 @@
       view('home'); hidePanel(false); btn.focus({ preventScroll: true });
     };
     msgs.forEach(function (m) { say(m.role === 'user' ? 'user' : 'bot', m.content); });
+    /* A log that was at its end stays there when the panel changes height, as it does when a phone's keyboard opens. */
+    var logEnd = true;
+    log.addEventListener('scroll', function () { logEnd = log.scrollHeight - log.scrollTop - log.clientHeight < 24; }, { passive: true });
+    if (window.ResizeObserver) new ResizeObserver(function () { if (logEnd) log.scrollTop = log.scrollHeight; }).observe(log);
     function grow() { box.classList.toggle('has', !!ta.value.trim()); ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; }
     var HUMAN = /\b(human|humans|real person|actual person|someone real|live (chat|agent|person|support)|(spe+a?k|spk|sk|spek|spak|talk|tlk|chat)\s+(to|with|2)\s+(an?\s+|the\s+|your\s+|a\s+real\s+)?(someone|somebody|person|human|agent|advisor|adviser|support|team|staff|rep)|(to|with)\s+(an?\s+)?(agent|human|advisor|adviser)|customer (service|support)|operator)\b|^\s*(agent|advisor|adviser|human|person|support)\s*[?!.]*\s*$/i,
       YES = /^\s*(y|ye|yes|yea|yeah|yep|yup|ya|ok|okay|sure|please|yes please|ok please|go on|go ahead|do it|transfer( me)?|connect me|put me through)\s*[.!]*\s*$/i,
@@ -471,6 +476,7 @@
       if (!supTs) supTs = tsWidget(form.querySelector('.fr-cp-ts'));
     }
     panel.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('[data-close]')) { hidePanel(false); btn.focus({ preventScroll: true }); return; }
       var t = e.target.closest && e.target.closest('.fr-cp-q,[data-sup],[data-to]'); if (!t) return;
       if (t.hasAttribute('data-sup')) return support(t.getAttribute('data-sup'));
       if (t.hasAttribute('data-to')) return view(t.getAttribute('data-to'));
@@ -546,6 +552,15 @@
     };
     requestAnimationFrame(function () { setTimeout(tell, 0); }); setTimeout(tell, 150);
   }
+  /* The team chat's close on a phone, where the pill is hidden under a chat that fills the screen. The chat carries on
+     at Tawk; only the window goes, at once, and Tawk is told after the next paint. */
+  function closeLive() {
+    wantChat = false; swapping = false;
+    [].forEach.call(document.querySelectorAll('iframe[title="Chat widget"]'), function (f) { f.style.setProperty('visibility', 'hidden', 'important'); });
+    closed(); btn.focus({ preventScroll: true });
+    var told = false, tell = function () { if (told) return; told = true; try { if (T && T.minimize) T.minimize(); } catch (e) {} };
+    requestAnimationFrame(function () { setTimeout(tell, 0); }); setTimeout(tell, 150);
+  }
   var SKIN = '.fr-carry{display:flex;flex-direction:column;gap:8px;padding:14px 12px 6px}.fr-carry-lbl{margin:0 0 2px;text-align:center;font:500 11.5px/1.3 Inter,system-ui,sans-serif;color:#a1a1aa}.fr-carry-m{max-width:84%;padding:8px 12px;border-radius:14px;font:400 13.5px/1.45 Inter,system-ui,sans-serif;opacity:.85}.fr-carry-m.u{align-self:flex-end;background:#F6921A;color:#111;border-bottom-right-radius:4px}.fr-carry-m.b{align-self:flex-start;background:#fff;border:1px solid #e4e4e7;color:#18181b;border-bottom-left-radius:4px}.fr-carry-m p{margin:0}.fr-carry-m p+p,.fr-carry-m p+ul,.fr-carry-m ul+p{margin-top:6px}.fr-carry-m ul,.fr-carry-m ol{margin:0;padding-left:18px}.fr-carry-sep{display:flex;align-items:center;gap:10px;margin:8px 0 2px;font:600 12px/1.3 Inter,system-ui,sans-serif;color:#16a34a}.fr-carry-sep::before,.fr-carry-sep::after{content:"";flex:1;height:1px;background:#e4e4e7}.tawk-router-view:has(.fr-carry)::before{display:none!important}' +
     '.tawk-toolbar{position:relative}.tawk-toolbar:has(.fr-end){padding-right:100px!important}.tawk-toolbar-nav:has(.tawk-route-back)::before,.tawk-toolbar-nav:has(.tawk-route-back)::after{min-width:0;overflow:hidden;text-overflow:ellipsis}.fr-end{position:absolute;right:12px;top:50%;transform:translateY(-50%);height:30px;padding:0 12px;border:1px solid #e4e4e7;border-radius:9px;background:#fff;color:#18181b;font:600 13px/1 Inter,system-ui,sans-serif;cursor:pointer;z-index:2}.fr-end:hover{background:#fef2f2;border-color:#fecaca;color:#b91c1c}' +
     '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
@@ -580,7 +595,18 @@
     'body,body *:not([class*="icon"]){font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;-webkit-font-smoothing:antialiased}' +
     '.tawk-agent-chat-bubble,.tawk-visitor-chat-bubble{font-size:14px!important;line-height:1.5!important}.tawk-agent-chat-bubble{box-shadow:0 1px 2px rgba(24,24,27,.04)!important}.tawk-chat-name-margin{font-weight:500!important}' +
     '.tawk-message-block{animation:frm .22s ease both}@keyframes frm{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.tawk-message-block{animation:none}}' +
-    '@media(hover:none) and (pointer:coarse){.tawk-footer .tawk-chatinput-editor{font-size:16px!important;line-height:1.35!important}}';
+    '@media(hover:none) and (pointer:coarse){.tawk-footer .tawk-chatinput-editor{font-size:16px!important;line-height:1.35!important}}' +
+    /* On a phone (fr-phone, set by the page) the chat fills the screen, so its bar is one line: back, a small mark, the
+       name, End chat and a close, each 44px to tap. While typing (fr-kb) the email note goes and tawk.to's credit, which
+       stays, shrinks, so the room above the box is messages. */
+    '.fr-x{display:none}.fr-phone .tawk-toolbar{padding:4px 2px!important;min-height:52px;box-sizing:border-box}.fr-phone .tawk-toolbar:has(.fr-end){padding-right:142px!important}' +
+    '.fr-phone .tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title))::after{display:none!important}.fr-phone .tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title))::before{grid-row:1/3;align-self:center}' +
+    '.fr-phone .tawk-route-back{display:flex!important;align-items:center}.fr-phone .tawk-route-back:not(:has(.tawk-toolbar-title))::after{width:28px;height:28px;margin-left:0;background-size:17px}.fr-phone .tawk-route-back button{min-width:44px;min-height:44px}' +
+    '.fr-phone .tawk-toolbar .fr-end{right:46px;height:44px;padding:0 10px;border:0;background:none;color:#b91c1c!important;font-size:14px}' +
+    '.fr-phone .fr-x{display:grid;place-items:center;position:absolute;right:2px;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:10px;background:none;cursor:pointer;padding:0;z-index:2}' +
+    '.fr-phone .tawk-main-panel .tawk-chat-panel .tawk-chat-panel-inner{padding-bottom:8px!important}' +
+    '.fr-phone.fr-kb .fr-note{display:none}.fr-phone.fr-kb .tawk-padding-small:has(a[href*="tawk.to"]){padding:0 0 2px!important;opacity:.55}' +
+    '.fr-phone.fr-kb .tawk-padding-small:has(a[href*="tawk.to"]) *{font-size:10px!important;line-height:1.2!important;color:#a1a1aa!important}.fr-phone.fr-kb .tawk-padding-small:has(a[href*="tawk.to"]) img{width:10px!important;height:auto!important}';
   function skin(f) {
     var d; try { d = f.contentDocument; } catch (e) { return; }
     if (!d || !d.head || !d.body || d.getElementById('fr-skin')) return;
@@ -621,6 +647,10 @@
         var eb = d.createElement('button'); eb.type = 'button'; eb.className = 'fr-end'; eb.textContent = 'End chat';
         eb.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); endLive(); });
         bar.appendChild(eb);
+        var xb = d.createElement('button'); xb.type = 'button'; xb.className = 'fr-x'; xb.setAttribute('aria-label', 'Close');
+        xb.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+        xb.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); closeLive(); });
+        bar.appendChild(xb);
       }
       var hm = d.querySelectorAll('.tawk-home-view .tawk-header-text'), g = 'You’re through to the Finrock team. Send your message and we’ll reply here';
       if (g && g !== greet) { greet = g; gs.textContent = '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::before{content:' + JSON.stringify('Hi! ' + g) + '!important}'; } var w = d.createTreeWalker(d.body, 4, null), n;
@@ -641,27 +671,42 @@
     try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
   }
   var swapReady = 0, swapping = false, fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0, closedAt = 0, endedAt = 0;
-  /* A phone's keyboard shrinks only the visual viewport: the page, and everything fixed to its bottom, stays full height
-     behind the keys, and the browser pans to the focused box and cuts off the top. So while the keyboard is up the chat
-     is laid over the part of the screen still seen, read from window.visualViewport at most once a frame. */
-  var VV = window.visualViewport, kbTop = 0, kbH = 0, kbAsk = 0;
-  function kbRead() {
-    kbAsk = 0;
-    var on = !!VV && window.innerWidth < 760 && VV.scale < 1.05 && document.documentElement.clientHeight - VV.height > 120;
-    var t = on ? Math.round(VV.offsetTop) : 0, h = on ? Math.round(VV.height) : 0;
-    if (t === kbTop && h === kbH) return;
-    kbTop = t; kbH = h;
-    if (on) { root.style.setProperty('--fr-vt', t + 'px'); root.style.setProperty('--fr-vh', h + 'px'); }
-    root.classList.toggle('fr-kb', on);
+  /* On a phone the chat fills the screen, and the screen is the visual viewport: a keyboard shrinks only that, leaving
+     the page and anything fixed to its bottom full height behind the keys, and the browser pans to the focused box. So
+     the chat is laid over exactly what is seen, read from window.visualViewport at most once a frame. */
+  var VV = window.visualViewport, vvTop = 0, vvH = 0, kbOn = false, vvAsk = 0;
+  function vvRead() {
+    vvAsk = 0;
+    var t = 0, h = 0, kb = false;
+    if (VV && window.innerWidth < 760 && VV.scale < 1.05) { t = Math.round(VV.offsetTop); h = Math.round(VV.height); kb = document.documentElement.clientHeight - VV.height > 120; }
+    if (t === vvTop && h === vvH && kb === kbOn) return;
+    vvTop = t; vvH = h; kbOn = kb;
+    if (h) { root.style.setProperty('--fr-vt', t + 'px'); root.style.setProperty('--fr-vh', h + 'px'); }
+    else { root.style.removeProperty('--fr-vt'); root.style.removeProperty('--fr-vh'); }
+    root.classList.toggle('fr-kb', kb);
     fit();
   }
-  function kbLater() { if (!kbAsk) kbAsk = requestAnimationFrame(kbRead); }
-  if (VV) { VV.addEventListener('resize', kbLater); VV.addEventListener('scroll', kbLater); kbLater(); }
+  function vvLater() { if (!vvAsk) vvAsk = requestAnimationFrame(vvRead); }
+  if (VV) { VV.addEventListener('resize', vvLater); VV.addEventListener('scroll', vvLater); }
+  window.addEventListener('resize', vvLater); vvLater();
+  /* A chat filling a phone's screen holds the page still behind it, so a swipe that reaches the end of the messages
+     does not scroll the site; the page comes back where it was when the chat closes. */
+  var lockY = null;
+  function lockSync() {
+    var want = window.innerWidth < 760 && root.classList.contains('chat-open');
+    if (want === (lockY !== null) || !document.body) return;
+    var b = document.body.style;
+    if (want) { lockY = window.scrollY; b.position = 'fixed'; b.top = -lockY + 'px'; b.left = '0'; b.right = '0'; b.width = '100%'; return; }
+    var y = lockY; lockY = null; b.position = b.top = b.left = b.right = b.width = '';
+    try { window.scrollTo({ top: y, left: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, y); }
+  }
+  try { new MutationObserver(lockSync).observe(root, { attributes: true, attributeFilter: ['class'] }); } catch (e) {}
+  window.addEventListener('resize', lockSync);
   /* A frame made shorter keeps its scroll position, which leaves the newest message under the keyboard with Tawk's
      jump-to-latest arrow over it; this is the message list, so one that was at its end can be kept there. */
   function endOf(d) {
     var m = d.querySelectorAll('.tawk-message-block'), e = m.length ? m[m.length - 1] : d.querySelector('.tawk-chat-message-container');
-    for (; e && e !== d.body; e = e.parentElement) { var o = d.defaultView.getComputedStyle(e).overflowY; if ((o === 'auto' || o === 'scroll') && e.scrollHeight > e.clientHeight + 2) return e; }
+    for (; e && e !== d.body; e = e.parentElement) { var o = d.defaultView.getComputedStyle(e).overflowY; if (o === 'auto' || o === 'scroll') return e; }
     return null;
   }
   function fit() {
@@ -676,19 +721,20 @@
       /* The window sits exactly where the panel was, so the two read as one widget. */
       var P = function (k, v) { if (f.style.getPropertyValue(k) !== v) f.style.setProperty(k, v, 'important'); };
       var room = wide ? 84 : 74, side = wide ? 18 : 14, h = Math.max(240, Math.min(640, vh - room - (wide ? 20 : 16)));
-      /* With the keyboard up the window fills what is still seen, so its message box sits just above the keys. */
-      if (!wide && kbH) h = Math.max(160, kbH - 16);
+      /* On a phone the window fills what is seen, edge to edge, with the keyboard up or down. */
+      if (!wide) h = vvH || window.innerHeight;
       var sc = null, atEnd = false;
       if (f.style.getPropertyValue('height') !== h + 'px') { try { sc = endOf(f.contentDocument); } catch (e) {} atEnd = !!sc && sc.scrollHeight - sc.scrollTop - sc.clientHeight < 80; }
-      P('height', h + 'px'); P('max-height', h + 'px'); P('min-height', '0px'); P('right', side + 'px');
-      if (!wide && kbH) { P('top', (kbTop + 8) + 'px'); P('bottom', 'auto'); } else { P('top', 'auto'); P('bottom', room + 'px'); }
+      P('height', h + 'px'); P('max-height', h + 'px'); P('min-height', '0px');
+      if (wide) { P('top', 'auto'); P('bottom', room + 'px'); P('right', side + 'px'); P('left', 'auto'); P('width', '384px'); P('min-width', '0px'); P('max-width', 'calc(100vw - 36px)'); }
+      /* A frame given width:auto falls back to the browser's narrow default, so on a phone it is told the screen's width. */
+      else { P('top', vvTop + 'px'); P('bottom', 'auto'); P('right', '0px'); P('left', '0px'); P('width', document.documentElement.clientWidth + 'px'); P('min-width', '0px'); P('max-width', 'none'); }
       if (atEnd) requestAnimationFrame(function () { sc.scrollTop = sc.scrollHeight; });
-      if (wide) { P('left', 'auto'); P('width', '384px'); P('min-width', '0px'); P('max-width', 'calc(100vw - 36px)'); }
-      /* A frame given width:auto falls back to the browser's narrow default, so on a phone it is told the panel's width. */
-      else { P('left', side + 'px'); P('width', (document.documentElement.clientWidth - 2 * side) + 'px'); P('min-width', '0px'); P('max-width', 'none'); }
+      /* The frame's own page cannot tell a phone from the desktop window, both narrow, so it is told. */
+      try { var de = f.contentDocument.documentElement; if (de.classList.contains('fr-phone') === wide) de.classList.toggle('fr-phone', !wide); if (de.classList.contains('fr-kb') !== (!wide && kbOn)) de.classList.toggle('fr-kb', !wide && kbOn); } catch (e) {}
       /* Hidden until Tawk has drawn the chat, so reopening never shows an empty window. */
       if (!swapping && f.style.getPropertyValue('visibility') === 'hidden') { var dd; try { dd = f.contentDocument; } catch (e) {} var rb = dd && dd.querySelector('.tawk-route-back'); if (!dd || (rb && rb.offsetWidth) || Date.now() - clickAt2 > 2500) f.style.setProperty('visibility', 'visible', 'important'); }
-      P('border-radius', '18px'); P('box-shadow', '0 16px 48px rgba(0,0,0,.24)');
+      P('border-radius', wide ? '18px' : '0px'); P('box-shadow', wide ? '0 16px 48px rgba(0,0,0,.24)' : 'none');
       /* Tawk's own Home screen repeats our panel. Coming from Start conversation it is skipped; going back to it shows the panel. */
       var d; try { d = f.contentDocument; } catch (e) { return; }
       if (!d) return;
