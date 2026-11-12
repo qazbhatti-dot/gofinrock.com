@@ -223,8 +223,8 @@
   var loaded = false, wantOpen = false, T;
   /* Our own launcher: a pill in the site's colours with the Finrock mark. Tawk's default bubble stays hidden. */
   var me = document.querySelector('script[src*="fr.js"]'), icon = (me ? me.getAttribute('src').replace(/fr\.js.*$/, '') : 'assets/') + 'favicon.svg';
-  var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fr-chat'; btn.setAttribute('data-chat', ''); btn.setAttribute('aria-label', 'Chat with us');
-  btn.innerHTML = '<span class="fr-chat-mark"><img src="' + icon + '" alt="" width="26" height="24"></span><span class="fr-chat-label">Chat with us</span><span class="fr-chat-x" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="fr-chat-close">Close</span><i></i>';
+  var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fr-chat'; btn.setAttribute('data-chat', ''); btn.setAttribute('aria-label', 'Ask Finrock');
+  btn.innerHTML = '<span class="fr-chat-mark"><img src="' + icon + '" alt="" width="26" height="24"></span><span class="fr-chat-label">Ask Finrock</span><span class="fr-chat-x" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="fr-chat-close">Close</span><i></i>';
   function add() { document.body.appendChild(btn); } if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
   /* The pill opens our own help panel first: start a chat, six common questions answered in place, or the contact form.
      Nothing is fetched from Tawk until Start conversation is pressed. */
@@ -245,7 +245,7 @@
     panel = document.createElement('div'); panel.className = 'fr-cp'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Finrock help'); panel.tabIndex = -1;
     panel.innerHTML = '<div class="fr-cp-home" data-v="home">' + AV + '<h2>Hi there! 👋</h2>' +
       '<p class="fr-cp-in">I’m the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.</p>' +
-      '<div class="fr-cp-card"><h3>Ask Finrock Assistant</h3><p>Instant answers from the Finrock help centre</p><button type="button" class="fr-cp-link" data-chat>Start conversation ' + CH + '</button></div>' +
+      '<div class="fr-cp-card"><h3>Ask Finrock</h3><p>Instant answers from the Finrock help centre</p><button type="button" class="fr-cp-link" data-chat>Start conversation ' + CH + '</button></div>' +
       '<div class="fr-cp-card fr-cp-list"><h3>Popular questions</h3>' + QA.map(function (x, i) { return '<button type="button" class="fr-cp-q" data-q="' + i + '"><span>' + txt(x[0]) + '</span>' + CH + '</button>'; }).join('') + '</div>' +
       '<div class="fr-cp-card"><h3>Need a person?</h3><p>Send your question to the Finrock support team and we’ll reply by email.</p><button type="button" class="fr-cp-link" data-sup="home">Contact support ' + CH + '</button></div>' +
       '<p class="fr-cp-note">AI answers can be wrong.</p></div>' +
@@ -314,7 +314,7 @@
     [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== 'home'; });
     root.classList.add('chat-panel', 'chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close'); panel.querySelector('.fr-cp-home').scrollTop = 0; panel.focus();
   }
-  function hidePanel(keepOpen) { root.classList.remove('chat-panel'); if (!keepOpen) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Chat with us'); } }
+  function hidePanel(keepOpen) { root.classList.remove('chat-panel'); if (!keepOpen) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && panelOpen()) { hidePanel(false); btn.focus(); } });
   function openChat() { if (!T || !T.maximize) return; if (T.showWidget) T.showWidget(); T.maximize(); opened(); }
   /* While the chat is open the pill is its Close button, as on a phone the window fills the screen. Tawk's own
@@ -325,10 +325,13 @@
   var SKIN = '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
     '.tawk-toolbar,.tawk-toolbar *{color:#18181b!important}.tawk-toolbar svg,.tawk-toolbar svg *{fill:#18181b!important}' +
     '.tawk-toolbar-title,.tawk-toolbar-agent-name{font-weight:600!important;font-size:15px!important;line-height:1.3!important}' +
-    '.tawk-toolbar .tawk-avatar,.tawk-toolbar .tawk-tooltip-hover,.tawk-toolbar-agent-title,.tawk-toolbar button[aria-label="Minimize"]{display:none!important}' +
-    '.tawk-toolbar-agent-name{position:relative;padding-left:46px!important;min-height:36px;display:flex!important;flex-direction:column;justify-content:center;margin:0 0 0 4px!important;overflow:visible!important}' +
-    '.tawk-toolbar-agent-name::before{content:"";position:absolute;left:0;top:50%;width:36px;height:36px;margin-top:-18px;border-radius:50%;background:#fff url(' + ICON + ') center/22px no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
-    '.tawk-toolbar-agent-name::after{content:"AI assistant \\00B7  Replies instantly";font-weight:400;font-size:12px;color:#71717a}' +
+    '.tawk-toolbar-agent-avatars,.tawk-toolbar button[aria-label="Minimize"]{display:none!important}' +
+    '.tawk-toolbar-title{font-weight:600!important;font-size:15px!important;line-height:1.3!important}' +
+    '.tawk-route-back:not(:has(.tawk-toolbar-title))::after{content:"Finrock Assistant\\A AI assistant \\00B7  Replies instantly";white-space:pre;display:block;margin-left:6px;padding:1px 0 1px 46px;min-height:36px;box-sizing:border-box;font:400 12px/1.4 Inter,system-ui,sans-serif;color:#71717a;background:url(' + ICON + ') 7px center/22px no-repeat,radial-gradient(circle at 18px 50%,#fff 17px,#e4e4e7 17.5px,#e4e4e7 18px,transparent 18.5px)}' +
+    '.tawk-route-back:not(:has(.tawk-toolbar-title))::first-line{font-weight:600;font-size:15px;color:#18181b}' +
+    '.tawk-chat-panel-inner:not(:has(.tawk-message-block))::before{content:"Hi! I\\2019m the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.";display:block;align-self:flex-start;max-width:78%;margin:16px 14px 0 50px;padding:9px 13px;background:#fff;border:1px solid #e4e4e7;border-radius:16px 16px 16px 4px;font:400 14px/1.5 Inter,system-ui,sans-serif;color:#18181b;box-shadow:0 1px 2px rgba(24,24,27,.04)}' +
+    '.tawk-chat-panel-inner:not(:has(.tawk-message-block))::after{content:"";position:absolute;left:14px;top:16px;width:28px;height:28px;border-radius:50%;background:#fff url(' + ICON + ') center/60% no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
+    '.tawk-chat-panel-inner{position:relative}' +
     'html body .tawk-overlay,html body .tawk-router-view,html body .tawk-main-panel,html body .tawk-chat-panel.tawk-chat-panel.tawk-chat-panel.tawk-chat-panel{background:#f4f4f6!important}' +
     '.tawk-home-view .tawk-header-text,.tawk-home-view h1,.tawk-home-view h2,.tawk-home-view p{color:#18181b!important}' +
     '.tawk-agent-chat-bubble{background:#fff!important;color:#18181b!important;border:1px solid #e4e4e7!important;border-radius:16px 16px 16px 4px!important;padding:9px 13px!important}.tawk-agent-chat-bubble *{color:#18181b!important}.tawk-agent-chat-bubble a{color:#b45309!important}' +
@@ -395,7 +398,7 @@
     });
   }
   function opened() { root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 150); }
-  function closed() { if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Chat with us'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
+  function closed() { if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
   function load(open) {
     if (open) wantOpen = true;
     if (loaded) { if (open) openChat(); return; }
