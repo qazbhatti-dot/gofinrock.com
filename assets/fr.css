@@ -1599,6 +1599,11 @@ html.has-chat .chatbox{display:block;margin-bottom:28px}
 .fr-chat.new i{display:block}
 .fr-chat.busy .fr-chat-mark img{animation:frchat 1s ease-in-out infinite}
 @keyframes frchat{50%{opacity:.35}}
-html.chat-open .fr-chat{display:none}
+html.chat-open .fr-chat{z-index:2147483000;padding:0 20px 0 16px;gap:8px}
+.fr-chat-x,.fr-chat-close{display:none}
+html.chat-open .fr-chat-mark,html.chat-open .fr-chat-label,html.chat-open .fr-chat i{display:none}
+html.chat-open .fr-chat-x{display:grid;place-items:center}
+html.chat-open .fr-chat-close{display:inline}
+iframe.fr-tawk-min{clip-path:inset(50%)!important;pointer-events:none!important}
 @media(max-width:759px){.fr-chat{right:14px;bottom:14px;height:48px;padding:0 16px 0 5px;font-size:15px}.fr-chat-mark{width:38px;height:38px}}
 @media print{.fr-chat{display:none}}
