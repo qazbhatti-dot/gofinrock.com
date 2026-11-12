@@ -427,7 +427,7 @@
     panel.__chat = function (focus) { view('chat'); greet(); if (!hasPass()) chatCheck(); if (focus && ta) ta.focus({ preventScroll: true }); };
     /* A chat that has ended is gone: the panel closes and the next one starts afresh with the greeting. */
     panel.__ended = function () {
-      try { sessionStorage.removeItem('fr-carry'); } catch (e) {}
+      try { sessionStorage.removeItem('fr-carry'); sessionStorage.removeItem('fr-kick'); } catch (e) {}
       msgs = []; save(); log.innerHTML = ''; lastQ = ''; asking = false;
       try { sessionStorage.removeItem('fr-live'); } catch (e) {}
       view('home'); hidePanel(false); btn.focus({ preventScroll: true });
@@ -664,6 +664,22 @@
   /* The team's first words under the history, said for them at once so the visitor is never left looking at
      silence: who is there now, and what happens next. Tawk says whether anyone is online; with no answer, nothing
      is promised. */
+  /* The visitor's request to the team, sent once as their first message when the team chat is ready. A message box
+     still holding it after a moment was not taken, so it is sent once more. */
+  function kick(tx, w) {
+    var k = ''; try { k = sessionStorage.getItem('fr-kick') || ''; } catch (e) {}
+    if (!k || tx.__frKick) return; tx.__frKick = true;
+    function send() {
+      try { Object.getOwnPropertyDescriptor(w.HTMLTextAreaElement.prototype, 'value').set.call(tx, k); } catch (e) { tx.value = k; }
+      tx.dispatchEvent(new w.Event('input', { bubbles: true }));
+      var o = { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true };
+      tx.dispatchEvent(new w.KeyboardEvent('keydown', o)); tx.dispatchEvent(new w.KeyboardEvent('keypress', o));
+    }
+    setTimeout(function () {
+      try { sessionStorage.removeItem('fr-kick'); } catch (e) {}
+      send(); setTimeout(function () { if (tx.value === k) send(); }, 1500);
+    }, 800);
+  }
   function teamHello() {
     var st = ''; try { st = T && T.getStatus ? T.getStatus() : ''; } catch (e) {}
     var say = st === 'online' ? 'Hi, thanks for getting in touch. Someone from the team will see your conversation so far and reply here shortly.'
@@ -682,6 +698,7 @@
       var ci = [].filter.call(d.querySelectorAll('.tawk-footer .tawk-chatinput'), function (x) { return x.offsetWidth; })[0], nt = d.querySelector('.fr-note');
       var wr = ci && ci.querySelector('.tawk-chatinput-wrap');
       var tx = wr && wr.querySelector('textarea'); if (tx && tx.placeholder !== 'Message the Finrock team…') tx.placeholder = 'Message the Finrock team…';
+      if (tx) kick(tx, d.defaultView);
       if (wr && !wr.querySelector('.fr-send')) {
         var sb = d.createElement('button'); sb.type = 'button'; sb.className = 'fr-send'; sb.setAttribute('aria-label', 'Send');
         sb.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
@@ -885,6 +902,14 @@
   /* The panel stays on top until Tawk has drawn the chat underneath it, then the two swap in one frame. */
   function goLive() {
     try { if (AI) sessionStorage.setItem('fr-carry', JSON.stringify(panel && panel.__seen ? panel.__seen() : msgs.slice(-30))); } catch (e) {}
+    /* Tawk opens a chat for the team only when the visitor sends something, so the transfer sends the visitor's
+       request for them, with the last thing they asked: the team is told at once and knows what it is about. */
+    try {
+      if (AI) {
+        var lastQ = ''; for (var i = msgs.length - 1; i >= 0; i--) if (msgs[i].role === 'user') { lastQ = String(msgs[i].content); break; }
+        sessionStorage.setItem('fr-kick', 'Hi, I’d like to speak to someone on the team.' + (lastQ ? ' My question was: “' + lastQ.slice(0, 300) + '”' : ''));
+      }
+    } catch (e) {}
     swapping = true; setTimeout(function () { if (swapping) { swapping = false; hidePanel(true); } }, 4000);
     wantChat = true; wantAt = 0; load(true);
   }
