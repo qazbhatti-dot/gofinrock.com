@@ -312,6 +312,8 @@
   function showPanel() {
     if (!panel) build();
     [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== 'home'; });
+    var live = false; try { live = !!(T && T.isChatOngoing && T.isChatOngoing()); } catch (e) {}
+    var go = panel.querySelector('.fr-cp-home .fr-cp-link[data-chat]'); go.firstChild.nodeValue = live ? 'Continue conversation ' : 'Start conversation ';
     root.classList.add('chat-panel', 'chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close'); panel.querySelector('.fr-cp-home').scrollTop = 0; panel.focus();
   }
   function hidePanel(keepOpen) { root.classList.remove('chat-panel'); if (!keepOpen) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } }
@@ -364,6 +366,12 @@
       }
     }
     name();
+    d.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('.tawk-route-back button, .tawk-route-back');
+      if (!b) return;
+      e.preventDefault(); e.stopPropagation();
+      f.style.setProperty('visibility', 'hidden', 'important'); showPanel(); if (T && T.minimize) T.minimize();
+    }, true);
     try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
   }
   var fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0, closedAt = 0;
@@ -382,6 +390,7 @@
       P('height', h + 'px'); P('max-height', h + 'px'); P('min-height', '0px'); P('top', 'auto'); P('bottom', room + 'px'); P('right', side + 'px');
       if (wide) { P('left', 'auto'); P('width', '384px'); P('min-width', '0px'); P('max-width', 'calc(100vw - 36px)'); }
       else { P('left', side + 'px'); P('width', 'auto'); P('min-width', '0px'); P('max-width', 'none'); }
+      if (f.style.getPropertyValue('visibility') === 'hidden') f.style.setProperty('visibility', 'visible', 'important');
       P('border-radius', '18px'); P('box-shadow', '0 16px 48px rgba(0,0,0,.24)');
       /* Tawk's own Home screen repeats our panel. Coming from Start conversation it is skipped; going back to it shows the panel. */
       var d; try { d = f.contentDocument; } catch (e) { return; }
