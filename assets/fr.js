@@ -553,7 +553,7 @@
         eb.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); endLive(); });
         bar.appendChild(eb);
       }
-      var hm = d.querySelectorAll('.tawk-home-view .tawk-header-text'), g = hm[1] && hm[1].textContent.replace(/\s+/g, ' ').trim();
+      var hm = d.querySelectorAll('.tawk-home-view .tawk-header-text'), g = AI ? 'You’re through to the Finrock team. Send your message and we’ll reply here' : hm[1] && hm[1].textContent.replace(/\s+/g, ' ').trim();
       if (g && g !== greet) { greet = g; gs.textContent = '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::before{content:' + JSON.stringify('Hi! ' + g) + '!important}'; } var w = d.createTreeWalker(d.body, 4, null), n;
       while ((n = w.nextNode())) {
         var v = n.nodeValue && n.nodeValue.trim();
