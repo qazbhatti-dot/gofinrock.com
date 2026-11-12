@@ -584,7 +584,7 @@
         sb.addEventListener('click', function () { var ta = wr.querySelector('textarea'); if (!ta || !ta.value.trim()) { if (ta) ta.focus(); return; } ta.focus(); var w = d.defaultView, o = { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true }; ta.dispatchEvent(new w.KeyboardEvent('keydown', o)); ta.dispatchEvent(new w.KeyboardEvent('keypress', o)); });
         wr.appendChild(sb);
       }
-      if (ci && (!nt || nt.previousSibling !== ci)) { if (!nt) { nt = d.createElement('p'); nt.className = 'fr-note'; nt.innerHTML = AI ? 'Prefer email? <a class="fr-sup" href="#">Contact support</a>' : 'AI answers can be wrong. <a class="fr-sup" href="#">Contact support</a>'; } ci.parentNode.insertBefore(nt, ci.nextSibling); }
+      if (ci && (!nt || nt.previousSibling !== ci)) { if (!nt) { nt = d.createElement('p'); nt.className = 'fr-note'; nt.innerHTML = 'Prefer email? <a class="fr-sup" href="#">Contact support</a>'; } ci.parentNode.insertBefore(nt, ci.nextSibling); }
       var oldMore = d.querySelector('.fr-more'); if (oldMore) oldMore.parentNode.removeChild(oldMore);
       /* What the visitor asked the assistant comes with them, above the live chat, so it reads as one conversation. */
       var carry = []; try { carry = AI ? JSON.parse(sessionStorage.getItem('fr-carry') || '[]') : []; } catch (e) {}
