@@ -403,8 +403,10 @@
       if (++homeTicks >= 2 && now - chatAt > 600) { homeTicks = 0; showPanel(); if (T && T.minimize) T.minimize(); }
     });
   }
-  function opened() { root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 150); }
-  function closed() { closedAt = Date.now(); if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
+  /* A chat left open carries on to the next page of the visit: the visitor asked for it once already. */
+  function keep(on) { try { if (on) sessionStorage.setItem('fr-chat-on', '1'); else sessionStorage.removeItem('fr-chat-on'); } catch (e) {} }
+  function opened() { keep(true); root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 150); }
+  function closed() { keep(false); closedAt = Date.now(); if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
   function load(open) {
     if (open) wantOpen = true;
     if (loaded) { if (open) openChat(); return; }
@@ -423,7 +425,8 @@
     s.charset = 'UTF-8'; s.setAttribute('crossorigin', '*'); document.head.appendChild(s);
   }
   function allowed() { try { var c = JSON.parse(localStorage.getItem('fr-consent') || 'null'); return !!(c && (c.analytics || c.ads || c.all)); } catch (e) { return false; } }
-  if (allowed()) load(false);
+  var again = false; try { again = sessionStorage.getItem('fr-chat-on') === '1'; } catch (e) {}
+  if (again) { wantChat = true; load(true); } else if (allowed()) load(false);
   window.addEventListener('fr-consent', function () { if (allowed()) load(false); });
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-chat]'); if (!b) return; e.preventDefault();
     if (b === btn) { if (panelOpen()) hidePanel(false); else if (root.classList.contains('chat-open')) { if (T && T.minimize) T.minimize(); } else showPanel(); return; }
