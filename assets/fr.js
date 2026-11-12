@@ -226,6 +226,45 @@
   var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fr-chat'; btn.setAttribute('data-chat', ''); btn.setAttribute('aria-label', 'Chat with us');
   btn.innerHTML = '<span class="fr-chat-mark"><img src="' + icon + '" alt="" width="26" height="24"></span><span class="fr-chat-label">Chat with us</span><span class="fr-chat-x" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="fr-chat-close">Close</span><i></i>';
   function add() { document.body.appendChild(btn); } if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
+  /* The pill opens our own help panel first: start a chat, six common questions answered in place, or the contact form.
+     Nothing is fetched from Tawk until Start conversation is pressed. */
+  var QA = [
+    ['What is Finrock and who is it for?', 'Finrock is a UK bookkeeping, tax and life-admin app for employed people, landlords, sole traders, partners and limited companies. It connects to your bank read-only, suggests a category for every transaction, keeps a live Self Assessment or Corporation Tax estimate, and tracks renewals such as your MOT and insurance.'],
+    ['How do I get started with Finrock?', 'Press Start free at the top of the page and create your account. Setup is a handful of questions about how you earn, such as a job, a trade, a let or a company. Then connect your bank, and each transaction arrives with a suggested category for you to confirm.'],
+    ['How do I connect my bank?', 'On a new account, Home leads with Connect your bank. Pick your bank and approve access in your own banking app. New transactions appear in Activity within a few minutes. Most UK banks are supported, and you can import a statement for an account that can’t be connected.'],
+    ['Is bank access safe?', 'Yes. The connection is read-only, through a regulated Open Banking provider. Finrock can read your accounts, balances and transactions to do your books. It can never move, send or withdraw money. You approve access in your own banking app, and we never see your bank login.'],
+    ['Does Finrock file my tax return?', 'Finrock works out the figures for your returns from your sorted transactions. VAT returns and Making Tax Digital quarterly updates are built to go to HMRC from the app once you connect your HMRC account, and the page tells you if that is not live yet. Your Self Assessment return, the Corporation Tax return and the confirmation statement are prepared here and sent by you or your accountant.'],
+    ['Can my accountant use it too?', 'Yes. Invite your accountant from Filing & deadlines, under Change who files. Choose Business only or My whole tax return. They get a portal of their own, see the same figures you do, and suggest changes for you to accept or decline. You can disconnect them at any time.']
+  ];
+  var panel = null, CH = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+  function txt(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function build() {
+    var base = icon.replace(/assets\/favicon\.svg$/, '');
+    panel = document.createElement('div'); panel.className = 'fr-cp'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Finrock help'); panel.tabIndex = -1;
+    panel.innerHTML = '<div class="fr-cp-home"><span class="fr-cp-av"><img src="' + icon + '" alt="" width="32" height="29"></span><h2>Hi there! 👋</h2>' +
+      '<p class="fr-cp-in">I’m the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.</p>' +
+      '<div class="fr-cp-card"><h3>Ask Finrock Assistant</h3><p>Instant answers from the Finrock help centre</p><button type="button" class="fr-cp-link" data-chat>Start conversation ' + CH + '</button></div>' +
+      '<div class="fr-cp-card fr-cp-list"><h3>Popular questions</h3>' + QA.map(function (x, i) { return '<button type="button" class="fr-cp-q" data-q="' + i + '"><span>' + txt(x[0]) + '</span>' + CH + '</button>'; }).join('') + '</div>' +
+      '<div class="fr-cp-card"><h3>Need a person?</h3><p>Send your question to the Finrock support team and we’ll reply by email.</p><a class="fr-cp-link" href="' + base + 'finrock-contact.html#contact-form">Contact support ' + CH + '</a></div>' +
+      '<p class="fr-cp-note">AI answers can be wrong.</p></div>' +
+      '<div class="fr-cp-ans" hidden><button type="button" class="fr-cp-back"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg> Back</button><h3></h3><p></p>' +
+      '<button type="button" class="fr-cp-link" data-chat>Didn’t answer my question? Ask the assistant ' + CH + '</button></div>';
+    document.body.appendChild(panel);
+    var home = panel.querySelector('.fr-cp-home'), ans = panel.querySelector('.fr-cp-ans');
+    panel.addEventListener('click', function (e) {
+      var q = e.target.closest && e.target.closest('.fr-cp-q');
+      if (q) { var x = QA[+q.getAttribute('data-q')]; ans.querySelector('h3').textContent = x[0]; ans.querySelector('p').textContent = x[1]; home.hidden = true; ans.hidden = false; panel.scrollTop = 0; ans.querySelector('.fr-cp-back').focus(); return; }
+      if (e.target.closest && e.target.closest('.fr-cp-back')) { ans.hidden = true; home.hidden = false; panel.scrollTop = 0; }
+    });
+  }
+  function panelOpen() { return root.classList.contains('chat-panel'); }
+  function showPanel() {
+    if (!panel) build();
+    panel.querySelector('.fr-cp-ans').hidden = true; panel.querySelector('.fr-cp-home').hidden = false;
+    root.classList.add('chat-panel', 'chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close'); panel.scrollTop = 0; panel.focus();
+  }
+  function hidePanel(keepOpen) { root.classList.remove('chat-panel'); if (!keepOpen) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Chat with us'); } }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && panelOpen()) { hidePanel(false); btn.focus(); } });
   function openChat() { if (!T || !T.maximize) return; if (T.showWidget) T.showWidget(); T.maximize(); opened(); }
   /* While the chat is open the pill is its Close button, as on a phone the window fills the screen. Tawk's own
      round minimise button is hidden under it, and a window that would sit under the pill is shortened to end above it. */
@@ -264,7 +303,10 @@
   function allowed() { try { var c = JSON.parse(localStorage.getItem('fr-consent') || 'null'); return !!(c && (c.analytics || c.ads || c.all)); } catch (e) { return false; } }
   if (allowed()) load(false);
   window.addEventListener('fr-consent', function () { if (allowed()) load(false); });
-  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-chat]'); if (b) { e.preventDefault(); if (b === btn && root.classList.contains('chat-open')) { if (T && T.minimize) T.minimize(); return; } load(true); } });
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-chat]'); if (!b) return; e.preventDefault();
+    if (b === btn) { if (panelOpen()) hidePanel(false); else if (root.classList.contains('chat-open')) { if (T && T.minimize) T.minimize(); } else showPanel(); return; }
+    hidePanel(true); load(true);
+  });
 })();
 
 /* Films marked data-lazy load and play only when scrolled into view, and pause when out of it. */
