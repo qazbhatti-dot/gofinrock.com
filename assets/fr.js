@@ -323,7 +323,7 @@
      grey page, white answers, orange questions. Tawk names the assistant "Customer Support"; that is shown as Finrock Assistant. */
   var ICON = 'https://gofinrock.com/assets/favicon.svg';
   var SKIN = '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
-    '.tawk-toolbar,.tawk-toolbar *{color:#18181b!important}.tawk-toolbar svg,.tawk-toolbar svg *{fill:#18181b!important}' +
+    '.tawk-toolbar,.tawk-toolbar *{color:#18181b!important}.tawk-toolbar button.tawk-header-text svg,.tawk-toolbar button.tawk-header-text svg *{fill:#18181b!important}.tawk-button.tawk-custom-color{color:#111!important}' +
     '.tawk-toolbar-title,.tawk-toolbar-agent-name{font-weight:600!important;font-size:15px!important;line-height:1.3!important}' +
     '.tawk-toolbar-agent-avatars,.tawk-toolbar-agent-name,.tawk-toolbar button[aria-label="Minimize"]{display:none!important}' +
     '.tawk-toolbar-title{font-weight:600!important;font-size:15px!important;line-height:1.3!important}' +
@@ -366,7 +366,7 @@
     name();
     try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
   }
-  var fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0;
+  var fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0, closedAt = 0;
   function fit() {
     if (!root.classList.contains('chat-open') || panelOpen()) return;
     var vh = window.innerHeight, wide = window.innerWidth >= 760;
@@ -404,7 +404,7 @@
     });
   }
   function opened() { root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 150); }
-  function closed() { if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
+  function closed() { closedAt = Date.now(); if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
   function load(open) {
     if (open) wantOpen = true;
     if (loaded) { if (open) openChat(); return; }
@@ -415,7 +415,8 @@
     function sync() { if (T.isChatMaximized && T.isChatMaximized() && !root.classList.contains('chat-open')) { if (T.showWidget) T.showWidget(); opened(); } }
     T.onLoad = function () { btn.classList.remove('busy'); if (wantOpen) openChat(); else if (T.isChatMaximized && T.isChatMaximized()) sync(); else if (T.hideWidget) T.hideWidget(); setTimeout(sync, 800); setTimeout(sync, 2500); };
     T.onChatMaximized = opened;
-    T.onChatEnded = function () { if (root.classList.contains('chat-open') && !panelOpen()) { wantChat = false; showPanel(); if (T.minimize) T.minimize(); } };
+    /* Tawk minimises itself as a chat ends, so a chat ended by the visitor is told from one that timed out by how recently the window closed. */
+    T.onChatEnded = function () { if (panelOpen()) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; showPanel(); if (T.minimize) T.minimize(); } };
     T.onChatMinimized = function () { closed(); if (T.hideWidget) T.hideWidget(); };
     T.onChatMessageAgent = function () { if (!root.classList.contains('chat-open')) btn.classList.add('new'); };
     var s = document.createElement('script'); s.async = true; s.src = 'https://embed.tawk.to/' + PROPERTY + '/' + WIDGET;
