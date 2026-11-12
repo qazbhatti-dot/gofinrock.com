@@ -336,7 +336,12 @@
       setTimeout(function () { reveal(m.lastChild, txt('Hi there! 👋 I’m the Finrock assistant. Ask me anything about Finrock: plans and prices, banking, tax, invoices or your account.'), log); }, 450);
     }
     panel.__chat = function (focus) { view('chat'); greet(); if (focus && ta) ta.focus(); };
-    panel.__ended = function () { view('chat'); var m = say('bot', null); setTimeout(function () { reveal(m.lastChild, AI ? 'Your chat with the team has ended. I’m still here if there’s anything else.' : 'Your chat has ended.', log); }, 300); };
+    /* A chat that has ended is gone: the panel closes and the next one starts afresh with the greeting. */
+    panel.__ended = function () {
+      msgs = []; save(); log.innerHTML = ''; lastQ = ''; asking = false;
+      try { sessionStorage.removeItem('fr-live'); } catch (e) {}
+      view('home'); hidePanel(false); btn.focus();
+    };
     msgs.forEach(function (m) { say(m.role === 'user' ? 'user' : 'bot', m.content); });
     function grow() { box.classList.toggle('has', !!ta.value.trim()); ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; }
     var HUMAN = /\b(human|humans|real person|actual person|someone real|live (chat|agent|person|support)|(spe+a?k|spk|sk|spek|spak|talk|tlk|chat)\s+(to|with|2)\s+(an?\s+|the\s+|your\s+|a\s+real\s+)?(someone|somebody|person|human|agent|advisor|adviser|support|team|staff|rep)|(to|with)\s+(an?\s+)?(agent|human|advisor|adviser)|customer (service|support)|operator)\b|^\s*(agent|advisor|adviser|human|person|support)\s*[?!.]*\s*$/i,
@@ -468,8 +473,9 @@
   /* Ending is the visitor's: Tawk closes the conversation for the agent too, and the panel says so where they were. */
   function endLive() {
     try { if (T && T.endChat) T.endChat(); } catch (e) {}
-    wantChat = false; showPanel(); if (T && T.minimize) T.minimize();
-    if (panel && panel.__ended) panel.__ended();
+    wantChat = false; if (T && T.minimize) T.minimize();
+    if (!panel) build();
+    panel.__ended();
   }
   var SKIN = '.tawk-toolbar{position:relative}.fr-end{position:absolute;right:12px;top:50%;transform:translateY(-50%);height:30px;padding:0 12px;border:1px solid #e4e4e7;border-radius:9px;background:#fff;color:#18181b;font:600 13px/1 Inter,system-ui,sans-serif;cursor:pointer;z-index:2}.fr-end:hover{background:#fef2f2;border-color:#fecaca;color:#b91c1c}' +
     '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
@@ -609,7 +615,7 @@
     };
     T.onChatMaximized = function () { if (AI && !wantOpen) { if (T.minimize) T.minimize(); return; } opened(); };
     /* Tawk minimises itself as a chat ends, so a chat ended by the visitor is told from one that timed out by how recently the window closed. */
-    T.onChatEnded = function () { if (panelOpen()) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; showPanel(); if (T.minimize) T.minimize(); if (AI && panel && panel.__ended) panel.__ended(); } };
+    T.onChatEnded = function () { if (panelOpen()) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; if (T.minimize) T.minimize(); if (AI) { if (!panel) build(); panel.__ended(); } else showPanel(); } };
     T.onChatMinimized = function () { closed(); if (T.hideWidget) T.hideWidget(); };
     T.onChatMessageAgent = function () { if (!root.classList.contains('chat-open')) btn.classList.add('new'); };
     /* The look goes on the moment Tawk's frame exists, before it has drawn anything. */
