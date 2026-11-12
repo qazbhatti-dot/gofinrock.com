@@ -335,11 +335,15 @@
     '.tawk-visitor-chat-bubble{background:#F6921A!important;color:#111!important;border-radius:16px 16px 4px 16px!important;padding:9px 13px!important}.tawk-visitor-chat-bubble *{color:#111!important}' +
     '.tawk-chat-name-margin{font-size:12px!important;color:#71717a!important}' +
     '.tawk-message-profile .tawk-avatar-image{background:#fff url(' + ICON + ') center/60% no-repeat!important;border-radius:50%!important;box-shadow:0 0 0 1px #e4e4e7}.tawk-message-profile img{opacity:0!important}' +
-    '.tawk-footer{background:#f4f4f6!important;box-shadow:none!important}.tawk-footer .tawk-chatinput{background:#fff!important;border-radius:14px!important;box-shadow:0 0 0 1px #e4e4e7!important;padding:4px 8px!important}' +
-    '.tawk-footer .tawk-chatinput.tawk-chatinput-focused{box-shadow:0 0 0 1px #F6921A!important}.tawk-chatinput-editor{background:transparent!important}';
+    '.tawk-footer{background:#f4f4f6!important;box-shadow:none!important}.tawk-footer .tawk-chatinput{background:#fff!important;border-radius:14px!important;box-shadow:0 0 0 1px #e4e4e7,0 1px 2px rgba(24,24,27,.04)!important;padding:6px 10px!important}' +
+    '.tawk-footer .tawk-chatinput.tawk-chatinput-focused{box-shadow:0 0 0 1px #F6921A,0 0 0 4px rgba(246,146,26,.16)!important}.tawk-chatinput-editor{background:transparent!important;font-size:14px!important;color:#18181b!important}.tawk-chatinput-editor::placeholder{color:#a1a1aa!important}' +
+    'body,body *:not([class*="icon"]){font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;-webkit-font-smoothing:antialiased}' +
+    '.tawk-agent-chat-bubble,.tawk-visitor-chat-bubble{font-size:14px!important;line-height:1.5!important}.tawk-agent-chat-bubble{box-shadow:0 1px 2px rgba(24,24,27,.04)!important}.tawk-chat-name-margin{font-weight:500!important}' +
+    '.tawk-message-block{animation:frm .22s ease both}@keyframes frm{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.tawk-message-block{animation:none}}';
   function skin(f) {
     var d; try { d = f.contentDocument; } catch (e) { return; }
     if (!d || !d.head || !d.body || d.getElementById('fr-skin')) return;
+    var ln = d.createElement('link'); ln.rel = 'stylesheet'; ln.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'; d.head.appendChild(ln);
     var st = d.createElement('style'); st.id = 'fr-skin'; st.textContent = SKIN; d.head.appendChild(st);
     var busy = 0;
     function name() {
@@ -365,7 +369,7 @@
       P('height', h + 'px'); P('max-height', h + 'px'); P('min-height', '0px'); P('top', 'auto'); P('bottom', room + 'px'); P('right', side + 'px');
       if (wide) { P('left', 'auto'); P('width', '384px'); P('min-width', '0px'); P('max-width', 'calc(100vw - 36px)'); }
       else { P('left', side + 'px'); P('width', 'auto'); P('min-width', '0px'); P('max-width', 'none'); }
-      P('border-radius', '18px');
+      P('border-radius', '18px'); P('box-shadow', '0 16px 48px rgba(0,0,0,.24)');
       /* Tawk's own Home screen repeats our panel. Coming from Start conversation it is skipped; going back to it shows the panel. */
       var d; try { d = f.contentDocument; } catch (e) { return; }
       if (!d) return;
@@ -373,7 +377,12 @@
       var now = Date.now();
       if (on('.tawk-chat-view')) { wantChat = false; homeTicks = 0; chatAt = now; return; }
       if (!on('.tawk-home-view')) { homeTicks = 0; return; }
-      if (wantChat) { var c = d.querySelector('.tawk-home-card-chat'); if (c && now - clickAt > 1500) { clickAt = now; c.click(); } return; }
+      if (wantChat) {
+        /* After a chat has ended Tawk offers Start New Chat in place of its chat card. */
+        var c = d.querySelector('.tawk-home-card-chat') || [].filter.call(d.querySelectorAll('button'), function (x) { return /start new chat/i.test(x.textContent); })[0];
+        if (c && now - clickAt > 1500) { clickAt = now; c.click(); }
+        return;
+      }
       /* Tawk shows Home for a moment while it changes screens, so it has to stay there before it counts as going back. */
       if (++homeTicks >= 4 && now - chatAt > 1500) { homeTicks = 0; showPanel(); if (T && T.minimize) T.minimize(); }
     });
