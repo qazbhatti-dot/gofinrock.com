@@ -322,7 +322,7 @@
   function chime() { pop(380, 1040, 0.16, 0.16); setTimeout(function () { pop(620, 1480, 0.14, 0.09); }, 70); }
   /* An answer writes itself in over about a second, word by word, as if typed; links and bold are in place from the start. */
   function reveal(el, html, log) {
-    el.innerHTML = html;
+    el.innerHTML = html; el.__full = html;
     if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var nodes = [], w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n, total = 0;
     while ((n = w.nextNode())) { nodes.push([n, n.nodeValue]); total += n.nodeValue.length; n.nodeValue = ''; }
@@ -390,6 +390,16 @@
       log.appendChild(m); log.scrollTop = log.scrollHeight; return m;
     }
     panel.__support = function (from) { support(from); };
+    /* What the visitor has seen in the panel, bubble by bubble as it reads: the greeting, the exchanges the panel
+       answered itself and a question that failed are all on screen and none is in the stored conversation, so the
+       chat handed to the team is read from here. A bubble still thinking is left out; one still typing itself in is
+       carried whole. */
+    panel.__seen = function () {
+      return [].filter.call(log.querySelectorAll('.fr-cp-m'), function (m) { return !m.querySelector('.fr-cp-dots'); }).slice(-30).map(function (m) {
+        var c = m.lastChild, full = c.__full != null ? c.__full : c.innerHTML, t = document.createElement('div'); t.innerHTML = full;
+        return { role: m.classList.contains('user') ? 'user' : 'assistant', html: full, content: t.textContent };
+      });
+    };
     var box = panel.querySelector('.fr-cp-box'), ta = box && box.querySelector('textarea'), go = box && box.querySelector('.fr-cp-go'), busy = false;
     /* An empty conversation opens with a greeting, typed in as the panel opens; it is the panel's, so it is never sent to the model. */
     function greet() {
@@ -448,7 +458,7 @@
         if (sent || ++tries > 60) return clearInterval(t);
         if (!T || !T.addEvent) return;
         var meta = {};
-        msgs.slice(-8).forEach(function (m, i) { meta[(i + 1) + ' ' + (m.role === 'user' ? 'visitor' : 'assistant')] = String(m.content).slice(0, 250); });
+        (panel && panel.__seen ? panel.__seen() : msgs).slice(-8).forEach(function (m, i) { meta[(i + 1) + ' ' + (m.role === 'user' ? 'visitor' : 'assistant')] = String(m.content).slice(0, 250); });
         try { T.addEvent('website-assistant-chat', meta, function () {}); sent = true; } catch (e) {}
       }, 250);
     }
@@ -484,7 +494,7 @@
              Try again asks it afresh once the check has run again. */
           if (j.check) {
             msgs.pop(); save(); try { sessionStorage.removeItem('fr-ai-pass'); } catch (e) {} if (chatTs) chatTs.reset(); else chatCheck();
-            reveal(w.lastChild, 'Cloudflare’s security check couldn’t confirm this browser, so I can’t answer here just now. If a box appears below, tick it, then try again. Or email your question to the team.', log); chime();
+            reveal(w.lastChild, 'I can’t answer that one here just now: Cloudflare’s security check couldn’t confirm this browser. If a box appears below, tick it, then try again. Or email your question to the team.', log); chime();
             var acts = document.createElement('div'); acts.className = 'fr-cp-more fr-cp-acts';
             acts.innerHTML = '<button type="button" class="fr-cp-a fr-cp-again">Try again</button><button type="button" class="fr-cp-a" data-sup="chat">Email the team</button>';
             acts.querySelector('.fr-cp-again').addEventListener('click', function () { if (busy) return; if (chatTs && !chatTs.token()) chatTs.reset(); ub.remove(); w.remove(); acts.remove(); ask(q); });
@@ -670,7 +680,7 @@
         if (box && !box.querySelector(':scope > .fr-carry')) {
           var cv = d.createElement('div'); cv.className = 'fr-carry';
           cv.innerHTML = '<p class="fr-carry-lbl">Your conversation with the assistant</p>' + carry.map(function (m) {
-            return '<div class="fr-carry-m ' + (m.role === 'user' ? 'u' : 'b') + '">' + (m.role === 'user' ? txt(m.content) : fmt(m.content)) + '</div>';
+            return '<div class="fr-carry-m ' + (m.role === 'user' ? 'u' : 'b') + '">' + (m.html != null ? m.html : m.role === 'user' ? txt(m.content) : fmt(m.content)) + '</div>';
           }).join('') + '<p class="fr-carry-sep"><span>You’re through to the Finrock team</span></p>';
           box.insertBefore(cv, box.firstChild);
         }
@@ -847,7 +857,7 @@
   });
   /* The panel stays on top until Tawk has drawn the chat underneath it, then the two swap in one frame. */
   function goLive() {
-    try { if (AI) sessionStorage.setItem('fr-carry', JSON.stringify(msgs.slice(-6))); } catch (e) {}
+    try { if (AI) sessionStorage.setItem('fr-carry', JSON.stringify(panel && panel.__seen ? panel.__seen() : msgs.slice(-30))); } catch (e) {}
     swapping = true; setTimeout(function () { if (swapping) { swapping = false; hidePanel(true); } }, 4000);
     wantChat = true; wantAt = 0; load(true);
   }
