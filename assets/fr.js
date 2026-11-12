@@ -423,8 +423,10 @@
        carried whole. */
     panel.__seen = function () {
       return [].filter.call(log.querySelectorAll('.fr-cp-m'), function (m) { return !m.querySelector('.fr-cp-dots'); }).slice(-30).map(function (m) {
-        var c = m.lastChild, full = c.__full != null ? c.__full : c.innerHTML, t = document.createElement('div'); t.innerHTML = full;
-        return { role: m.classList.contains('user') ? 'user' : 'assistant', html: full, content: t.textContent };
+        /* The words as plain text keep a list's items and a paragraph's end apart, as an email shows them. */
+        var c = m.lastChild, full = c.__full != null ? c.__full : c.innerHTML, t = document.createElement('div');
+        t.innerHTML = full.replace(/<li[^>]*>/gi, ' • ').replace(/<\/(p|li|ul|ol|h\d)>|<br\s*\/?>/gi, ' ');
+        return { role: m.classList.contains('user') ? 'user' : 'assistant', html: full, content: t.textContent.replace(/\s+/g, ' ').trim() };
       });
     };
     var box = panel.querySelector('.fr-cp-box'), ta = box && box.querySelector('textarea'), go = box && box.querySelector('.fr-cp-go'), busy = false;
