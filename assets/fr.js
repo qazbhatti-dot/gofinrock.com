@@ -217,7 +217,7 @@
    The widget sets its own cookies, so it loads only after the visitor accepts non-essential cookies, or when
    they press a "Chat with us" button (which is them asking for it). */
 (function () {
-  var PROPERTY = '6ab6afe0d617803446f5ca67', WIDGET = '1k3cpu1lo';
+  var PROPERTY = '6af506c501d7323c49b2e862', WIDGET = '1k76i4ter';
   if (!PROPERTY || !WIDGET) return;
   document.documentElement.classList.add('has-chat');
   var loaded = false, wantOpen = false;
