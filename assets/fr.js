@@ -268,6 +268,35 @@
   function openChat() { if (!T || !T.maximize) return; if (T.showWidget) T.showWidget(); T.maximize(); opened(); }
   /* While the chat is open the pill is its Close button, as on a phone the window fills the screen. Tawk's own
      round minimise button is hidden under it, and a window that would sit under the pill is shortened to end above it. */
+  /* The chat window is Tawk's, drawn in a same-origin frame, so it is given the same look as the panel: white bar,
+     grey page, white answers, orange questions. Tawk names the assistant "Customer Support"; that is shown as Finrock Assistant. */
+  var ICON = 'https://gofinrock.com/assets/favicon.svg';
+  var SKIN = '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
+    '.tawk-toolbar,.tawk-toolbar *{color:#18181b!important}.tawk-toolbar svg,.tawk-toolbar svg *{fill:#18181b!important}' +
+    '.tawk-toolbar-title,.tawk-toolbar-agent-name{font-weight:600!important;font-size:15px!important;line-height:1.3!important}' +
+    '.tawk-toolbar-agent-name{position:relative;padding-left:46px!important;min-height:36px;display:flex!important;flex-direction:column;justify-content:center;margin:0 0 0 4px!important;overflow:visible!important}' +
+    '.tawk-toolbar-agent-name::before{content:"";position:absolute;left:0;top:50%;width:36px;height:36px;margin-top:-18px;border-radius:50%;background:#fff url(' + ICON + ') center/22px no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
+    '.tawk-toolbar-agent-name::after{content:"AI assistant \\00B7  Replies instantly";font-weight:400;font-size:12px;color:#71717a}' +
+    'html body .tawk-overlay,html body .tawk-router-view,html body .tawk-main-panel,html body .tawk-chat-panel{background:#f4f4f6!important}' +
+    '.tawk-home-view .tawk-header-text,.tawk-home-view h1,.tawk-home-view h2,.tawk-home-view p{color:#18181b!important}' +
+    '.tawk-agent-chat-bubble{background:#fff!important;color:#18181b!important;border:1px solid #e4e4e7!important;border-radius:16px 16px 16px 4px!important;padding:9px 13px!important}.tawk-agent-chat-bubble *{color:#18181b!important}.tawk-agent-chat-bubble a{color:#b45309!important}' +
+    '.tawk-visitor-chat-bubble{background:#F6921A!important;color:#111!important;border-radius:16px 16px 4px 16px!important;padding:9px 13px!important}.tawk-visitor-chat-bubble *{color:#111!important}' +
+    '.tawk-chat-name-margin{font-size:12px!important;color:#71717a!important}' +
+    '.tawk-message-profile .tawk-avatar-image{background:#fff url(' + ICON + ') center/60% no-repeat!important;border-radius:50%!important;box-shadow:0 0 0 1px #e4e4e7}.tawk-message-profile img{opacity:0!important}' +
+    '.tawk-footer{background:#f4f4f6!important;box-shadow:none!important}.tawk-footer .tawk-chatinput{background:#fff!important;border-radius:14px!important;box-shadow:0 0 0 1px #e4e4e7!important;padding:4px 8px!important}' +
+    '.tawk-footer .tawk-chatinput.tawk-chatinput-focused{box-shadow:0 0 0 1px #F6921A!important}.tawk-chatinput-editor{background:transparent!important}';
+  function skin(f) {
+    var d; try { d = f.contentDocument; } catch (e) { return; }
+    if (!d || !d.head || !d.body || d.getElementById('fr-skin')) return;
+    var st = d.createElement('style'); st.id = 'fr-skin'; st.textContent = SKIN; d.head.appendChild(st);
+    var busy = 0;
+    function name() {
+      busy = 0; var w = d.createTreeWalker(d.body, 4, null), n;
+      while ((n = w.nextNode())) if (n.nodeValue && n.nodeValue.trim() === 'Customer Support') n.nodeValue = 'Finrock Assistant';
+    }
+    name();
+    try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
+  }
   var fitting = 0;
   function fit() {
     if (!root.classList.contains('chat-open')) return;
@@ -276,6 +305,7 @@
       var r = f.getBoundingClientRect(); if (!r.width || !r.height) return;
       if (r.width <= 100 && r.height <= 100) { f.classList.add('fr-tawk-min'); return; }
       f.classList.remove('fr-tawk-min');
+      skin(f);
       if (r.height > 200 && r.bottom > vh - room + 1) {
         var h = Math.max(240, Math.round(vh - room - Math.max(r.top, 0)));
         f.style.setProperty('height', h + 'px', 'important'); f.style.setProperty('max-height', h + 'px', 'important'); f.style.setProperty('min-height', '0px', 'important');
