@@ -303,9 +303,9 @@
     var base = icon.replace(/assets\/favicon\.svg$/, ''), BK = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
     var AV = '<span class="fr-cp-av"><img src="' + icon + '" alt="" width="32" height="29"></span>';
     panel = document.createElement('div'); panel.className = 'fr-cp'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Finrock help'); panel.tabIndex = -1;
-    panel.innerHTML = '<div class="fr-cp-home" data-v="home">' + AV + '<h2>Hi there! 👋</h2>' +
-      '<p class="fr-cp-in">I’m the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.</p>' +
-      '<div class="fr-cp-card"><h3>Ask Finrock</h3><p>Instant answers from the Finrock help centre</p><button type="button" class="fr-cp-link" data-chat>Start conversation ' + CH + '</button></div>' +
+    panel.innerHTML = '<div class="fr-cp-home" data-v="home"><div class="fr-cp-hero"><span class="fr-cp-mark"><img src="' + icon + '" alt="" width="22" height="20"></span><h2>Hi there 👋</h2>' +
+      '<p class="fr-cp-in">Ask anything about Finrock: plans and prices, banking, tax, invoices or your account.</p></div>' +
+      '<button type="button" class="fr-cp-askcard" data-chat><span><b>Ask Finrock</b><small>Instant answers, any time of day</small></span><i>' + CH + '</i></button>' +
       '<div class="fr-cp-card fr-cp-list"><h3>Popular questions</h3>' + QA.map(function (x, i) { return '<button type="button" class="fr-cp-q" data-q="' + i + '"><span>' + txt(x[0]) + '</span>' + CH + '</button>'; }).join('') + '</div>' +
       '<div class="fr-cp-card"><h3>Need a person?</h3><p>Send your question to the Finrock support team and we’ll reply by email.</p><button type="button" class="fr-cp-link" data-sup="home">Contact support ' + CH + '</button></div>' +
       '<p class="fr-cp-note">AI answers can be wrong.</p></div>' +
@@ -457,7 +457,7 @@
     if (!panel) build();
     [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== 'home'; });
     var live = AI ? msgs.length > 0 : false; try { if (!AI) live = !!(T && T.isChatOngoing && T.isChatOngoing()); } catch (e) {}
-    var go = panel.querySelector('.fr-cp-home .fr-cp-link[data-chat]'); go.firstChild.nodeValue = live ? 'Continue conversation ' : 'Start conversation ';
+    var go = panel.querySelector('.fr-cp-askcard b'); go.textContent = live ? 'Continue your conversation' : 'Ask Finrock';
     root.classList.toggle('chat-anim', !!showPanel.anim); showPanel.anim = false;
     root.classList.add('chat-panel', 'chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close'); panel.querySelector('.fr-cp-home').scrollTop = 0; panel.focus();
   }
