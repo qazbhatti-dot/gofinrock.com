@@ -444,9 +444,9 @@
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j.status = r.status; return j; }); })
         .then(function (j) {
           if (j.pass) try { sessionStorage.setItem('fr-ai-pass', j.pass); } catch (e) {}
-          /* Cloudflare could not confirm a person: never a dead end. The question stays in the conversation so the team sees
-             it, the check is drawn again for another try, and the team is offered straight away. */
-          if (j.check) { if (chatTs) chatTs.reset(); try { sessionStorage.removeItem('fr-ai-pass'); } catch (e) {} reveal(w.lastChild, 'I couldn’t complete the quick security check, so I can’t answer here just now. The team can answer instead, or tick the box above and send your question again.', log); chime(); offer('', true); return; }
+          /* Cloudflare could not confirm a person. A bot must not reach an agent, so live chat is not offered: the check is
+             drawn again for another try, and the email form (checked itself) carries the question to the team. */
+          if (j.check) { if (chatTs) chatTs.reset(); try { sessionStorage.removeItem('fr-ai-pass'); } catch (e) {} reveal(w.lastChild, 'I couldn’t complete the quick security check, so I can’t answer here just now. Tick the box above and send your question again, or email it to the team.', log); chime(); var em = document.createElement('button'); em.type = 'button'; em.className = 'fr-cp-a fr-cp-more'; em.setAttribute('data-sup', 'chat'); em.textContent = 'Email the team'; log.appendChild(em); log.scrollTop = log.scrollHeight; return; }
           if (!j.answer && !j.handoff) throw j; if (j.answer) { msgs.push({ role: 'assistant', content: j.answer }); save(); } if (j.handoff) { w.remove(); askTransfer(j.answer); return; } reveal(w.lastChild, fmt(j.answer), log); chime(); })
         .catch(function (j) {
           msgs.pop(); save();
