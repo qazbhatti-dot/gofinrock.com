@@ -1606,7 +1606,8 @@ html.chat-open .fr-chat-x{display:grid;place-items:center}
 html.chat-open .fr-chat-close{display:inline}
 iframe.fr-tawk-min{clip-path:inset(50%)!important;pointer-events:none!important}
 .fr-cp{-webkit-font-smoothing:antialiased;display:none;flex-direction:column;position:fixed;right:18px;bottom:84px;z-index:2147482000;box-sizing:border-box;width:384px;max-width:calc(100vw - 36px);height:640px;max-height:calc(100vh - 104px);max-height:calc(100dvh - 104px);overflow:hidden;background:#f4f4f6;border-radius:18px;box-shadow:0 16px 48px rgba(0,0,0,.24),0 0 0 1px rgba(20,22,28,.06);color:#18181b;font:400 14px/1.5 Inter,system-ui,sans-serif;text-align:left;outline:0}
-html.chat-panel .fr-cp{display:flex;animation:frcp .18s ease both}
+html.chat-panel .fr-cp{display:flex}
+html.chat-panel.chat-anim .fr-cp{animation:frcp .18s ease both}
 @keyframes frcp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes frcpm{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes frcpd{0%,100%{opacity:.3}40%{opacity:1}}

@@ -314,6 +314,7 @@
     [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== 'home'; });
     var live = false; try { live = !!(T && T.isChatOngoing && T.isChatOngoing()); } catch (e) {}
     var go = panel.querySelector('.fr-cp-home .fr-cp-link[data-chat]'); go.firstChild.nodeValue = live ? 'Continue conversation ' : 'Start conversation ';
+    root.classList.toggle('chat-anim', !!showPanel.anim); showPanel.anim = false;
     root.classList.add('chat-panel', 'chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close'); panel.querySelector('.fr-cp-home').scrollTop = 0; panel.focus();
   }
   function hidePanel(keepOpen) { root.classList.remove('chat-panel'); if (!keepOpen) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } }
@@ -375,9 +376,9 @@
     }, true);
     try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
   }
-  var fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0, closedAt = 0;
+  var swapping = false, fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0, closedAt = 0;
   function fit() {
-    if (!root.classList.contains('chat-open') || panelOpen()) return;
+    if (!root.classList.contains('chat-open') || (panelOpen() && !swapping)) return;
     var vh = window.innerHeight, wide = window.innerWidth >= 760;
     [].slice.call(document.querySelectorAll('iframe[title="Chat widget"]')).forEach(function (f) {
       var r = f.getBoundingClientRect(); if (!r.width || !r.height) return;
@@ -400,7 +401,7 @@
       var on = function (q) { var e = d.querySelector(q); return !!(e && e.offsetWidth); };
       var now = Date.now();
       /* A back arrow means a chat or Tawk's list of past chats is showing, not its Home. */
-      if (on('.tawk-chat-view') || on('.tawk-route-back')) { wantChat = false; wantAt = 0; homeTicks = 0; chatAt = now; return; }
+      if (on('.tawk-chat-view') || on('.tawk-route-back')) { if (swapping) { swapping = false; f.style.setProperty('visibility', 'visible', 'important'); hidePanel(true); } wantChat = false; wantAt = 0; homeTicks = 0; chatAt = now; return; }
       if (!on('.tawk-home-view')) { homeTicks = 0; return; }
       if (wantChat) {
         /* After a chat has ended Tawk's Home has no chat card, so its Start New Chat is pressed; failing that, its Messages tab. */
@@ -416,7 +417,7 @@
   }
   /* A chat left open carries on to the next page of the visit: the visitor asked for it once already. */
   function keep(on) { try { if (on) sessionStorage.setItem('fr-chat-on', '1'); else sessionStorage.removeItem('fr-chat-on'); } catch (e) {} }
-  function opened() { keep(true); root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 150); }
+  function opened() { keep(true); root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 50); }
   function closed() { keep(false); closedAt = Date.now(); if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
   function load(open) {
     if (open) wantOpen = true;
@@ -442,8 +443,10 @@
   if (again) { wantChat = true; load(true); } else if (allowed()) load(false);
   window.addEventListener('fr-consent', function () { if (allowed()) load(false); });
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-chat]'); if (!b) return; e.preventDefault();
-    if (b === btn) { if (panelOpen()) hidePanel(false); else if (root.classList.contains('chat-open')) { if (T && T.minimize) T.minimize(); } else showPanel(); return; }
-    hidePanel(true); wantChat = true; wantAt = 0; load(true);
+    if (b === btn) { if (panelOpen()) hidePanel(false); else if (root.classList.contains('chat-open')) { if (T && T.minimize) T.minimize(); } else { showPanel.anim = true; showPanel(); } return; }
+    /* The panel stays on top until Tawk has drawn the chat underneath it, then the two swap in one frame. */
+    swapping = true; setTimeout(function () { if (swapping) { swapping = false; hidePanel(true); } }, 4000);
+    wantChat = true; wantAt = 0; load(true);
   });
 })();
 
