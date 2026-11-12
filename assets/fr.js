@@ -333,7 +333,7 @@
     panel.__ended = function () { view('chat'); var m = say('bot', null); setTimeout(function () { reveal(m.lastChild, AI ? 'Your chat with the team has ended. I’m still here if there’s anything else.' : 'Your chat has ended.', log); }, 300); };
     msgs.forEach(function (m) { say(m.role === 'user' ? 'user' : 'bot', m.content); });
     function grow() { box.classList.toggle('has', !!ta.value.trim()); ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; }
-    var HUMAN = /\b(human|real person|actual person|someone real|live (chat|agent|person|support)|(speak|talk|chat) (to|with) (someone|somebody|a person|a human|an agent|support|the team|your team|staff|a real)|customer (service|support)|(to|with) an agent|operator)\b/i;
+    var HUMAN = /\b(human|humans|real person|actual person|someone real|live (chat|agent|person|support)|(spe+a?k|spk|talk|tlk|chat)\s+(to|with|2)\s+(an?\s+|the\s+|your\s+|a\s+real\s+)?(someone|somebody|person|human|agent|advisor|adviser|support|team|staff|rep)|customer (service|support)|operator)\b|^\s*(agent|advisor|adviser|human|person|support)\s*[?!.]*\s*$/i;
     /* A person costs the team's time, so live chat is offered only when the assistant has said it can't help. Tawk is
        fetched as the offer appears, so Yes opens it straight away. */
     function offer(text) {
