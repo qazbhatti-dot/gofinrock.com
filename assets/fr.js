@@ -349,7 +349,7 @@
     name();
     try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
   }
-  var fitting = 0, wantChat = false;
+  var fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0;
   function fit() {
     if (!root.classList.contains('chat-open') || panelOpen()) return;
     var vh = window.innerHeight, wide = window.innerWidth >= 760;
@@ -370,12 +370,12 @@
       var d; try { d = f.contentDocument; } catch (e) { return; }
       if (!d) return;
       var on = function (q) { var e = d.querySelector(q); return !!(e && e.offsetWidth); };
-      if (on('.tawk-chat-view')) { wantChat = false; return; }
-      if (on('.tawk-home-view')) {
-        var c = d.querySelector('.tawk-home-card-chat');
-        if (wantChat && c) c.click();
-        else if (!wantChat) { showPanel(); if (T && T.minimize) T.minimize(); }
-      }
+      var now = Date.now();
+      if (on('.tawk-chat-view')) { wantChat = false; homeTicks = 0; chatAt = now; return; }
+      if (!on('.tawk-home-view')) { homeTicks = 0; return; }
+      if (wantChat) { var c = d.querySelector('.tawk-home-card-chat'); if (c && now - clickAt > 1500) { clickAt = now; c.click(); } return; }
+      /* Tawk shows Home for a moment while it changes screens, so it has to stay there before it counts as going back. */
+      if (++homeTicks >= 4 && now - chatAt > 1500) { homeTicks = 0; showPanel(); if (T && T.minimize) T.minimize(); }
     });
   }
   function opened() { root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 150); }
