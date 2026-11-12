@@ -222,9 +222,9 @@
   var root = document.documentElement; root.classList.add('has-chat');
   var loaded = false, wantOpen = false, T;
   /* Our own launcher: a pill in the site's colours with the Finrock mark. Tawk's default bubble stays hidden. */
-  var me = document.querySelector('script[src*="fr.js"]'), icon = (me ? me.getAttribute('src').replace(/fr\.js.*$/, '') : 'assets/') + 'favicon.svg', finny = icon.replace(/favicon\.svg$/, 'finny.png');
-  var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fr-chat'; btn.setAttribute('data-chat', ''); btn.setAttribute('aria-label', 'Ask Finny');
-  btn.innerHTML = '<span class="fr-chat-mark"><img src="' + finny + '" alt="" width="40" height="40"></span><span class="fr-chat-label">Ask Finny</span><span class="fr-chat-x" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="fr-chat-close">Close</span><i></i>';
+  var me = document.querySelector('script[src*="fr.js"]'), icon = (me ? me.getAttribute('src').replace(/fr\.js.*$/, '') : 'assets/') + 'favicon.svg';
+  var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fr-chat'; btn.setAttribute('data-chat', ''); btn.setAttribute('aria-label', 'Chat with us');
+  btn.innerHTML = '<span class="fr-chat-mark"><img src="' + icon + '" alt="" width="26" height="24"></span><span class="fr-chat-label">Chat with us</span><span class="fr-chat-x" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span class="fr-chat-close">Close</span><i></i>';
   function add() { document.body.appendChild(btn); } if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
   /* The pill opens our own help panel first: start a chat, six common questions answered in place, or the contact form.
      Nothing is fetched from Tawk until Start conversation is pressed. */
@@ -238,62 +238,103 @@
   ];
   var panel = null, CH = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   function txt(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  var CONTACT = 'https://app.gofinrock.com/api/public/contact';
   function build() {
     var base = icon.replace(/assets\/favicon\.svg$/, ''), BK = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
-    panel = document.createElement('div'); panel.className = 'fr-cp'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Ask Finny'); panel.tabIndex = -1;
-    panel.innerHTML = '<div class="fr-cp-home"><span class="fr-cp-av"><img src="' + finny + '" alt="" width="56" height="56"></span><h2>Hi there! 👋</h2>' +
-      '<p class="fr-cp-in">I’m Finny, the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.</p>' +
-      '<div class="fr-cp-card"><h3>Ask Finny</h3><p>Instant answers from the Finrock help centre</p><button type="button" class="fr-cp-link" data-chat>Start conversation ' + CH + '</button></div>' +
+    var AV = '<span class="fr-cp-av"><img src="' + icon + '" alt="" width="32" height="29"></span>';
+    panel = document.createElement('div'); panel.className = 'fr-cp'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Finrock help'); panel.tabIndex = -1;
+    panel.innerHTML = '<div class="fr-cp-home" data-v="home">' + AV + '<h2>Hi there! 👋</h2>' +
+      '<p class="fr-cp-in">I’m the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.</p>' +
+      '<div class="fr-cp-card"><h3>Ask Finrock Assistant</h3><p>Instant answers from the Finrock help centre</p><button type="button" class="fr-cp-link" data-chat>Start conversation ' + CH + '</button></div>' +
       '<div class="fr-cp-card fr-cp-list"><h3>Popular questions</h3>' + QA.map(function (x, i) { return '<button type="button" class="fr-cp-q" data-q="' + i + '"><span>' + txt(x[0]) + '</span>' + CH + '</button>'; }).join('') + '</div>' +
-      '<div class="fr-cp-card"><h3>Need a person?</h3><p>Send your question to the Finrock support team and we’ll reply by email.</p><a class="fr-cp-link" href="' + base + 'finrock-contact.html#contact-form">Contact support ' + CH + '</a></div>' +
+      '<div class="fr-cp-card"><h3>Need a person?</h3><p>Send your question to the Finrock support team and we’ll reply by email.</p><button type="button" class="fr-cp-link" data-sup="home">Contact support ' + CH + '</button></div>' +
       '<p class="fr-cp-note">AI answers can be wrong.</p></div>' +
-      '<div class="fr-cp-ans" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><img src="' + finny + '" alt="" width="36" height="36"><div><b>Finny</b><span>Finrock AI assistant · Replies instantly</span></div></div>' +
+      '<div class="fr-cp-ans" data-v="chat" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" data-to="home" aria-label="Back">' + BK + '</button>' + AV + '<div><b>Finrock Assistant</b><span>AI assistant · Replies instantly</span></div></div>' +
       '<div class="fr-cp-log" aria-live="polite"></div>' +
       '<div class="fr-cp-foot"><button type="button" class="fr-cp-ask" data-chat><span>Ask a question about Finrock…</span><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></button>' +
-      '<p class="fr-cp-note">AI answers can be wrong. <a href="' + base + 'finrock-contact.html#contact-form">Contact support</a></p></div></div>';
+      '<p class="fr-cp-note">AI answers can be wrong. <button type="button" class="fr-cp-a" data-sup="chat">Contact support</button></p></div></div>' +
+      '<div class="fr-cp-ans fr-cp-sup" data-v="sup" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><div><b>Contact support</b><span>The Finrock support team replies by email</span></div></div>' +
+      '<form class="fr-cp-form" novalidate><label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label>' +
+      '<label>Your question<textarea name="query" rows="5" maxlength="5000" required></textarea></label>' +
+      '<button type="submit" class="fr-cp-send">Send to support</button><p class="fr-cp-status" role="status"></p></form>' +
+      '<div class="fr-cp-done" hidden><svg class="fr-cp-tick" viewBox="0 0 52 52" width="64" height="64" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none"/><path fill="none" d="M15 27l7.5 7.5L37.5 19"/></svg><h3>Message sent</h3><p>Your question has been sent to the Finrock support team. We’ll reply by email.</p><button type="button" class="fr-cp-send" data-to="home">Back to chat</button></div></div>';
     document.body.appendChild(panel);
-    var home = panel.querySelector('.fr-cp-home'), ans = panel.querySelector('.fr-cp-ans'), log = panel.querySelector('.fr-cp-log');
+    var log = panel.querySelector('.fr-cp-log'), sup = panel.querySelector('.fr-cp-sup'), form = sup.querySelector('form'), done = sup.querySelector('.fr-cp-done'), status = sup.querySelector('.fr-cp-status'), lastQ = '';
+    function view(v) { [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== v; }); if (v === 'home') panel.firstChild.scrollTop = 0; }
     function say(who, text) {
       var m = document.createElement('div'); m.className = 'fr-cp-m ' + who;
-      m.innerHTML = (who === 'bot' ? '<img src="' + finny + '" alt="" width="28" height="28">' : '') + '<div>' + (text === null ? '<span class="fr-cp-dots"><i></i><i></i><i></i></span>' : txt(text)) + '</div>';
+      m.innerHTML = (who === 'bot' ? AV : '') + '<div>' + (text === null ? '<span class="fr-cp-dots"><i></i><i></i><i></i></span>' : txt(text)) + '</div>';
       log.appendChild(m); log.scrollTop = log.scrollHeight; return m;
     }
+    function support(from) {
+      sup.querySelector('.fr-cp-back').setAttribute('data-to', from); sup.querySelector('.fr-cp-back').hidden = false; form.hidden = false; done.hidden = true; status.textContent = ''; form.querySelector('.fr-cp-send').disabled = false;
+      if (!form.elements.query.value && lastQ) form.elements.query.value = lastQ;
+      view('sup'); form.elements.email.focus();
+    }
     panel.addEventListener('click', function (e) {
-      var q = e.target.closest && e.target.closest('.fr-cp-q');
-      if (q) {
-        var x = QA[+q.getAttribute('data-q')]; home.hidden = true; ans.hidden = false; say('user', x[0]); var w = say('bot', null);
-        setTimeout(function () { w.lastChild.textContent = x[1]; log.scrollTop = log.scrollHeight; }, 600);
-        ans.querySelector('.fr-cp-back').focus(); return;
+      var t = e.target.closest && e.target.closest('.fr-cp-q,[data-sup],[data-to]'); if (!t) return;
+      if (t.hasAttribute('data-sup')) return support(t.getAttribute('data-sup'));
+      if (t.hasAttribute('data-to')) return view(t.getAttribute('data-to'));
+      var x = QA[+t.getAttribute('data-q')]; lastQ = x[0]; view('chat'); say('user', x[0]); var w = say('bot', null);
+      setTimeout(function () {
+        w.lastChild.textContent = x[1]; var more = document.createElement('button'); more.type = 'button'; more.className = 'fr-cp-a fr-cp-more'; more.setAttribute('data-sup', 'chat'); more.textContent = 'Didn’t answer my question?';
+        log.appendChild(more); log.scrollTop = log.scrollHeight;
+      }, 600);
+      panel.querySelector('[data-v="chat"] .fr-cp-back').focus();
+    });
+    /* The question goes to the same place as the contact page's form. That endpoint answers with a redirect back to the
+       contact page carrying the result, so it is posted into a hidden frame and the result read from where the frame lands. */
+    var WHY = { missing: 'Please enter your email and your question.', email: 'That email address doesn’t look right. Please check it and send again.', long: 'That message is over 5,000 characters. Please shorten it and send again.', links: 'Please keep it to three links or fewer and send again.', busy: 'Too many messages just now. Please try again in a little while.' };
+    form.addEventListener('input', function () { status.textContent = ''; });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.elements.email.value.trim(), q = form.elements.query.value.trim(), sendBtn = form.querySelector('.fr-cp-send');
+      if (!email || !q) { status.textContent = WHY.missing; return; }
+      if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email)) { status.textContent = WHY.email; return; }
+      sendBtn.disabled = true; status.textContent = 'Sending…';
+      var name = 'frsup' + Date.now(), fr = document.createElement('iframe'); fr.name = name; fr.hidden = true; fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1; document.body.appendChild(fr);
+      var f = document.createElement('form'); f.method = 'post'; f.action = CONTACT; f.target = name; f.hidden = true;
+      var fields = { form: 'contact', website: '', name: email.split('@')[0].slice(0, 100), email: email, topic: 'Something else', who: '', message: q + '\n\nSent from the chat panel on ' + location.href.split('?')[0] };
+      Object.keys(fields).forEach(function (k) { var i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = fields[k]; f.appendChild(i); });
+      document.body.appendChild(f);
+      var over = false, timer;
+      function end(r) {
+        if (over) return; over = true; clearTimeout(timer); setTimeout(function () { if (fr.parentNode) fr.parentNode.removeChild(fr); if (f.parentNode) f.parentNode.removeChild(f); }, 0);
+        if (r === 'sent' || r === 'ok') { form.hidden = true; form.reset(); done.hidden = false; sup.querySelector('.fr-cp-back').hidden = true; done.querySelector('button').focus(); return; }
+        sendBtn.disabled = false; status.textContent = WHY[r] || 'That didn’t send. Please try again or email support@gofinrock.com.';
       }
-      if (e.target.closest && e.target.closest('.fr-cp-back')) { ans.hidden = true; home.hidden = false; home.scrollTop = 0; }
+      fr.addEventListener('load', function () { var r; try { r = new URLSearchParams(fr.contentWindow.location.search).get('contact'); } catch (x) { r = 'error'; } if (r) end(r); });
+      timer = setTimeout(function () { end('error'); }, 20000);
+      f.submit();
     });
   }
   function panelOpen() { return root.classList.contains('chat-panel'); }
   function showPanel() {
     if (!panel) build();
-    panel.querySelector('.fr-cp-ans').hidden = true; panel.querySelector('.fr-cp-home').hidden = false;
+    [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== 'home'; });
     root.classList.add('chat-panel', 'chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close'); panel.querySelector('.fr-cp-home').scrollTop = 0; panel.focus();
   }
-  function hidePanel(keepOpen) { root.classList.remove('chat-panel'); if (!keepOpen) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finny'); } }
+  function hidePanel(keepOpen) { root.classList.remove('chat-panel'); if (!keepOpen) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Chat with us'); } }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && panelOpen()) { hidePanel(false); btn.focus(); } });
   function openChat() { if (!T || !T.maximize) return; if (T.showWidget) T.showWidget(); T.maximize(); opened(); }
   /* While the chat is open the pill is its Close button, as on a phone the window fills the screen. Tawk's own
      round minimise button is hidden under it, and a window that would sit under the pill is shortened to end above it. */
   /* The chat window is Tawk's, drawn in a same-origin frame, so it is given the same look as the panel: white bar,
      grey page, white answers, orange questions. Tawk names the assistant "Customer Support"; that is shown as Finrock Assistant. */
-  var ICON = 'https://gofinrock.com/assets/finny.png';
+  var ICON = 'https://gofinrock.com/assets/favicon.svg';
   var SKIN = '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
     '.tawk-toolbar,.tawk-toolbar *{color:#18181b!important}.tawk-toolbar svg,.tawk-toolbar svg *{fill:#18181b!important}' +
     '.tawk-toolbar-title,.tawk-toolbar-agent-name{font-weight:600!important;font-size:15px!important;line-height:1.3!important}' +
+    '.tawk-toolbar .tawk-avatar,.tawk-toolbar .tawk-tooltip-hover,.tawk-toolbar-agent-title,.tawk-toolbar button[aria-label="Minimize"]{display:none!important}' +
     '.tawk-toolbar-agent-name{position:relative;padding-left:46px!important;min-height:36px;display:flex!important;flex-direction:column;justify-content:center;margin:0 0 0 4px!important;overflow:visible!important}' +
-    '.tawk-toolbar-agent-name::before{content:"";position:absolute;left:0;top:50%;width:36px;height:36px;margin-top:-18px;border-radius:50%;background:#fff url(' + ICON + ') center/cover no-repeat}' +
-    '.tawk-toolbar-agent-name::after{content:"Finrock AI assistant \\00B7  Replies instantly";font-weight:400;font-size:12px;color:#71717a}' +
+    '.tawk-toolbar-agent-name::before{content:"";position:absolute;left:0;top:50%;width:36px;height:36px;margin-top:-18px;border-radius:50%;background:#fff url(' + ICON + ') center/22px no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
+    '.tawk-toolbar-agent-name::after{content:"AI assistant \\00B7  Replies instantly";font-weight:400;font-size:12px;color:#71717a}' +
     'html body .tawk-overlay,html body .tawk-router-view,html body .tawk-main-panel,html body .tawk-chat-panel.tawk-chat-panel.tawk-chat-panel.tawk-chat-panel{background:#f4f4f6!important}' +
     '.tawk-home-view .tawk-header-text,.tawk-home-view h1,.tawk-home-view h2,.tawk-home-view p{color:#18181b!important}' +
     '.tawk-agent-chat-bubble{background:#fff!important;color:#18181b!important;border:1px solid #e4e4e7!important;border-radius:16px 16px 16px 4px!important;padding:9px 13px!important}.tawk-agent-chat-bubble *{color:#18181b!important}.tawk-agent-chat-bubble a{color:#b45309!important}' +
     '.tawk-visitor-chat-bubble{background:#F6921A!important;color:#111!important;border-radius:16px 16px 4px 16px!important;padding:9px 13px!important}.tawk-visitor-chat-bubble *{color:#111!important}' +
     '.tawk-chat-name-margin{font-size:12px!important;color:#71717a!important}' +
-    '.tawk-message-profile .tawk-avatar-image{background:#fff url(' + ICON + ') center/cover no-repeat!important;border-radius:50%!important}.tawk-message-profile img{opacity:0!important}' +
+    '.tawk-message-profile .tawk-avatar-image{background:#fff url(' + ICON + ') center/60% no-repeat!important;border-radius:50%!important;box-shadow:0 0 0 1px #e4e4e7}.tawk-message-profile img{opacity:0!important}' +
     '.tawk-footer{background:#f4f4f6!important;box-shadow:none!important}.tawk-footer .tawk-chatinput{background:#fff!important;border-radius:14px!important;box-shadow:0 0 0 1px #e4e4e7!important;padding:4px 8px!important}' +
     '.tawk-footer .tawk-chatinput.tawk-chatinput-focused{box-shadow:0 0 0 1px #F6921A!important}.tawk-chatinput-editor{background:transparent!important}';
   function skin(f) {
@@ -303,7 +344,7 @@
     var busy = 0;
     function name() {
       busy = 0; var w = d.createTreeWalker(d.body, 4, null), n;
-      while ((n = w.nextNode())) if (n.nodeValue && n.nodeValue.trim() === 'Customer Support') n.nodeValue = 'Finny';
+      while ((n = w.nextNode())) if (n.nodeValue && n.nodeValue.trim() === 'Customer Support') n.nodeValue = 'Finrock Assistant';
     }
     name();
     try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
@@ -328,8 +369,9 @@
       /* Tawk's own Home screen repeats our panel. Coming from Start conversation it is skipped; going back to it shows the panel. */
       var d; try { d = f.contentDocument; } catch (e) { return; }
       if (!d) return;
-      if (d.querySelector('.tawk-chat-view')) { wantChat = false; return; }
-      if (d.querySelector('.tawk-home-view') && !d.querySelector('.tawk-route-back')) {
+      var on = function (q) { var e = d.querySelector(q); return !!(e && e.offsetWidth); };
+      if (on('.tawk-chat-view')) { wantChat = false; return; }
+      if (on('.tawk-home-view')) {
         var c = d.querySelector('.tawk-home-card-chat');
         if (wantChat && c) c.click();
         else if (!wantChat) { showPanel(); if (T && T.minimize) T.minimize(); }
@@ -337,7 +379,7 @@
     });
   }
   function opened() { root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 150); }
-  function closed() { if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finny'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
+  function closed() { if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Chat with us'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
   function load(open) {
     if (open) wantOpen = true;
     if (loaded) { if (open) openChat(); return; }
