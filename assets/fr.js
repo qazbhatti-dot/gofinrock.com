@@ -375,11 +375,14 @@
       if (!d) return;
       var on = function (q) { var e = d.querySelector(q); return !!(e && e.offsetWidth); };
       var now = Date.now();
-      if (on('.tawk-chat-view')) { wantChat = false; homeTicks = 0; chatAt = now; return; }
+      /* A back arrow means a chat or Tawk's list of past chats is showing, not its Home. */
+      if (on('.tawk-chat-view') || on('.tawk-route-back')) { wantChat = false; homeTicks = 0; chatAt = now; return; }
       if (!on('.tawk-home-view')) { homeTicks = 0; return; }
       if (wantChat) {
-        /* After a chat has ended Tawk offers Start New Chat in place of its chat card. */
-        var c = d.querySelector('.tawk-home-card-chat') || [].filter.call(d.querySelectorAll('button'), function (x) { return /start new chat/i.test(x.textContent); })[0];
+        /* After a chat has ended Tawk's Home has no chat card. Its Messages tab is opened instead: new chat on top, past chats below. */
+        var c = d.querySelector('.tawk-home-card-chat'), nav = d.querySelector('.tawk-bottom-navbar');
+        if (!c && nav && nav.lastElementChild) c = nav.lastElementChild.querySelector('button,[role="button"]') || nav.lastElementChild;
+        if (!c) c = [].filter.call(d.querySelectorAll('button'), function (x) { return /start new chat/i.test(x.textContent); })[0];
         if (c && now - clickAt > 1500) { clickAt = now; c.click(); }
         return;
       }
