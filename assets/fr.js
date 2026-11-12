@@ -377,10 +377,7 @@
         wr.appendChild(sb);
       }
       if (ci && (!nt || nt.previousSibling !== ci)) { if (!nt) { nt = d.createElement('p'); nt.className = 'fr-note'; nt.innerHTML = 'AI answers can be wrong. <a class="fr-sup" href="#">Contact support</a>'; } ci.parentNode.insertBefore(nt, ci.nextSibling); }
-      var blocks = d.querySelectorAll('.tawk-message-block'), lastA = null;
-      for (var i = blocks.length - 1; i >= 0; i--) { if (blocks[i].querySelector('.tawk-agent-chat-bubble')) { lastA = blocks[i]; break; } }
-      var mv = d.querySelector('.fr-more');
-      if (lastA && lastA.querySelectorAll('.tawk-agent-chat-bubble').length && (!mv || mv.previousSibling !== lastA)) { if (mv) mv.parentNode.removeChild(mv); if (d.querySelector('.tawk-visitor-chat-bubble')) { mv = d.createElement('p'); mv.className = 'fr-more'; mv.innerHTML = '<a class="fr-sup" href="#">Didn\u2019t answer my question?</a>'; lastA.parentNode.insertBefore(mv, lastA.nextSibling); } }
+      var oldMore = d.querySelector('.fr-more'); if (oldMore) oldMore.parentNode.removeChild(oldMore);
       var hm = d.querySelectorAll('.tawk-home-view .tawk-header-text'), g = hm[1] && hm[1].textContent.replace(/\s+/g, ' ').trim();
       if (g && g !== greet) { greet = g; gs.textContent = '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::before{content:' + JSON.stringify('Hi! ' + g) + '!important}'; } var w = d.createTreeWalker(d.body, 4, null), n;
       while ((n = w.nextNode())) {
@@ -408,7 +405,7 @@
       if (r.width <= 100 && r.height <= 100) { f.classList.add('fr-tawk-min'); return; }
       f.classList.remove('fr-tawk-min');
       if (r.height <= 200) return;
-      skin(f); if (f.__frName) f.__frName();
+      skin(f); if (f.__frName && ((fit.n = (fit.n || 0) + 1) % 6 === 0)) f.__frName();
       /* The window sits exactly where the panel was, so the two read as one widget. */
       var P = function (k, v) { if (f.style.getPropertyValue(k) !== v) f.style.setProperty(k, v, 'important'); };
       var room = wide ? 84 : 74, side = wide ? 18 : 14, h = Math.max(240, Math.min(640, vh - room - (wide ? 20 : 16)));
