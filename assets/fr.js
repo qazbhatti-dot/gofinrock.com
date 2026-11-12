@@ -266,6 +266,7 @@
       m.innerHTML = (who === 'bot' ? AV : '') + '<div>' + (text === null ? '<span class="fr-cp-dots"><i></i><i></i><i></i></span>' : txt(text)) + '</div>';
       log.appendChild(m); log.scrollTop = log.scrollHeight; return m;
     }
+    panel.__support = function (from) { support(from); };
     function support(from) {
       sup.querySelector('.fr-cp-back').setAttribute('data-to', from); sup.querySelector('.fr-cp-back').hidden = false; form.hidden = false; done.hidden = true; status.textContent = ''; form.querySelector('.fr-cp-send').disabled = false;
       if (!form.elements.query.value && lastQ) form.elements.query.value = lastQ;
@@ -339,6 +340,9 @@
     '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view{position:relative}' +
     '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::before{content:"Hi! I\\2019m the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.";display:block!important;position:absolute;z-index:2;left:50px;top:78px;max-width:calc(100% - 96px);padding:9px 13px;background:#fff;border:1px solid #e4e4e7;border-radius:16px 16px 16px 4px;font:400 14px/1.5 Inter,system-ui,sans-serif;color:#18181b;box-shadow:0 1px 2px rgba(24,24,27,.04);animation:frm .22s ease both}' +
     '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::after{content:"";display:block!important;position:absolute;z-index:2;left:14px;top:78px;width:28px;height:28px;border-radius:50%;background:#fff url(' + ICON + ') center/60% no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
+    '.tawk-toolbar .tawk-margin-auto-left{display:none!important}' +
+    '.fr-note{margin:8px 0 0;text-align:center;font:400 12px/1.4 Inter,system-ui,sans-serif;color:#71717a}.fr-note a,.fr-more a{color:#b45309;text-decoration:underline;cursor:pointer}' +
+    '.fr-more{margin:-2px 0 6px 46px;font:400 12.5px/1.4 Inter,system-ui,sans-serif}' +
     'html body .tawk-overlay,html body .tawk-router-view,html body .tawk-main-panel,html body .tawk-chat-panel.tawk-chat-panel.tawk-chat-panel.tawk-chat-panel{background:#f4f4f6!important}' +
     '.tawk-home-view,.tawk-home-view~.tawk-bottom-navbar{visibility:hidden!important}' +
     '.tawk-agent-chat-bubble{background:#fff!important;color:#18181b!important;border:1px solid #e4e4e7!important;border-radius:16px 16px 16px 4px!important;padding:9px 13px!important}.tawk-agent-chat-bubble *{color:#18181b!important}.tawk-agent-chat-bubble a{color:#b45309!important}' +
@@ -359,6 +363,12 @@
     var busy = 0, greet = '', gs = d.createElement('style'); d.head.appendChild(gs);
     function name() {
       busy = 0;
+      var ci = d.querySelector('.tawk-footer .tawk-chatinput');
+      if (ci && !d.querySelector('.fr-note')) { var nt = d.createElement('p'); nt.className = 'fr-note'; nt.innerHTML = 'AI answers can be wrong. <a class="fr-sup" href="#">Contact support</a>'; ci.parentNode.insertBefore(nt, ci.nextSibling); }
+      var blocks = d.querySelectorAll('.tawk-message-block'), lastA = null;
+      for (var i = blocks.length - 1; i >= 0; i--) { if (blocks[i].querySelector('.tawk-agent-chat-bubble')) { lastA = blocks[i]; break; } }
+      var mv = d.querySelector('.fr-more');
+      if (lastA && lastA.querySelectorAll('.tawk-agent-chat-bubble').length && (!mv || mv.previousSibling !== lastA)) { if (mv) mv.parentNode.removeChild(mv); if (d.querySelector('.tawk-visitor-chat-bubble')) { mv = d.createElement('p'); mv.className = 'fr-more'; mv.innerHTML = '<a class="fr-sup" href="#">Didn\u2019t answer my question?</a>'; lastA.parentNode.insertBefore(mv, lastA.nextSibling); } }
       var hm = d.querySelectorAll('.tawk-home-view .tawk-header-text'), g = hm[1] && hm[1].textContent.replace(/\s+/g, ' ').trim();
       if (g && g !== greet) { greet = g; gs.textContent = '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::before{content:' + JSON.stringify('Hi! ' + g) + '!important}'; } var w = d.createTreeWalker(d.body, 4, null), n;
       while ((n = w.nextNode())) {
@@ -369,6 +379,7 @@
     }
     name();
     d.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('.fr-sup')) { e.preventDefault(); e.stopPropagation(); f.style.setProperty('visibility', 'hidden', 'important'); showPanel(); if (panel && panel.__support) panel.__support('home'); if (T && T.minimize) T.minimize(); return; }
       var b = e.target.closest && e.target.closest('.tawk-route-back button, .tawk-route-back');
       if (!b) return;
       e.preventDefault(); e.stopPropagation();
