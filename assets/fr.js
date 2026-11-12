@@ -240,6 +240,23 @@
   var panel = null, CH = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   function txt(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
   var CONTACT = 'https://app.gofinrock.com/api/public/contact';
+  /* A message for the team, sent where the contact page's form sends. That endpoint answers with a redirect back to
+     the contact page carrying the result, so it is posted into a hidden frame and the result read from where the
+     frame lands; done hears 'sent', a reason the endpoint names, or 'error'. */
+  function postContact(fields, done) {
+    var name = 'frsup' + Date.now(), fr = document.createElement('iframe'); fr.name = name; fr.hidden = true; fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1; document.body.appendChild(fr);
+    var f = document.createElement('form'); f.method = 'post'; f.action = CONTACT; f.target = name; f.hidden = true;
+    Object.keys(fields).forEach(function (k) { var i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = fields[k]; f.appendChild(i); });
+    document.body.appendChild(f);
+    var over = false, timer;
+    function end(r) {
+      if (over) return; over = true; clearTimeout(timer); setTimeout(function () { if (fr.parentNode) fr.parentNode.removeChild(fr); if (f.parentNode) f.parentNode.removeChild(f); }, 0);
+      done(r);
+    }
+    fr.addEventListener('load', function () { var r; try { r = new URLSearchParams(fr.contentWindow.location.search).get('contact'); } catch (x) { r = 'error'; } if (r) end(r); });
+    timer = setTimeout(function () { end('error'); }, 20000);
+    f.submit();
+  }
   /* Cloudflare Turnstile: the check that a person is there, usually invisible. The site key is public; the server holds
      the secret and decides whether to ask for the check at all. The script is fetched only when a form or the chat needs it. */
   var TS_KEY = '0x4AAAAAAF92mSnXNrDBme8C', tsWait = [], tsFail = [];
@@ -455,28 +472,70 @@
     function who() {
       var known = {}; try { known = JSON.parse(sessionStorage.getItem('fr-who') || '{}') || {}; } catch (e) {}
       var f = document.createElement('form'); f.className = 'fr-cp-offer fr-cp-who'; f.noValidate = true;
-      f.innerHTML = '<p>Before I put you through, who should the team ask for?</p>' +
+      f.innerHTML = '<p class="fr-cp-who-lead"></p>' +
         '<label><b>Your name</b><input name="n" autocomplete="name" maxlength="80"></label>' +
-        '<label><b>Email <span>· optional, so we can reply if you leave</span></b><input name="e" type="email" autocomplete="email" maxlength="120"></label>' +
+        '<label><b>Email <span class="fr-cp-who-opt"></span></b><input name="e" type="email" autocomplete="email" maxlength="120"></label>' +
         '<label><b>What do you need help with? <span>· optional</span></b><textarea name="q" rows="2" maxlength="500"></textarea></label>' +
-        '<p class="fr-cp-who-err" role="alert" hidden></p>' +
-        '<div><button type="submit" class="fr-cp-yes">Transfer me</button><button type="button" class="fr-cp-no">Not now</button></div>';
-      var n = f.elements.n, e = f.elements.e, q = f.elements.q, err = f.querySelector('.fr-cp-who-err');
+        '<div class="fr-cp-ts fr-cp-who-ts" hidden></div><p class="fr-cp-who-err" role="alert" hidden></p>' +
+        '<div><button type="submit" class="fr-cp-yes"></button><button type="button" class="fr-cp-no">Not now</button></div>';
+      var n = f.elements.n, e = f.elements.e, q = f.elements.q, err = f.querySelector('.fr-cp-who-err'), goBtn = f.querySelector('.fr-cp-yes'), off = null, offTs = null;
       n.value = known.name || ''; e.value = known.email || ''; q.value = realQuestion();
-      f.querySelector('.fr-cp-no').addEventListener('click', function () { f.remove(); if (ta) ta.focus({ preventScroll: true }); });
+      /* With nobody online (Tawk says so for Away and outside the hours set in its scheduler) the visitor is not put
+         through to an empty chat: the email becomes required and their message goes to the team by email. Until Tawk
+         has said, the card reads as for a team that is there. */
+      function mode(o) {
+        if (o === off) return; off = o;
+        f.querySelector('.fr-cp-who-lead').textContent = o ? 'The team isn’t online right now. Leave your details and they’ll reply by email.' : 'Before I put you through, who should the team ask for?';
+        f.querySelector('.fr-cp-who-opt').textContent = o ? '' : '· optional, so we can reply if you leave';
+        goBtn.textContent = o ? 'Send to the team' : 'Transfer me';
+        var tsEl = f.querySelector('.fr-cp-who-ts'); tsEl.hidden = !o; if (o && !offTs) offTs = tsWidget(tsEl);
+      }
+      mode(teamStatus() === 'offline' || teamStatus() === 'away');
+      var looks = 0, look = setInterval(function () { var st = teamStatus(); if (st) mode(st !== 'online'); if (st || ++looks > 30 || !f.isConnected) clearInterval(look); }, 300);
+      f.querySelector('.fr-cp-no').addEventListener('click', function () { clearInterval(look); f.remove(); if (ta) ta.focus({ preventScroll: true }); });
+      f.addEventListener('input', function () { err.hidden = true; });
       f.addEventListener('submit', function (ev) {
-        ev.preventDefault();
+        ev.preventDefault(); if (goBtn.disabled) return;
         var name = n.value.trim().replace(/\s+/g, ' '), email = e.value.trim(), need = q.value.trim();
-        var bad = !name ? 'Please add your name so the team knows who they’re talking to.' : email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'That email doesn’t look right. Check it, or leave it empty.' : '';
+        var bad = !name ? 'Please add your name so the team knows who they’re talking to.'
+          : off && !email ? 'Please add your email so the team can reply.'
+          : email && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email) ? (off ? 'That email doesn’t look right. Please check it.' : 'That email doesn’t look right. Check it, or leave it empty.') : '';
         if (bad) { err.textContent = bad; err.hidden = false; (name ? e : n).focus({ preventScroll: true }); return; }
         try { sessionStorage.setItem('fr-who', JSON.stringify({ name: name, email: email })); } catch (x) {}
-        f.remove(); tick();
-        var m = say('bot', null), first = name.split(' ')[0];
-        setTimeout(function () { reveal(m.lastChild, txt('Thanks, ' + first + '. Transferring you to the team now. They’ll see what you’ve asked me, so there’s no need to repeat it.'), log); chime(); }, 350);
-        setTimeout(function () { hand(); goLive({ name: name, email: email, need: need }); }, 1700);
+        clearInterval(look);
+        var first = name.split(' ')[0];
+        if (!off) {
+          f.remove(); tick();
+          var m = say('bot', null);
+          setTimeout(function () { reveal(m.lastChild, txt('Thanks, ' + first + '. Transferring you to the team now. They’ll see what you’ve asked me, so there’s no need to repeat it.'), log); chime(); }, 350);
+          setTimeout(function () { hand(); goLive({ name: name, email: email, need: need }); }, 1700);
+          return;
+        }
+        goBtn.disabled = true; goBtn.textContent = 'Sending…';
+        offTs.wait(function (tok) {
+          postContact({ 'cf-turnstile-response': tok, form: 'contact', website: '', name: name.slice(0, 100), email: email, topic: 'Something else', who: '',
+            message: offlineMessage(need) + '\n\nSent from the chat on ' + location.href.split('?')[0] + ' while the team was offline.' }, function (r) {
+            if (r === 'sent' || r === 'ok') {
+              f.remove(); tick(); var m = say('bot', null);
+              setTimeout(function () { reveal(m.lastChild, txt('Thanks, ' + first + '. I’ve sent your message and our conversation to the team. They’ll reply to ' + email + ' by email.'), log); chime(); }, 350);
+              return;
+            }
+            offTs.reset(); goBtn.disabled = false; goBtn.textContent = 'Send to the team';
+            err.textContent = WHY[r] || 'That didn’t send. Please try again or email support@gofinrock.com.'; err.hidden = false;
+          });
+        });
       });
       log.appendChild(f); log.scrollTop = log.scrollHeight;
       if (!n.value) n.focus({ preventScroll: true });
+    }
+    /* The email the team reads when nobody was online: what the visitor needs, then the conversation they had with
+       the assistant. Links are named rather than written out, since the endpoint turns away a message with many, and
+       the oldest lines go first if it runs long. */
+    function offlineMessage(need) {
+      var lines = (panel.__seen ? panel.__seen() : []).map(function (m) { return (m.role === 'user' ? 'Visitor: ' : 'Assistant: ') + String(m.content).replace(/https?:\/\/\S+/g, '[link]').replace(/\s+/g, ' ').trim(); });
+      var head = (need || realQuestion() || 'They asked to speak to someone on the team.').replace(/https?:\/\/\S+/g, '[link]'), body = lines.join('\n');
+      if (body.length > 4000) body = '…' + body.slice(-4000);
+      return head + (body ? '\n\nTheir conversation with the assistant:\n' + body : '');
     }
     /* The agent is handed the conversation so far as an event on the visitor, which Tawk shows beside the chat. */
     function hand() {
@@ -492,7 +551,7 @@
       q = q.trim().slice(0, 1500); if (!q || busy) return;
       if (asking && (YES.test(q) || NO.test(q))) {
         asking = false; ta.value = ''; grow(); say('user', q); tick();
-        if (YES.test(q)) { var y = say('bot', null); setTimeout(function () { reveal(y.lastChild, 'Great, I’ll put you through to the team.', log); chime(); load(false); who(); }, 400); }
+        if (YES.test(q)) { var y = say('bot', null); setTimeout(function () { reveal(y.lastChild, 'Great.', log); chime(); load(false); who(); }, 400); }
         else { var n = say('bot', null); setTimeout(function () { reveal(n.lastChild, 'No problem. What else can I help with?', log); chime(); }, 400); }
         return;
       }
@@ -558,8 +617,7 @@
       }, 600);
       panel.querySelector('[data-v="chat"] .fr-cp-back').focus({ preventScroll: true });
     });
-    /* The question goes to the same place as the contact page's form. That endpoint answers with a redirect back to the
-       contact page carrying the result, so it is posted into a hidden frame and the result read from where the frame lands. */
+    /* The question goes to the same place as the contact page's form (postContact). */
     var supTs = null;
     var WHY = { check: 'We couldn’t confirm you’re not a robot. Please tick the box and send again.', missing: 'Please enter your email and your question.', email: 'That email address doesn’t look right. Please check it and send again.', long: 'That message is over 5,000 characters. Please shorten it and send again.', links: 'Please keep it to three links or fewer and send again.', busy: 'Too many messages just now. Please try again in a little while.' };
     form.addEventListener('input', function () { status.textContent = ''; });
@@ -570,21 +628,12 @@
       if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email)) { status.textContent = WHY.email; return; }
       sendBtn.disabled = true; status.textContent = 'Sending…';
       if (supTs && !e.frChecked) { supTs.wait(function () { var ev = new Event('submit', { cancelable: true }); ev.frChecked = true; sendBtn.disabled = false; form.dispatchEvent(ev); }); return; }
-      var name = 'frsup' + Date.now(), fr = document.createElement('iframe'); fr.name = name; fr.hidden = true; fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1; document.body.appendChild(fr);
-      var f = document.createElement('form'); f.method = 'post'; f.action = CONTACT; f.target = name; f.hidden = true;
       var fields = { 'cf-turnstile-response': supTs ? supTs.token() : '', form: 'contact', website: '', name: email.split('@')[0].slice(0, 100), email: email, topic: 'Something else', who: '', message: q + '\n\nSent from the chat panel on ' + location.href.split('?')[0] };
-      Object.keys(fields).forEach(function (k) { var i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = fields[k]; f.appendChild(i); });
-      document.body.appendChild(f);
-      var over = false, timer;
-      function end(r) {
-        if (over) return; over = true; clearTimeout(timer); setTimeout(function () { if (fr.parentNode) fr.parentNode.removeChild(fr); if (f.parentNode) f.parentNode.removeChild(f); }, 0);
+      postContact(fields, function (r) {
         if (supTs) supTs.reset();
         if (r === 'sent' || r === 'ok') { form.hidden = true; form.reset(); done.hidden = false; sup.querySelector('.fr-cp-back').hidden = true; done.querySelector('button').focus({ preventScroll: true }); return; }
         sendBtn.disabled = false; status.textContent = WHY[r] || 'That didn’t send. Please try again or email support@gofinrock.com.';
-      }
-      fr.addEventListener('load', function () { var r; try { r = new URLSearchParams(fr.contentWindow.location.search).get('contact'); } catch (x) { r = 'error'; } if (r) end(r); });
-      timer = setTimeout(function () { end('error'); }, 20000);
-      f.submit();
+      });
     });
   }
   function panelOpen() { return root.classList.contains('chat-panel'); }
@@ -631,7 +680,7 @@
     var told = false, tell = function () { if (told) return; told = true; try { if (T && T.minimize) T.minimize(); } catch (e) {} };
     requestAnimationFrame(function () { setTimeout(tell, 0); }); setTimeout(tell, 150);
   }
-  var SKIN = '.fr-carry{display:flex;flex-direction:column;gap:8px;padding:14px 12px 6px}.fr-carry-lbl{margin:0 0 2px;text-align:center;font:500 11.5px/1.3 Inter,system-ui,sans-serif;color:#a1a1aa}.fr-carry-m{max-width:84%;padding:8px 12px;border-radius:14px;font:400 13.5px/1.45 Inter,system-ui,sans-serif;opacity:.85}.fr-carry-m.u{align-self:flex-end;background:#F6921A;color:#111;border-bottom-right-radius:4px}.fr-carry-m.b{align-self:flex-start;background:#fff;border:1px solid #e4e4e7;color:#18181b;border-bottom-left-radius:4px}.fr-carry-m p{margin:0}.fr-carry-m p+p,.fr-carry-m p+ul,.fr-carry-m ul+p{margin-top:6px}.fr-carry-m ul,.fr-carry-m ol{margin:0;padding-left:18px}.fr-carry-sep{display:flex;align-items:center;gap:10px;margin:8px 0 2px;font:600 12px/1.3 Inter,system-ui,sans-serif;color:#16a34a}.fr-carry-sep::before,.fr-carry-sep::after{content:"";flex:1;height:1px;background:#e4e4e7}.fr-carry-who{margin:4px 0 -4px 2px;font:500 11.5px/1.3 Inter,system-ui,sans-serif;color:#71717a}.fr-carry-m.fr-carry-hi{opacity:1}.tawk-router-view:has(.fr-carry)::before{display:none!important}.tawk-max-content:has(>.tawk-router-view>.fr-carry),.tawk-router-view:has(>.fr-carry){min-height:0!important}.tawk-router-view:has(>.fr-carry){flex-direction:column!important;overflow:hidden!important}.tawk-router-view>.fr-carry{flex:1 1 auto;min-height:0;overflow-y:auto;width:100%;box-sizing:border-box}' +
+  var SKIN = '.fr-carry{display:flex;flex-direction:column;gap:8px;padding:14px 12px 6px}.fr-carry-lbl{margin:0 0 2px;text-align:center;font:500 11.5px/1.3 Inter,system-ui,sans-serif;color:#a1a1aa}.fr-carry-m{max-width:84%;padding:8px 12px;border-radius:14px;font:400 13.5px/1.45 Inter,system-ui,sans-serif;opacity:.85}.fr-carry-m.u{align-self:flex-end;background:#F6921A;color:#111;border-bottom-right-radius:4px}.fr-carry-m.b{align-self:flex-start;background:#fff;border:1px solid #e4e4e7;color:#18181b;border-bottom-left-radius:4px}.fr-carry-m p{margin:0}.fr-carry-m p+p,.fr-carry-m p+ul,.fr-carry-m ul+p{margin-top:6px}.fr-carry-m ul,.fr-carry-m ol{margin:0;padding-left:18px}.fr-carry-sep{display:flex;align-items:center;gap:10px;margin:8px 0 2px;font:600 12px/1.3 Inter,system-ui,sans-serif;color:#16a34a}.fr-carry-sep::before,.fr-carry-sep::after{content:"";flex:1;height:1px;background:#e4e4e7}.fr-carry-note{margin:0 0 4px;text-align:center;font:400 12px/1.4 Inter,system-ui,sans-serif;color:#71717a}.tawk-router-view:has(.fr-carry)::before{display:none!important}.tawk-max-content:has(>.tawk-router-view>.fr-carry),.tawk-router-view:has(>.fr-carry){min-height:0!important}.tawk-router-view:has(>.fr-carry){flex-direction:column!important;overflow:hidden!important}.tawk-router-view>.fr-carry{flex:1 1 auto;min-height:0;overflow-y:auto;width:100%;box-sizing:border-box}' +
     '.tawk-toolbar{position:relative}.tawk-toolbar:has(.fr-end){padding-right:100px!important}.tawk-toolbar-nav:has(.tawk-route-back)::before,.tawk-toolbar-nav:has(.tawk-route-back)::after{min-width:0;overflow:hidden;text-overflow:ellipsis}.fr-end{position:absolute;right:12px;top:50%;transform:translateY(-50%);height:30px;padding:0 12px;border:1px solid #e4e4e7;border-radius:9px;background:#fff;color:#18181b;font:600 13px/1 Inter,system-ui,sans-serif;cursor:pointer;z-index:2}.fr-end:hover{background:#fef2f2;border-color:#fecaca;color:#b91c1c}' +
     '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
     '.tawk-toolbar,.tawk-toolbar *{color:#18181b!important}.tawk-toolbar button.tawk-header-text svg,.tawk-toolbar button.tawk-header-text svg *{fill:#18181b!important}.tawk-button.tawk-custom-color{color:#111!important}' +
@@ -677,9 +726,8 @@
     '.fr-phone .tawk-main-panel .tawk-chat-panel .tawk-chat-panel-inner{padding-bottom:8px!important}' +
     '.fr-phone.fr-kb .fr-note{display:none}.fr-phone.fr-kb .tawk-padding-small:has(a[href*="tawk.to"]){padding:0 0 2px!important;opacity:.55}' +
     '.fr-phone.fr-kb .tawk-padding-small:has(a[href*="tawk.to"]) *{font-size:10px!important;line-height:1.2!important;color:#a1a1aa!important}.fr-phone.fr-kb .tawk-padding-small:has(a[href*="tawk.to"]) img{width:10px!important;height:auto!important}';
-  /* The team's first words under the history, said for them at once so the visitor is never left looking at
-     silence: who is there now, and what happens next. Tawk says whether anyone is online; with no answer, nothing
-     is promised. */
+  /* Under the history, what happens next, so the visitor is never left looking at silence. It is a note and not the
+     team's own words: their first reply should come after the visitor's message, not before it. */
   /* The visitor's request to the team, sent once as their first message when the team chat is ready. A message box
      still holding it after a moment was not taken, so it is sent once more. */
   function kick(tx, w) {
@@ -700,11 +748,10 @@
     }, 800);
   }
   function teamHello() {
-    var st = ''; try { st = T && T.getStatus ? T.getStatus() : ''; } catch (e) {}
-    var say = st === 'online' ? 'Hi, thanks for getting in touch. Someone from the team will see your conversation so far and reply here shortly.'
-      : st === 'away' || st === 'offline' ? 'Hi, thanks for getting in touch. The team isn’t online right now. Leave your message here with your email and we’ll reply by email.' : '';
-    return say ? '<p class="fr-carry-who">Finrock team</p><div class="fr-carry-m b fr-carry-hi">' + say + '</div>' : '';
+    return teamStatus() === 'online' ? '<p class="fr-carry-note">Someone from the team will reply here shortly.</p>' : '';
   }
+  /* What Tawk says of the team: 'online', 'away' or 'offline', or '' before it has said. */
+  function teamStatus() { try { return T && T.getStatus ? T.getStatus() || '' : ''; } catch (e) { return ''; } }
   function skin(f) {
     var d; try { d = f.contentDocument; } catch (e) { return; }
     if (!d || !d.head || !d.body || d.getElementById('fr-skin')) return;
