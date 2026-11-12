@@ -1726,3 +1726,8 @@ html.chat-panel iframe[title="Visit tawk.to"],html:not(.chat-open) iframe[title=
 .fr-cp-m>div:last-child li{margin:3px 0;padding-left:2px}
 .fr-cp-m>div:last-child li::marker{color:#F6921A;font-weight:600}
 .fr-cp-m>div:last-child b{font-weight:600;color:#18181b}
+
+/* Cloudflare's check takes no room unless it has to ask something. */
+.fr-cp-ts:empty{display:none}
+.fr-cp-ts{display:flex;justify-content:center;margin:0 0 8px}
+.fr-cp-form .fr-cp-ts{margin:-4px 0 0}

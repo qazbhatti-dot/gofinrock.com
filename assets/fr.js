@@ -239,6 +239,28 @@
   var panel = null, CH = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   function txt(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
   var CONTACT = 'https://app.gofinrock.com/api/public/contact';
+  /* Cloudflare Turnstile: the check that a person is there, usually invisible. The site key is public; the server holds
+     the secret and decides whether to ask for the check at all. The script is fetched only when a form or the chat needs it. */
+  var TS_KEY = '0x4AAAAAAF92mSnXNrDBme8C', tsWait = [];
+  function tsReady(cb) {
+    if (window.turnstile && window.turnstile.render) return cb();
+    tsWait.push(cb);
+    if (tsReady.asked) return; tsReady.asked = true;
+    window.frTsReady = function () { var w = tsWait; tsWait = []; w.forEach(function (f) { try { f(); } catch (e) {} }); };
+    var sc = document.createElement('script'); sc.async = true; sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=frTsReady'; document.head.appendChild(sc);
+  }
+  /* A widget drawn in el; token() is its latest passed check, or '' while it has none. */
+  function tsWidget(el) {
+    var id = null, tok = '';
+    tsReady(function () { try { id = window.turnstile.render(el, { sitekey: TS_KEY, appearance: 'interaction-only', theme: 'light',
+      callback: function (t) { tok = t; }, 'expired-callback': function () { tok = ''; }, 'error-callback': function () { tok = ''; } }); } catch (e) {} });
+    return {
+      token: function () { return tok; },
+      reset: function () { tok = ''; try { if (id !== null) window.turnstile.reset(id); } catch (e) {} },
+      /* The token, waiting up to a few seconds for the check to finish; '' if it never does, and the server decides. */
+      wait: function (done) { var n = 0; (function tick() { if (tok || ++n > 40) return done(tok); setTimeout(tick, 150); })(); }
+    };
+  }
   /* With AI set to an address our own assistant answers in the panel and Tawk is never loaded; empty, the conversation
      is Tawk's as before. One browser can be pointed at a test server with ?ai=<address>, kept for that browser; ?ai=off clears it. */
   var AI = '', msgs = [], APP = 'https://app.gofinrock.com';
@@ -327,13 +349,13 @@
       '<p class="fr-cp-note">AI answers can be wrong.</p></div>' +
       '<div class="fr-cp-ans" data-v="chat" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" data-to="home" aria-label="Back">' + BK + '</button>' + AV + '<div><b>Finrock Assistant</b><span>AI assistant · Replies instantly</span></div></div>' +
       '<div class="fr-cp-log" aria-live="polite"></div>' +
-      '<div class="fr-cp-foot">' + (AI ? '<form class="fr-cp-box"><textarea rows="1" maxlength="1500" placeholder="Ask a question about Finrock…" aria-label="Your question"></textarea><button type="submit" class="fr-cp-go" aria-label="Send"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></form>'
+      '<div class="fr-cp-foot">' + (AI ? '<div class="fr-cp-ts"></div><form class="fr-cp-box"><textarea rows="1" maxlength="1500" placeholder="Ask a question about Finrock…" aria-label="Your question"></textarea><button type="submit" class="fr-cp-go" aria-label="Send"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></form>'
         : '<button type="button" class="fr-cp-ask" data-chat><span>Ask a question about Finrock…</span><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></button>') +
       '<p class="fr-cp-note">AI answers can be wrong. <button type="button" class="fr-cp-a" data-sup="chat">Contact support</button></p></div></div>' +
       '<div class="fr-cp-ans fr-cp-sup" data-v="sup" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><div><b>Contact support</b><span>The Finrock support team replies by email</span></div></div>' +
       '<form class="fr-cp-form" novalidate>' + '<label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label>' +
       '<label>Your question<textarea name="query" rows="5" maxlength="5000" required></textarea></label>' +
-      '<button type="submit" class="fr-cp-send">Send to support</button><p class="fr-cp-status" role="status"></p></form>' +
+      '<div class="fr-cp-ts"></div><button type="submit" class="fr-cp-send">Send to support</button><p class="fr-cp-status" role="status"></p></form>' +
       '<div class="fr-cp-done" hidden><svg class="fr-cp-tick" viewBox="0 0 52 52" width="64" height="64" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none"/><path fill="none" d="M15 27l7.5 7.5L37.5 19"/></svg><h3>Message sent</h3><p>Your question has been sent to the Finrock support team. We’ll reply by email.</p><button type="button" class="fr-cp-send" data-to="home">Back to chat</button></div></div>';
     document.body.appendChild(panel);
     var log = panel.querySelector('.fr-cp-log'), sup = panel.querySelector('.fr-cp-sup'), form = sup.querySelector('form'), done = sup.querySelector('.fr-cp-done'), status = sup.querySelector('.fr-cp-status'), lastQ = '';
@@ -351,7 +373,8 @@
       var m = say('bot', null);
       setTimeout(function () { reveal(m.lastChild, txt('Hi there! 👋 I’m the Finrock assistant. Ask me anything about Finrock: plans and prices, banking, tax, invoices or your account.'), log); }, 450);
     }
-    panel.__chat = function (focus) { view('chat'); greet(); if (focus && ta) ta.focus(); };
+    var chatTs = null;
+    panel.__chat = function (focus) { view('chat'); greet(); if (AI && !chatTs) chatTs = tsWidget(panel.querySelector('[data-v="chat"] .fr-cp-ts')); if (focus && ta) ta.focus(); };
     /* A chat that has ended is gone: the panel closes and the next one starts afresh with the greeting. */
     panel.__ended = function () {
       try { sessionStorage.removeItem('fr-carry'); } catch (e) {}
@@ -410,16 +433,25 @@
         return;
       } busy = true; go.disabled = true; lastQ = q; ta.value = ''; grow();
       msgs.push({ role: 'user', content: q }); save(); say('user', q); tick(); var w = say('bot', null);
+      /* A conversation carries the pass the server gave its first checked question; without one, this question carries
+         the page's Turnstile check, waited for a moment if it is still running. */
+      var pass = ''; try { pass = sessionStorage.getItem('fr-ai-pass') || ''; } catch (e) {}
+      if (pass || !chatTs) post(''); else chatTs.wait(post);
+      function post(tok) {
       var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function () { if (ctl) ctl.abort(); }, 30000);
       /* Sent as plain text so the browser asks no permission first: the answer arrives in one round trip. */
-      fetch(AI, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ messages: msgs.slice(-10) }), signal: ctl ? ctl.signal : undefined })
+      fetch(AI, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ messages: msgs.slice(-10), pass: pass, turnstile: tok }), signal: ctl ? ctl.signal : undefined })
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j.status = r.status; return j; }); })
-        .then(function (j) { if (!j.answer && !j.handoff) throw j; if (j.answer) { msgs.push({ role: 'assistant', content: j.answer }); save(); } if (j.handoff) { w.remove(); askTransfer(j.answer); return; } reveal(w.lastChild, fmt(j.answer), log); chime(); })
+        .then(function (j) {
+          if (j.pass) try { sessionStorage.setItem('fr-ai-pass', j.pass); } catch (e) {}
+          if (j.check) { msgs.pop(); save(); if (chatTs) chatTs.reset(); try { sessionStorage.removeItem('fr-ai-pass'); } catch (e) {} w.lastChild.textContent = 'Please confirm you’re not a robot with the box above, then send your question again.'; return; }
+          if (!j.answer && !j.handoff) throw j; if (j.answer) { msgs.push({ role: 'assistant', content: j.answer }); save(); } if (j.handoff) { w.remove(); askTransfer(j.answer); return; } reveal(w.lastChild, fmt(j.answer), log); chime(); })
         .catch(function (j) {
           msgs.pop(); save();
           w.remove(); askTransfer(j && j.status === 429 ? 'That’s a lot of questions in a short time.' : 'Sorry, I couldn’t answer just now.');
         })
         .then(function () { clearTimeout(tm); busy = false; go.disabled = false; log.scrollTop = log.scrollHeight; });
+      }
     }
     if (box) {
       box.addEventListener('submit', function (e) { e.preventDefault(); ask(ta.value); });
@@ -430,6 +462,7 @@
       sup.querySelector('.fr-cp-back').setAttribute('data-to', from); sup.querySelector('.fr-cp-back').hidden = false; form.hidden = false; done.hidden = true; status.textContent = ''; form.querySelector('.fr-cp-send').disabled = false;
       if (!form.elements.query.value && lastQ && lastQ.length > 12) form.elements.query.value = lastQ;
       view('sup'); form.elements.email.focus();
+      if (!supTs) supTs = tsWidget(form.querySelector('.fr-cp-ts'));
     }
     panel.addEventListener('click', function (e) {
       var t = e.target.closest && e.target.closest('.fr-cp-q,[data-sup],[data-to]'); if (!t) return;
@@ -445,7 +478,8 @@
     });
     /* The question goes to the same place as the contact page's form. That endpoint answers with a redirect back to the
        contact page carrying the result, so it is posted into a hidden frame and the result read from where the frame lands. */
-    var WHY = { missing: 'Please enter your email and your question.', email: 'That email address doesn’t look right. Please check it and send again.', long: 'That message is over 5,000 characters. Please shorten it and send again.', links: 'Please keep it to three links or fewer and send again.', busy: 'Too many messages just now. Please try again in a little while.' };
+    var supTs = null;
+    var WHY = { check: 'We couldn’t confirm you’re not a robot. Please tick the box and send again.', missing: 'Please enter your email and your question.', email: 'That email address doesn’t look right. Please check it and send again.', long: 'That message is over 5,000 characters. Please shorten it and send again.', links: 'Please keep it to three links or fewer and send again.', busy: 'Too many messages just now. Please try again in a little while.' };
     form.addEventListener('input', function () { status.textContent = ''; });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -453,14 +487,16 @@
       if (!email || !q) { status.textContent = WHY.missing; return; }
       if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email)) { status.textContent = WHY.email; return; }
       sendBtn.disabled = true; status.textContent = 'Sending…';
+      if (supTs && !e.frChecked) { supTs.wait(function () { var ev = new Event('submit', { cancelable: true }); ev.frChecked = true; sendBtn.disabled = false; form.dispatchEvent(ev); }); return; }
       var name = 'frsup' + Date.now(), fr = document.createElement('iframe'); fr.name = name; fr.hidden = true; fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1; document.body.appendChild(fr);
       var f = document.createElement('form'); f.method = 'post'; f.action = CONTACT; f.target = name; f.hidden = true;
-      var fields = { form: 'contact', website: '', name: email.split('@')[0].slice(0, 100), email: email, topic: 'Something else', who: '', message: q + '\n\nSent from the chat panel on ' + location.href.split('?')[0] };
+      var fields = { 'cf-turnstile-response': supTs ? supTs.token() : '', form: 'contact', website: '', name: email.split('@')[0].slice(0, 100), email: email, topic: 'Something else', who: '', message: q + '\n\nSent from the chat panel on ' + location.href.split('?')[0] };
       Object.keys(fields).forEach(function (k) { var i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = fields[k]; f.appendChild(i); });
       document.body.appendChild(f);
       var over = false, timer;
       function end(r) {
         if (over) return; over = true; clearTimeout(timer); setTimeout(function () { if (fr.parentNode) fr.parentNode.removeChild(fr); if (f.parentNode) f.parentNode.removeChild(f); }, 0);
+        if (supTs) supTs.reset();
         if (r === 'sent' || r === 'ok') { form.hidden = true; form.reset(); done.hidden = false; sup.querySelector('.fr-cp-back').hidden = true; done.querySelector('button').focus(); return; }
         sendBtn.disabled = false; status.textContent = WHY[r] || 'That didn’t send. Please try again or email support@gofinrock.com.';
       }
