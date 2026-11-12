@@ -465,10 +465,12 @@
        the offer still reads without it (an answer the assistant could not give does; an offer to try first does not). */
     function askTransfer(before, keepOff) {
       load(false);
-      var m = say('bot', null), n = 0;
+      var m = say('bot', null), n = 0, last = '', same = 0;
+      /* Tawk says "online" for a moment as it connects, before the team's real status arrives, so an answer counts
+         once it has held for a second. */
       setTimeout(function look() {
-        var st = teamStatus();
-        if (!st && ++n < 12) return setTimeout(look, 250);
+        var st = teamStatus(); same = st && st === last ? same + 1 : 0; last = st;
+        if ((!st || same < 4) && ++n < 24) return setTimeout(look, 250);
         if (st === 'offline' || st === 'away') {
           if (before && keepOff) { reveal(m.lastChild, txt(before), log); chime(); } else m.remove();
           who(); return;
@@ -501,7 +503,7 @@
         var tsEl = f.querySelector('.fr-cp-who-ts'); tsEl.hidden = !o; if (o && !offTs) offTs = tsWidget(tsEl);
       }
       mode(teamStatus() === 'offline' || teamStatus() === 'away');
-      var looks = 0, look = setInterval(function () { var st = teamStatus(); if (st) mode(st !== 'online'); if (st || ++looks > 30 || !f.isConnected) clearInterval(look); }, 300);
+      var looks = 0, look = setInterval(function () { var st = teamStatus(); if (st) mode(st !== 'online'); if (++looks > 40 || !f.isConnected) clearInterval(look); }, 300);
       f.querySelector('.fr-cp-no').addEventListener('click', function () { clearInterval(look); f.remove(); if (ta) ta.focus({ preventScroll: true }); });
       f.addEventListener('input', function () { err.hidden = true; });
       f.addEventListener('submit', function (ev) {
