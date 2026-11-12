@@ -236,6 +236,7 @@
     ["Does Finrock file my tax return?", "Finrock prepares your Self Assessment, Making Tax Digital quarterly updates and VAT return from your books, ready to file.\n\n**Filing with HMRC**\nFinrock can’t send returns to HMRC itself yet. We’re working through HMRC’s software recognition process, and the app will tell you when direct filing is switched on.\n\n**Until then, you can:**\n- File the prepared figures yourself in your HMRC online account\n- Ask your own accountant to file them\n- Add the accountant check for £10 a month: a qualified UK accountant reviews your return and files it with HMRC for you"],
     ["Can my accountant use it too?", "Yes. Invite your accountant from **Filing & deadlines**, under **Change who files**.\n\n- Choose **Business only** or **My whole tax return**\n- They get a portal of their own and see the same figures you do\n- They suggest changes for you to accept or decline\n- You can disconnect them at any time"]
   ];
+  var TOUCH = !!(window.matchMedia && matchMedia('(hover:none) and (pointer:coarse)').matches);
   var panel = null, CH = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   function txt(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
   var CONTACT = 'https://app.gofinrock.com/api/public/contact';
@@ -375,13 +376,15 @@
       setTimeout(function () { reveal(m.lastChild, txt('Hi there! 👋 I’m the Finrock assistant. Ask me anything about Finrock: plans and prices, banking, tax, invoices or your account.'), log); }, 450);
     }
     var chatTs = null;
-    panel.__chat = function (focus) { view('chat'); greet(); if (AI && !chatTs) chatTs = tsWidget(panel.querySelector('[data-v="chat"] .fr-cp-ts')); if (focus && ta) ta.focus(); };
+    /* Focus never scrolls the page: on a phone that scroll fights the keyboard's own and the chat jumps. A box that
+       is focused without a tap would raise the keyboard over an answer that has just landed, so a phone waits for one. */
+    panel.__chat = function (focus) { view('chat'); greet(); if (AI && !chatTs) chatTs = tsWidget(panel.querySelector('[data-v="chat"] .fr-cp-ts')); if (focus && ta) ta.focus({ preventScroll: true }); };
     /* A chat that has ended is gone: the panel closes and the next one starts afresh with the greeting. */
     panel.__ended = function () {
       try { sessionStorage.removeItem('fr-carry'); } catch (e) {}
       msgs = []; save(); log.innerHTML = ''; lastQ = ''; asking = false;
       try { sessionStorage.removeItem('fr-live'); } catch (e) {}
-      view('home'); hidePanel(false); btn.focus();
+      view('home'); hidePanel(false); btn.focus({ preventScroll: true });
     };
     msgs.forEach(function (m) { say(m.role === 'user' ? 'user' : 'bot', m.content); });
     function grow() { box.classList.toggle('has', !!ta.value.trim()); ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; }
@@ -400,7 +403,7 @@
       load(false);
       var o = document.createElement('div'); o.className = 'fr-cp-offer';
       o.innerHTML = (text ? '<p>' + txt(text) + '</p>' : '') + '<div><button type="button" class="fr-cp-yes">' + (agreed ? 'Transfer me' : 'Yes, transfer me') + '</button><button type="button" class="fr-cp-no">' + (agreed ? 'Not now' : 'No thanks') + '</button></div>';
-      o.querySelector('.fr-cp-no').addEventListener('click', function () { o.remove(); if (ta) ta.focus(); });
+      o.querySelector('.fr-cp-no').addEventListener('click', function () { o.remove(); if (ta) ta.focus({ preventScroll: true }); });
       o.querySelector('.fr-cp-yes').addEventListener('click', function () {
         o.remove(); tick();
         var m = say('bot', null);
@@ -464,7 +467,7 @@
     function support(from) {
       sup.querySelector('.fr-cp-back').setAttribute('data-to', from); sup.querySelector('.fr-cp-back').hidden = false; form.hidden = false; done.hidden = true; status.textContent = ''; form.querySelector('.fr-cp-send').disabled = false;
       if (!form.elements.query.value && lastQ && lastQ.length > 12) form.elements.query.value = lastQ;
-      view('sup'); form.elements.email.focus();
+      view('sup'); form.elements.email.focus({ preventScroll: true });
       if (!supTs) supTs = tsWidget(form.querySelector('.fr-cp-ts'));
     }
     panel.addEventListener('click', function (e) {
@@ -472,12 +475,12 @@
       if (t.hasAttribute('data-sup')) return support(t.getAttribute('data-sup'));
       if (t.hasAttribute('data-to')) return view(t.getAttribute('data-to'));
       var x = QA[+t.getAttribute('data-q')]; lastQ = x[0]; view('chat'); say('user', x[0]); var w = say('bot', null);
-      if (AI) { msgs.push({ role: 'user', content: x[0] }, { role: 'assistant', content: x[1] }); save(); tick(); setTimeout(function () { reveal(w.lastChild, fmt(x[1]), log); chime(); log.scrollTop = log.scrollHeight; if (ta) ta.focus(); }, 450); return; }
+      if (AI) { msgs.push({ role: 'user', content: x[0] }, { role: 'assistant', content: x[1] }); save(); tick(); setTimeout(function () { reveal(w.lastChild, fmt(x[1]), log); chime(); log.scrollTop = log.scrollHeight; if (ta && !TOUCH) ta.focus({ preventScroll: true }); }, 450); return; }
       setTimeout(function () {
         w.lastChild.innerHTML = fmt(x[1]); var more = document.createElement('button'); more.type = 'button'; more.className = 'fr-cp-a fr-cp-more'; more.setAttribute('data-sup', 'chat'); more.textContent = 'Didn’t answer my question?';
         log.appendChild(more); log.scrollTop = log.scrollHeight;
       }, 600);
-      panel.querySelector('[data-v="chat"] .fr-cp-back').focus();
+      panel.querySelector('[data-v="chat"] .fr-cp-back').focus({ preventScroll: true });
     });
     /* The question goes to the same place as the contact page's form. That endpoint answers with a redirect back to the
        contact page carrying the result, so it is posted into a hidden frame and the result read from where the frame lands. */
@@ -500,7 +503,7 @@
       function end(r) {
         if (over) return; over = true; clearTimeout(timer); setTimeout(function () { if (fr.parentNode) fr.parentNode.removeChild(fr); if (f.parentNode) f.parentNode.removeChild(f); }, 0);
         if (supTs) supTs.reset();
-        if (r === 'sent' || r === 'ok') { form.hidden = true; form.reset(); done.hidden = false; sup.querySelector('.fr-cp-back').hidden = true; done.querySelector('button').focus(); return; }
+        if (r === 'sent' || r === 'ok') { form.hidden = true; form.reset(); done.hidden = false; sup.querySelector('.fr-cp-back').hidden = true; done.querySelector('button').focus({ preventScroll: true }); return; }
         sendBtn.disabled = false; status.textContent = WHY[r] || 'That didn’t send. Please try again or email support@gofinrock.com.';
       }
       fr.addEventListener('load', function () { var r; try { r = new URLSearchParams(fr.contentWindow.location.search).get('contact'); } catch (x) { r = 'error'; } if (r) end(r); });
@@ -515,10 +518,10 @@
     var live = AI ? msgs.length > 0 : false; try { if (!AI) live = !!(T && T.isChatOngoing && T.isChatOngoing()); } catch (e) {}
     var go = panel.querySelector('.fr-cp-askcard b'); go.textContent = live ? 'Continue your conversation' : AI ? 'Ask Finrock' : 'Chat with the team';
     root.classList.toggle('chat-anim', !!showPanel.anim); showPanel.anim = false;
-    root.classList.add('chat-panel', 'chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close'); panel.querySelector('.fr-cp-home').scrollTop = 0; panel.focus();
+    root.classList.add('chat-panel', 'chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close'); panel.querySelector('.fr-cp-home').scrollTop = 0; panel.focus({ preventScroll: true });
   }
   function hidePanel(keepOpen) { root.classList.remove('chat-panel'); if (AI && !keepOpen) keep(false); if (!keepOpen) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } }
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && panelOpen()) { hidePanel(false); btn.focus(); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && panelOpen()) { hidePanel(false); btn.focus({ preventScroll: true }); } });
   var clickAt2 = 0;
   function openChat() { clickAt2 = Date.now(); [].forEach.call(document.querySelectorAll('iframe[title="Chat widget"]'), function (f) { var r = f.getBoundingClientRect(); if (r.height > 200 || !r.height) f.style.setProperty('visibility', 'hidden', 'important'); }); if (!T || !T.maximize) return; if (T.showWidget) T.showWidget(); T.maximize(); opened(); }
   /* While the chat is open the pill is its Close button, as on a phone the window fills the screen. Tawk's own
@@ -526,12 +529,22 @@
   /* The chat window is Tawk's, drawn in a same-origin frame, so it is given the same look as the panel: white bar,
      grey page, white answers, orange questions. Tawk names the assistant "Customer Support"; that is shown as Finrock Assistant. */
   var ICON = 'https://gofinrock.com/assets/favicon.svg';
-  /* Ending is the visitor's: Tawk closes the conversation for the agent too, and the panel says so where they were. */
+  /* Ending is the visitor's: Tawk closes the conversation for the agent too, and the panel says so where they were.
+     The screen changes first and Tawk is told after the next paint, so the button answers at once however long Tawk
+     takes; Tawk's own end and minimise, which it reports back through onChatEnded and onChatMinimized, then find the
+     chat already closed. */
   function endLive() {
-    try { if (T && T.endChat) T.endChat(); } catch (e) {}
-    wantChat = false; if (T && T.minimize) T.minimize();
+    endedAt = Date.now(); wantChat = false; swapping = false;
+    [].forEach.call(document.querySelectorAll('iframe[title="Chat widget"]'), function (f) { f.style.setProperty('visibility', 'hidden', 'important'); });
+    closed();
     if (!panel) build();
     panel.__ended();
+    var told = false, tell = function () {
+      if (told) return; told = true;
+      try { if (T && T.endChat) T.endChat(); } catch (e) {}
+      try { if (T && T.minimize) T.minimize(); } catch (e) {}
+    };
+    requestAnimationFrame(function () { setTimeout(tell, 0); }); setTimeout(tell, 150);
   }
   var SKIN = '.fr-carry{display:flex;flex-direction:column;gap:8px;padding:14px 12px 6px}.fr-carry-lbl{margin:0 0 2px;text-align:center;font:500 11.5px/1.3 Inter,system-ui,sans-serif;color:#a1a1aa}.fr-carry-m{max-width:84%;padding:8px 12px;border-radius:14px;font:400 13.5px/1.45 Inter,system-ui,sans-serif;opacity:.85}.fr-carry-m.u{align-self:flex-end;background:#F6921A;color:#111;border-bottom-right-radius:4px}.fr-carry-m.b{align-self:flex-start;background:#fff;border:1px solid #e4e4e7;color:#18181b;border-bottom-left-radius:4px}.fr-carry-m p{margin:0}.fr-carry-m p+p,.fr-carry-m p+ul,.fr-carry-m ul+p{margin-top:6px}.fr-carry-m ul,.fr-carry-m ol{margin:0;padding-left:18px}.fr-carry-sep{display:flex;align-items:center;gap:10px;margin:8px 0 2px;font:600 12px/1.3 Inter,system-ui,sans-serif;color:#16a34a}.fr-carry-sep::before,.fr-carry-sep::after{content:"";flex:1;height:1px;background:#e4e4e7}.tawk-router-view:has(.fr-carry)::before{display:none!important}' +
     '.tawk-toolbar{position:relative}.tawk-toolbar:has(.fr-end){padding-right:100px!important}.tawk-toolbar-nav:has(.tawk-route-back)::before,.tawk-toolbar-nav:has(.tawk-route-back)::after{min-width:0;overflow:hidden;text-overflow:ellipsis}.fr-end{position:absolute;right:12px;top:50%;transform:translateY(-50%);height:30px;padding:0 12px;border:1px solid #e4e4e7;border-radius:9px;background:#fff;color:#18181b;font:600 13px/1 Inter,system-ui,sans-serif;cursor:pointer;z-index:2}.fr-end:hover{background:#fef2f2;border-color:#fecaca;color:#b91c1c}' +
@@ -566,7 +579,8 @@
     '.tawk-footer .tawk-chatinput.tawk-chatinput-focused{box-shadow:0 0 0 1px #F6921A,0 0 0 4px rgba(246,146,26,.16)!important}.tawk-chatinput-editor{background:transparent!important;font-size:14px!important;color:#18181b!important}.tawk-chatinput-editor::placeholder{color:#a1a1aa!important}' +
     'body,body *:not([class*="icon"]){font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;-webkit-font-smoothing:antialiased}' +
     '.tawk-agent-chat-bubble,.tawk-visitor-chat-bubble{font-size:14px!important;line-height:1.5!important}.tawk-agent-chat-bubble{box-shadow:0 1px 2px rgba(24,24,27,.04)!important}.tawk-chat-name-margin{font-weight:500!important}' +
-    '.tawk-message-block{animation:frm .22s ease both}@keyframes frm{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.tawk-message-block{animation:none}}';
+    '.tawk-message-block{animation:frm .22s ease both}@keyframes frm{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.tawk-message-block{animation:none}}' +
+    '@media(hover:none) and (pointer:coarse){.tawk-footer .tawk-chatinput-editor{font-size:16px!important;line-height:1.35!important}}';
   function skin(f) {
     var d; try { d = f.contentDocument; } catch (e) { return; }
     if (!d || !d.head || !d.body || d.getElementById('fr-skin')) return;
@@ -582,7 +596,7 @@
       if (wr && !wr.querySelector('.fr-send')) {
         var sb = d.createElement('button'); sb.type = 'button'; sb.className = 'fr-send'; sb.setAttribute('aria-label', 'Send');
         sb.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-        sb.addEventListener('click', function () { var ta = wr.querySelector('textarea'); if (!ta || !ta.value.trim()) { if (ta) ta.focus(); return; } ta.focus(); var w = d.defaultView, o = { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true }; ta.dispatchEvent(new w.KeyboardEvent('keydown', o)); ta.dispatchEvent(new w.KeyboardEvent('keypress', o)); });
+        sb.addEventListener('click', function () { var ta = wr.querySelector('textarea'); if (!ta || !ta.value.trim()) { if (ta) ta.focus({ preventScroll: true }); return; } ta.focus({ preventScroll: true }); var w = d.defaultView, o = { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true }; ta.dispatchEvent(new w.KeyboardEvent('keydown', o)); ta.dispatchEvent(new w.KeyboardEvent('keypress', o)); });
         wr.appendChild(sb);
       }
       if (ci && (!nt || nt.previousSibling !== ci)) { if (!nt) { nt = d.createElement('p'); nt.className = 'fr-note'; nt.innerHTML = 'Prefer email? <a class="fr-sup" href="#">Contact support</a>'; } ci.parentNode.insertBefore(nt, ci.nextSibling); }
@@ -626,7 +640,30 @@
     }, true);
     try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
   }
-  var swapReady = 0, swapping = false, fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0, closedAt = 0;
+  var swapReady = 0, swapping = false, fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0, closedAt = 0, endedAt = 0;
+  /* A phone's keyboard shrinks only the visual viewport: the page, and everything fixed to its bottom, stays full height
+     behind the keys, and the browser pans to the focused box and cuts off the top. So while the keyboard is up the chat
+     is laid over the part of the screen still seen, read from window.visualViewport at most once a frame. */
+  var VV = window.visualViewport, kbTop = 0, kbH = 0, kbAsk = 0;
+  function kbRead() {
+    kbAsk = 0;
+    var on = !!VV && window.innerWidth < 760 && VV.scale < 1.05 && document.documentElement.clientHeight - VV.height > 120;
+    var t = on ? Math.round(VV.offsetTop) : 0, h = on ? Math.round(VV.height) : 0;
+    if (t === kbTop && h === kbH) return;
+    kbTop = t; kbH = h;
+    if (on) { root.style.setProperty('--fr-vt', t + 'px'); root.style.setProperty('--fr-vh', h + 'px'); }
+    root.classList.toggle('fr-kb', on);
+    fit();
+  }
+  function kbLater() { if (!kbAsk) kbAsk = requestAnimationFrame(kbRead); }
+  if (VV) { VV.addEventListener('resize', kbLater); VV.addEventListener('scroll', kbLater); kbLater(); }
+  /* A frame made shorter keeps its scroll position, which leaves the newest message under the keyboard with Tawk's
+     jump-to-latest arrow over it; this is the message list, so one that was at its end can be kept there. */
+  function endOf(d) {
+    var m = d.querySelectorAll('.tawk-message-block'), e = m.length ? m[m.length - 1] : d.querySelector('.tawk-chat-message-container');
+    for (; e && e !== d.body; e = e.parentElement) { var o = d.defaultView.getComputedStyle(e).overflowY; if ((o === 'auto' || o === 'scroll') && e.scrollHeight > e.clientHeight + 2) return e; }
+    return null;
+  }
   function fit() {
     if (!root.classList.contains('chat-open') || (panelOpen() && !swapping)) return;
     var vh = window.innerHeight, wide = window.innerWidth >= 760;
@@ -639,7 +676,13 @@
       /* The window sits exactly where the panel was, so the two read as one widget. */
       var P = function (k, v) { if (f.style.getPropertyValue(k) !== v) f.style.setProperty(k, v, 'important'); };
       var room = wide ? 84 : 74, side = wide ? 18 : 14, h = Math.max(240, Math.min(640, vh - room - (wide ? 20 : 16)));
-      P('height', h + 'px'); P('max-height', h + 'px'); P('min-height', '0px'); P('top', 'auto'); P('bottom', room + 'px'); P('right', side + 'px');
+      /* With the keyboard up the window fills what is still seen, so its message box sits just above the keys. */
+      if (!wide && kbH) h = Math.max(160, kbH - 16);
+      var sc = null, atEnd = false;
+      if (f.style.getPropertyValue('height') !== h + 'px') { try { sc = endOf(f.contentDocument); } catch (e) {} atEnd = !!sc && sc.scrollHeight - sc.scrollTop - sc.clientHeight < 80; }
+      P('height', h + 'px'); P('max-height', h + 'px'); P('min-height', '0px'); P('right', side + 'px');
+      if (!wide && kbH) { P('top', (kbTop + 8) + 'px'); P('bottom', 'auto'); } else { P('top', 'auto'); P('bottom', room + 'px'); }
+      if (atEnd) requestAnimationFrame(function () { sc.scrollTop = sc.scrollHeight; });
       if (wide) { P('left', 'auto'); P('width', '384px'); P('min-width', '0px'); P('max-width', 'calc(100vw - 36px)'); }
       /* A frame given width:auto falls back to the browser's narrow default, so on a phone it is told the panel's width. */
       else { P('left', side + 'px'); P('width', (document.documentElement.clientWidth - 2 * side) + 'px'); P('min-width', '0px'); P('max-width', 'none'); }
@@ -701,7 +744,7 @@
     };
     T.onChatMaximized = function () { if (AI && !wantOpen) { if (T.minimize) T.minimize(); return; } opened(); };
     /* Tawk minimises itself as a chat ends, so a chat ended by the visitor is told from one that timed out by how recently the window closed. */
-    T.onChatEnded = function () { if (panelOpen()) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; if (T.minimize) T.minimize(); if (AI) { if (!panel) build(); panel.__ended(); } else showPanel(); } };
+    T.onChatEnded = function () { if (panelOpen() || Date.now() - endedAt < 5000) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; if (T.minimize) T.minimize(); if (AI) { if (!panel) build(); panel.__ended(); } else showPanel(); } };
     T.onChatMinimized = function () { closed(); if (T.hideWidget) T.hideWidget(); };
     T.onChatMessageAgent = function () { if (!root.classList.contains('chat-open')) btn.classList.add('new'); };
     /* The look goes on the moment Tawk's frame exists, before it has drawn anything. */

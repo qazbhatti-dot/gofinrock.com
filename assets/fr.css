@@ -1698,6 +1698,11 @@ html.chat-panel.chat-anim .fr-cp{animation:frcp .18s ease both}
 @keyframes frcpp{50%{transform:scale(1.1)}}
 .fr-cp button:focus-visible,.fr-cp a:focus-visible{outline:2px solid #F6921A;outline-offset:2px;border-radius:6px}
 @media(max-width:759px){.fr-cp{right:14px;left:14px;bottom:74px;width:auto;max-width:none;max-height:calc(100vh - 90px);max-height:calc(100dvh - 90px)}}
+/* While a phone's keyboard is up (html.fr-kb, set from the visual viewport by fr.js) the panel covers what is still seen,
+   so its message box sits just above the keys; the pill would only sit under them. */
+@media(max-width:759px){html.fr-kb .fr-cp{top:calc(var(--fr-vt) + 8px);bottom:auto;height:calc(var(--fr-vh) - 16px);max-height:none}html.chat-open.fr-kb .fr-chat{visibility:hidden}}
+/* A phone zooms the page into any box set smaller than 16px as it is focused, and a zoomed page moves the chat off screen. */
+@media(hover:none) and (pointer:coarse){.fr-cp-box textarea,.fr-cp-form input,.fr-cp-form textarea{font-size:16px}}
 @media(prefers-reduced-motion:reduce){html.chat-panel .fr-cp,.fr-cp-m,.fr-cp-more,.fr-cp-dots i,.fr-cp-tick{animation:none}.fr-cp-tick circle,.fr-cp-tick path{animation:none;stroke-dashoffset:0}}
 @media print{.fr-cp{display:none!important}}
 @media(max-width:759px){.fr-chat{right:14px;bottom:14px;height:48px;padding:0 16px 0 5px;font-size:15px}.fr-chat-mark{width:38px;height:38px}}
