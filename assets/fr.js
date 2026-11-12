@@ -229,12 +229,12 @@
   /* The pill opens our own help panel first: start a chat, six common questions answered in place, or the contact form.
      Nothing is fetched from Tawk until Start conversation is pressed. */
   var QA = [
-    ['What is Finrock and who is it for?', 'Finrock is a UK bookkeeping, tax and life-admin app for employed people, landlords, sole traders, partners and limited companies. It connects to your bank read-only, suggests a category for every transaction, keeps a live Self Assessment or Corporation Tax estimate, and tracks renewals such as your MOT and insurance.'],
-    ['How do I get started with Finrock?', 'Press Start free at the top of the page and create your account. Setup is a handful of questions about how you earn, such as a job, a trade, a let or a company. Then connect your bank, and each transaction arrives with a suggested category for you to confirm.'],
-    ['How do I connect my bank?', 'On a new account, Home leads with Connect your bank. Pick your bank and approve access in your own banking app. New transactions appear in Activity within a few minutes. Most UK banks are supported, and you can import a statement for an account that can’t be connected.'],
-    ['Is bank access safe?', 'Yes. The connection is read-only, through a regulated Open Banking provider. Finrock can read your accounts, balances and transactions to do your books. It can never move, send or withdraw money. You approve access in your own banking app, and we never see your bank login.'],
-    ['Does Finrock file my tax return?', 'Finrock prepares your Self Assessment, Making Tax Digital quarterly updates and VAT return from your books, ready to file. Finrock can’t send returns to HMRC itself yet: we’re working through HMRC’s software recognition process, and the app will tell you when direct filing is switched on. Until then you can file the prepared figures yourself in your HMRC online account, or your own accountant can file them. Or add the accountant check for £10 a month: a qualified UK accountant reviews your return and files it with HMRC for you.'],
-    ['Can my accountant use it too?', 'Yes. Invite your accountant from Filing & deadlines, under Change who files. Choose Business only or My whole tax return. They get a portal of their own, see the same figures you do, and suggest changes for you to accept or decline. You can disconnect them at any time.']
+    ["What is Finrock and who is it for?", "Finrock is one app for your money, tax and life admin in the UK.\n\n**It's built for**\n- Employed people and landlords\n- Sole traders and partners\n- Owner-run limited companies\n\n**What it does**\n- Connects to your bank read-only and suggests a category for every transaction\n- Keeps a live Self Assessment or Corporation Tax estimate\n- Tracks renewals such as your MOT and insurance"],
+    ["How do I get started with Finrock?", "It takes about three minutes:\n\n1. Press **Start free** at the top of the page. It's 7 days free with no card.\n2. Answer a few questions about how you earn: a job, a trade, a let or a company.\n3. Connect your bank, and each transaction arrives with a suggested category for you to confirm."],
+    ["How do I connect my bank?", "On a new account, Home leads with **Connect your bank**.\n\n1. Pick your bank.\n2. Approve access in your own banking app.\n3. New transactions appear in Activity within a few minutes.\n\nMost UK banks are supported. If an account can't be connected, you can import a statement instead."],
+    ["Is bank access safe?", "Yes. The connection is read-only, through a regulated Open Banking provider.\n\n- Finrock can read your accounts, balances and transactions\n- It can never move, send or withdraw money\n- You approve access in your own banking app, and we never see your bank login"],
+    ["Does Finrock file my tax return?", "Finrock prepares your Self Assessment, Making Tax Digital quarterly updates and VAT return from your books, ready to file.\n\n**Filing with HMRC**\nFinrock can’t send returns to HMRC itself yet. We’re working through HMRC’s software recognition process, and the app will tell you when direct filing is switched on.\n\n**Until then, you can:**\n- File the prepared figures yourself in your HMRC online account\n- Ask your own accountant to file them\n- Add the accountant check for £10 a month: a qualified UK accountant reviews your return and files it with HMRC for you"],
+    ["Can my accountant use it too?", "Yes. Invite your accountant from **Filing & deadlines**, under **Change who files**.\n\n- Choose **Business only** or **My whole tax return**\n- They get a portal of their own and see the same figures you do\n- They suggest changes for you to accept or decline\n- You can disconnect them at any time"]
   ];
   var panel = null, CH = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   function txt(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
@@ -294,11 +294,27 @@
      is named by its path, so a path becomes a link into the app. */
   function fmt(s) {
     function href(u) { return /^\//.test(u) ? APP + u : u; }
-    return txt(s).replace(/\[([^\]\n]{1,80})\]\(((?:https:\/\/|\/)[^\s)]{0,200})\)/g, function (m, t, u) { return '<a href="' + href(u) + '" target="_blank" rel="noopener">' + t + '</a>'; })
-      .replace(/(^|[\s(])(https:\/\/[^\s<)]+[^\s<).,;:!?])/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>')
-      .replace(/(^|[\s(])(\/[a-z][\w\-\/]*[\w\/])(?=[\s).,;:!?]|$)/gm, '$1<a href="' + APP + '$2" target="_blank" rel="noopener">$2</a>')
-      .replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>').replace(/^\s*[-*•]\s+/gm, '• ').replace(/\n/g, '<br>');
+    function inline(t) {
+      return txt(t).replace(/\[([^\]\n]{1,80})\]\(((?:https:\/\/|\/)[^\s)]{0,200})\)/g, function (m, l, u) { return '<a href="' + href(u) + '" target="_blank" rel="noopener">' + l + '</a>'; })
+        .replace(/(^|[\s(])(https:\/\/[^\s<)]+[^\s<).,;:!?])/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>')
+        .replace(/(^|[\s(])(\/[a-z][\w\-\/]*[\w\/])(?=[\s).,;:!?]|$)/g, '$1<a href="' + APP + '$2" target="_blank" rel="noopener">$2</a>')
+        .replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>');
+    }
+    /* Blank lines part paragraphs and "- " lines make a list, so an answer reads as a support agent would set it out. */
+    var out = [], para = [], list = null, kind = 'ul';
+    function endPara() { if (para.length) out.push('<p>' + para.join('<br>') + '</p>'); para = []; }
+    function endList() { if (list) out.push('<' + kind + '>' + list.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</' + kind + '>'); list = null; }
+    String(s).split('\n').forEach(function (line) {
+      var t = line.trim();
+      if (!t) { endPara(); endList(); return; }
+      var b = t.match(/^([-*•]|\d+[.)])\s+(.*)$/), k = b && (/\d/.test(b[1]) ? 'ol' : 'ul');
+      if (b) { endPara(); if (list && k !== kind) endList(); kind = k; (list = list || []).push(inline(b[2])); return; }
+      endList(); para.push(inline(t));
+    });
+    endPara(); endList();
+    return out.join('');
   }
+
   function build() {
     var base = icon.replace(/assets\/favicon\.svg$/, ''), BK = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
     var AV = '<span class="fr-cp-av"><img src="' + icon + '" alt="" width="32" height="29"></span>';
@@ -324,7 +340,7 @@
     function view(v) { [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== v; }); if (v === 'home') panel.firstChild.scrollTop = 0; if (AI) keep(v === 'chat'); if (v === 'chat') log.scrollTop = log.scrollHeight; }
     function say(who, text) {
       var m = document.createElement('div'); m.className = 'fr-cp-m ' + who;
-      m.innerHTML = (who === 'bot' ? AV : '') + '<div>' + (text === null ? '<span class="fr-cp-dots"><i></i><i></i><i></i></span>' + (AI && who === 'bot' ? '<span class="fr-cp-think">Thinking…</span>' : '') : who === 'bot' && AI ? fmt(text) : txt(text)) + '</div>';
+      m.innerHTML = (who === 'bot' ? AV : '') + '<div>' + (text === null ? '<span class="fr-cp-dots"><i></i><i></i><i></i></span>' + (AI && who === 'bot' ? '<span class="fr-cp-think">Thinking…</span>' : '') : who === 'bot' ? fmt(text) : txt(text)) + '</div>';
       log.appendChild(m); log.scrollTop = log.scrollHeight; return m;
     }
     panel.__support = function (from) { support(from); };
@@ -421,7 +437,7 @@
       var x = QA[+t.getAttribute('data-q')]; lastQ = x[0]; view('chat'); say('user', x[0]); var w = say('bot', null);
       if (AI) { msgs.push({ role: 'user', content: x[0] }, { role: 'assistant', content: x[1] }); save(); tick(); setTimeout(function () { reveal(w.lastChild, fmt(x[1]), log); chime(); log.scrollTop = log.scrollHeight; if (ta) ta.focus(); }, 450); return; }
       setTimeout(function () {
-        w.lastChild.textContent = x[1]; var more = document.createElement('button'); more.type = 'button'; more.className = 'fr-cp-a fr-cp-more'; more.setAttribute('data-sup', 'chat'); more.textContent = 'Didn’t answer my question?';
+        w.lastChild.innerHTML = fmt(x[1]); var more = document.createElement('button'); more.type = 'button'; more.className = 'fr-cp-a fr-cp-more'; more.setAttribute('data-sup', 'chat'); more.textContent = 'Didn’t answer my question?';
         log.appendChild(more); log.scrollTop = log.scrollHeight;
       }, 600);
       panel.querySelector('[data-v="chat"] .fr-cp-back').focus();
