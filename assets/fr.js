@@ -255,6 +255,9 @@
     var id = null, tok = '';
     tsReady(function () { try { id = window.turnstile.render(el, { sitekey: TS_KEY, appearance: 'interaction-only', theme: 'light',
       callback: function (t) { tok = t; }, 'expired-callback': function () { tok = ''; }, 'error-callback': function () { tok = ''; } }); } catch (e) {} });
+    /* A page the browser kept while the visitor was elsewhere (Back, on Safari above all) comes back with the check's
+       frame frozen mid-run, and it then shows "Verification failed" for a check nobody failed. It is run again afresh. */
+    window.addEventListener('pageshow', function (e) { if (e.persisted && id !== null) { tok = ''; try { window.turnstile.reset(id); } catch (x) {} } });
     return {
       token: function () { return tok; },
       reset: function () { tok = ''; try { if (id !== null) window.turnstile.reset(id); } catch (e) {} },
@@ -379,7 +382,11 @@
     var chatTs = null;
     /* Focus never scrolls the page: on a phone that scroll fights the keyboard's own and the chat jumps. A box that
        is focused without a tap would raise the keyboard over an answer that has just landed, so a phone waits for one. */
-    panel.__chat = function (focus) { view('chat'); greet(); if (AI && !chatTs) chatTs = tsWidget(panel.querySelector('[data-v="chat"] .fr-cp-ts')); if (focus && ta) ta.focus({ preventScroll: true }); };
+    /* The check is drawn only for a conversation that has no pass yet: one that has a pass never sends a token, and a
+       check drawn for nothing can only fail in sight of the visitor. */
+    function chatCheck() { if (AI && !chatTs) chatTs = tsWidget(panel.querySelector('[data-v="chat"] .fr-cp-ts')); return chatTs; }
+    function hasPass() { try { return !!sessionStorage.getItem('fr-ai-pass'); } catch (e) { return false; } }
+    panel.__chat = function (focus) { view('chat'); greet(); if (!hasPass()) chatCheck(); if (focus && ta) ta.focus({ preventScroll: true }); };
     /* A chat that has ended is gone: the panel closes and the next one starts afresh with the greeting. */
     panel.__ended = function () {
       try { sessionStorage.removeItem('fr-carry'); } catch (e) {}
@@ -445,7 +452,7 @@
       /* A conversation carries the pass the server gave its first checked question; without one, this question carries
          the page's Turnstile check, waited for a moment if it is still running. */
       var pass = ''; try { pass = sessionStorage.getItem('fr-ai-pass') || ''; } catch (e) {}
-      if (pass || !chatTs) post(''); else chatTs.wait(post);
+      if (pass || !AI) post(''); else chatCheck().wait(post);
       function post(tok) {
       var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function () { if (ctl) ctl.abort(); }, 30000);
       /* Sent as plain text so the browser asks no permission first: the answer arrives in one round trip. */
@@ -455,7 +462,7 @@
           if (j.pass) try { sessionStorage.setItem('fr-ai-pass', j.pass); } catch (e) {}
           /* Cloudflare could not confirm a person. A bot must not reach an agent, so live chat is not offered: the check is
              drawn again for another try, and the email form (checked itself) carries the question to the team. */
-          if (j.check) { if (chatTs) chatTs.reset(); try { sessionStorage.removeItem('fr-ai-pass'); } catch (e) {} reveal(w.lastChild, 'I couldn’t complete the quick security check, so I can’t answer here just now. Tick the box above and send your question again, or email it to the team.', log); chime(); var em = document.createElement('button'); em.type = 'button'; em.className = 'fr-cp-a fr-cp-more'; em.setAttribute('data-sup', 'chat'); em.textContent = 'Email the team'; log.appendChild(em); log.scrollTop = log.scrollHeight; return; }
+          if (j.check) { try { sessionStorage.removeItem('fr-ai-pass'); } catch (e) {} if (chatTs) chatTs.reset(); else chatCheck(); reveal(w.lastChild, 'I couldn’t complete the quick security check, so I can’t answer here just now. Tick the box above and send your question again, or email it to the team.', log); chime(); var em = document.createElement('button'); em.type = 'button'; em.className = 'fr-cp-a fr-cp-more'; em.setAttribute('data-sup', 'chat'); em.textContent = 'Email the team'; log.appendChild(em); log.scrollTop = log.scrollHeight; return; }
           if (!j.answer && !j.handoff) throw j; if (j.answer) { msgs.push({ role: 'assistant', content: j.answer }); save(); } if (j.handoff) { w.remove(); askTransfer(j.answer); return; } reveal(w.lastChild, fmt(j.answer), log); chime(); })
         .catch(function (j) {
           msgs.pop(); save();
