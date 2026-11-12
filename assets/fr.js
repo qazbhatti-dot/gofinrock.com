@@ -965,13 +965,20 @@
     T.onChatEnded = function () { if (panelOpen() || Date.now() - endedAt < 5000) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; if (T.minimize) T.minimize(); if (AI) { if (!panel) build(); panel.__ended(); } else showPanel(); } };
     T.onChatMinimized = function () { closed(); if (T.hideWidget) T.hideWidget(); };
     /* Tawk is loaded behind our own chat to learn whether the team is there, so the team can see the visitor and write
-       to them in a window the visitor cannot see. A message from the team is brought into our chat with a way into
-       theirs. Tawk's own automatic greeting, sent as it loads, is not a person writing and is let pass. */
-    T.onChatMessageAgent = function () {
-      if (root.classList.contains('chat-open')) return;
-      btn.classList.add('new');
-      if (AI && tawkAt && Date.now() - tawkAt > 6000) { if (!panel) build(); panel.__agentSaid(); }
-    };
+       to them in a window the visitor cannot see. While that window is hidden Tawk calls none of its events, and what
+       it does keep is its count of unread messages (its badge, and the page's title), so that count is watched. It is
+       read once Tawk has settled, so its own automatic greeting as it loads is not taken for a person writing; any
+       rise after that is the team, brought into our chat with a way into theirs. */
+    function teamWrote() { btn.classList.add('new'); if (AI) { if (!panel) build(); panel.__agentSaid(); } }
+    T.onChatMessageAgent = function () { if (!root.classList.contains('chat-open') && tawkAt && Date.now() - tawkAt > 6000) teamWrote(); };
+    var unreadSeen = -1;
+    setInterval(function () {
+      if (!tawkAt) return;
+      var n = tawkUnread();
+      if (root.classList.contains('chat-open')) { unreadSeen = n; return; }
+      if (unreadSeen < 0) { if (Date.now() - tawkAt > 6000) unreadSeen = n; return; }
+      if (n > unreadSeen) { unreadSeen = n; teamWrote(); }
+    }, 1000);
     /* The look goes on the moment Tawk's frame exists, before it has drawn anything. */
     var early = setInterval(function () { [].forEach.call(document.querySelectorAll('iframe[title="Chat widget"]'), skin); }, 40); setTimeout(function () { clearInterval(early); }, 20000);
     var s = document.createElement('script'); s.async = true; s.src = 'https://embed.tawk.to/' + PROPERTY + '/' + WIDGET;
@@ -998,6 +1005,14 @@
     var SMALL = /^\s*(hi+|hiya|hello+|hey+|yo|hola|good (morning|afternoon|evening)|thanks?( you)?|thank u|ty|cheers|ok(ay)?|k|yes|yeah|yep|no|nope|cool|great|sure|test(ing)?|\?+)\s*[!.?]*\s*$/i, out = [];
     for (var i = msgs.length - 1; i >= 0; i--) { var c = String(msgs[i].content).trim(); if (msgs[i].role === 'user' && c.length > 3 && !SMALL.test(c) && out.indexOf(c) < 0) out.push(c); }
     return out;
+  }
+  /* Tawk's count of messages the visitor has not read: its badge, or the title it gives the page. */
+  function tawkUnread() {
+    var m = /(\d+)\s+new message/i.exec(document.title), n = m ? +m[1] : 0;
+    [].forEach.call(document.querySelectorAll('iframe[title="Chat widget"]'), function (f) {
+      try { var b = f.contentDocument && f.contentDocument.querySelector('[class*=unread], [class*=badge]'), v = b ? parseInt(b.textContent, 10) : 0; if (v > n) n = v; } catch (e) {}
+    });
+    return n;
   }
   function goLive(me, quiet) {
     try { if (AI) sessionStorage.setItem('fr-carry', JSON.stringify(panel && panel.__seen ? panel.__seen() : msgs.slice(-30))); } catch (e) {}
