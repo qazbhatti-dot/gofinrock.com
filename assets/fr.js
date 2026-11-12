@@ -620,10 +620,11 @@
           if (!swapReady) swapReady = now;
           if (now - swapReady < 150) return;
           swapping = false; swapReady = 0; if (f.__frName) f.__frName();
-          f.style.setProperty('opacity', '0', 'important'); f.style.setProperty('transition', 'opacity .22s ease', 'important'); f.style.setProperty('visibility', 'visible', 'important');
-          if (panel) panel.classList.add('fr-cp-fade');
-          requestAnimationFrame(function () { requestAnimationFrame(function () { f.style.setProperty('opacity', '1', 'important'); }); });
-          setTimeout(function () { hidePanel(true); if (panel) panel.classList.remove('fr-cp-fade'); }, 230);
+          /* The panel sits above Tawk's window, so the window settles unseen beneath it and the panel fades away from on
+             top. Its opening animation holds its opacity, so that is lifted first. */
+          f.style.setProperty('visibility', 'visible', 'important');
+          if (panel) { panel.style.animation = 'none'; void panel.offsetWidth; panel.style.transition = 'opacity .24s ease'; panel.style.opacity = '0'; }
+          setTimeout(function () { hidePanel(true); if (panel) { panel.style.transition = ''; panel.style.opacity = ''; panel.style.animation = ''; } }, 260);
         }
         wantChat = false; wantAt = 0; homeTicks = 0; chatAt = now; return;
       }
