@@ -338,10 +338,25 @@
     function offer(text) {
       load(false);
       var o = document.createElement('div'); o.className = 'fr-cp-offer';
-      o.innerHTML = '<p>' + txt(text || 'Would you like me to transfer you to someone on the team?') + '</p><div><button type="button" class="fr-cp-yes" data-chat data-live>Yes, transfer me</button><button type="button" class="fr-cp-no">No thanks</button></div>';
+      o.innerHTML = '<p>' + txt(text || 'Would you like me to transfer you to someone on the team?') + '</p><div><button type="button" class="fr-cp-yes">Yes, transfer me</button><button type="button" class="fr-cp-no">No thanks</button></div>';
       o.querySelector('.fr-cp-no').addEventListener('click', function () { o.remove(); if (ta) ta.focus(); });
-      o.querySelector('.fr-cp-yes').addEventListener('click', function () { setTimeout(function () { o.remove(); }, 0); });
+      o.querySelector('.fr-cp-yes').addEventListener('click', function () {
+        o.remove(); tick();
+        var m = say('bot', null);
+        setTimeout(function () { reveal(m.lastChild, 'Transferring you to a real support agent now. They’ll see what you’ve asked me, so there’s no need to repeat it.', log); chime(); }, 350);
+        setTimeout(function () { hand(); goLive(); }, 1700);
+      });
       log.appendChild(o); log.scrollTop = log.scrollHeight;
+    }
+    /* The agent is handed the conversation so far as an event on the visitor, which Tawk shows beside the chat. */
+    function hand() {
+      var sent = false, tries = 0, t = setInterval(function () {
+        if (sent || ++tries > 60) return clearInterval(t);
+        if (!T || !T.addEvent) return;
+        var meta = {};
+        msgs.slice(-8).forEach(function (m, i) { meta[(i + 1) + ' ' + (m.role === 'user' ? 'visitor' : 'assistant')] = String(m.content).slice(0, 250); });
+        try { T.addEvent('website-assistant-chat', meta, function () {}); sent = true; } catch (e) {}
+      }, 250);
     }
     function ask(q) {
       q = q.trim().slice(0, 1500); if (!q || busy) return;
@@ -577,10 +592,13 @@
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-chat]'); if (!b) return; e.preventDefault();
     if (b === btn) { if (panelOpen()) hidePanel(false); else if (root.classList.contains('chat-open')) { if (T && T.minimize) T.minimize(); } else { showPanel.anim = true; showPanel(); } return; }
     if (AI && !b.hasAttribute('data-live')) { if (!panelOpen()) showPanel(); panel.__chat(true); return; }
-    /* The panel stays on top until Tawk has drawn the chat underneath it, then the two swap in one frame. */
+    goLive();
+  });
+  /* The panel stays on top until Tawk has drawn the chat underneath it, then the two swap in one frame. */
+  function goLive() {
     swapping = true; setTimeout(function () { if (swapping) { swapping = false; hidePanel(true); } }, 4000);
     wantChat = true; wantAt = 0; load(true);
-  });
+  }
 })();
 
 /* Films marked data-lazy load and play only when scrolled into view, and pause when out of it. */
