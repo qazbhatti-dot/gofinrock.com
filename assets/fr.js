@@ -518,7 +518,7 @@
           f.remove(); tick();
           var m = say('bot', null);
           setTimeout(function () { reveal(m.lastChild, txt('Thanks, ' + first + '. Transferring you to the team now. They’ll see what you’ve asked me, so there’s no need to repeat it.'), log); chime(); }, 350);
-          setTimeout(function () { hand(); goLive({ name: name, email: email, need: need }); }, 1700);
+          setTimeout(function () { goLive({ name: name, email: email, need: need }); }, 1700);
           return;
         }
         goBtn.disabled = true; goBtn.textContent = 'Sending…';
@@ -546,16 +546,6 @@
       var head = (need || realQuestion() || 'They asked to speak to someone on the team.').replace(/https?:\/\/\S+/g, '[link]'), body = lines.join('\n');
       if (body.length > 4000) body = '…' + body.slice(-4000);
       return head + (body ? '\n\nTheir conversation with the assistant:\n' + body : '');
-    }
-    /* The agent is handed the conversation so far as an event on the visitor, which Tawk shows beside the chat. */
-    function hand() {
-      var sent = false, tries = 0, t = setInterval(function () {
-        if (sent || ++tries > 60) return clearInterval(t);
-        if (!T || !T.addEvent) return;
-        var meta = {};
-        (panel && panel.__seen ? panel.__seen() : msgs).slice(-8).forEach(function (m, i) { meta[(i + 1) + ' ' + (m.role === 'user' ? 'visitor' : 'assistant')] = String(m.content).slice(0, 250); });
-        try { T.addEvent('website-assistant-chat', meta, function () {}); sent = true; } catch (e) {}
-      }, 250);
     }
     function ask(q) {
       q = q.trim().slice(0, 1500); if (!q || busy) return;
@@ -749,9 +739,6 @@
       var o = { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true };
       tx.dispatchEvent(new w.KeyboardEvent('keydown', o)); tx.dispatchEvent(new w.KeyboardEvent('keypress', o));
     }
-    var me = {}; try { me = JSON.parse(sessionStorage.getItem('fr-who') || '{}') || {}; } catch (e) {}
-    var at = {}; if (me.name) at.name = me.name; if (me.email) at.email = me.email;
-    try { if (T && T.setAttributes && (at.name || at.email)) T.setAttributes(at, function () {}); } catch (e) {}
     setTimeout(function () {
       try { sessionStorage.removeItem('fr-kick'); } catch (e) {}
       send(); setTimeout(function () { if (tx.value === k) send(); }, 1500);
@@ -977,20 +964,26 @@
   });
   /* The panel stays on top until Tawk has drawn the chat underneath it, then the two swap in one frame. */
   /* The last real question the visitor asked: a greeting, thanks or one-word reply says nothing the team can start from. */
-  function realQuestion() {
-    var SMALL = /^\s*(hi+|hiya|hello+|hey+|yo|hola|good (morning|afternoon|evening)|thanks?( you)?|thank u|ty|cheers|ok(ay)?|k|yes|yeah|yep|no|nope|cool|great|sure|test(ing)?|\?+)\s*[!.?]*\s*$/i;
-    for (var i = msgs.length - 1; i >= 0; i--) { var c = String(msgs[i].content).trim(); if (msgs[i].role === 'user' && c.length > 3 && !SMALL.test(c)) return c; }
-    return '';
+  function realQuestion() { return realQuestions()[0] || ''; }
+  /* Every real question the visitor asked, newest first. */
+  function realQuestions() {
+    var SMALL = /^\s*(hi+|hiya|hello+|hey+|yo|hola|good (morning|afternoon|evening)|thanks?( you)?|thank u|ty|cheers|ok(ay)?|k|yes|yeah|yep|no|nope|cool|great|sure|test(ing)?|\?+)\s*[!.?]*\s*$/i, out = [];
+    for (var i = msgs.length - 1; i >= 0; i--) { var c = String(msgs[i].content).trim(); if (msgs[i].role === 'user' && c.length > 3 && !SMALL.test(c) && out.indexOf(c) < 0) out.push(c); }
+    return out;
   }
   function goLive(me) {
     try { if (AI) sessionStorage.setItem('fr-carry', JSON.stringify(panel && panel.__seen ? panel.__seen() : msgs.slice(-30))); } catch (e) {}
     /* Tawk opens a chat for the team only when the visitor sends something, so the transfer sends the visitor's
-       request for them, with the last thing they asked: the team is told at once and knows what it is about. */
+       request for them. Tawk's secure mode, on because the app signs its customers into the same chat, refuses a
+       page's name, email and events, so everything the team needs is in the words of that first message: who it is,
+       how to reach them, what they need, and the other questions they asked the assistant. */
     try {
       if (AI) {
-        var lastQ = realQuestion(), w = me || {};
-        var said = w.need ? w.need.slice(0, 500) : 'I’d like to speak to someone on the team.' + (lastQ ? ' My question was: “' + lastQ.slice(0, 300) + '”' : '');
-        sessionStorage.setItem('fr-kick', (w.name ? 'Hi, I’m ' + w.name + '. ' : 'Hi. ') + said);
+        var w = me || {}, qs = realQuestions(), lastQ = qs[0] || '', need = w.need ? w.need.slice(0, 500) : '';
+        var said = need || ('I’d like to speak to someone on the team.' + (lastQ ? ' My question was: “' + lastQ.slice(0, 300) + '”' : ''));
+        var shown = need || lastQ, earlier = qs.filter(function (x) { return x !== shown; }).slice(0, 3);
+        var who = w.name ? 'Hi, I’m ' + w.name + (w.email ? ' (' + w.email + ')' : '') + '. ' : 'Hi. ';
+        sessionStorage.setItem('fr-kick', who + said + (earlier.length ? ' Earlier I asked the assistant: ' + earlier.map(function (x) { return '“' + x.slice(0, 150) + '”'; }).join('; ') + '.' : ''));
       }
     } catch (e) {}
     swapping = true; setTimeout(function () { if (swapping) { swapping = false; hidePanel(true); } }, 4000);
