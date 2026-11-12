@@ -239,6 +239,25 @@
   var panel = null, CH = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   function txt(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
   var CONTACT = 'https://app.gofinrock.com/api/public/contact';
+  /* With AI set to an address our own assistant answers in the panel and Tawk is never loaded; empty, the conversation
+     is Tawk's as before. One browser can be pointed at a test server with ?ai=<address>, kept for that browser; ?ai=off clears it. */
+  var AI = '', msgs = [], APP = 'https://app.gofinrock.com';
+  try {
+    var qa = new URLSearchParams(location.search).get('ai');
+    if (qa === 'off') localStorage.removeItem('fr-ai'); else if (qa && /^(https:\/\/app\.gofinrock\.com|http:\/\/localhost(:\d+)?)\//.test(qa)) localStorage.setItem('fr-ai', qa);
+    AI = localStorage.getItem('fr-ai') || AI;
+    if (AI) msgs = JSON.parse(sessionStorage.getItem('fr-ai-log') || '[]');
+  } catch (e) {}
+  function save() { try { sessionStorage.setItem('fr-ai-log', JSON.stringify(msgs.slice(-20))); } catch (e) {} }
+  /* An answer is the server's plain text: links, bold and list lines are drawn, everything else is escaped. An app page
+     is named by its path, so a path becomes a link into the app. */
+  function fmt(s) {
+    function href(u) { return /^\//.test(u) ? APP + u : u; }
+    return txt(s).replace(/\[([^\]\n]{1,80})\]\(((?:https:\/\/|\/)[^\s)]{0,200})\)/g, function (m, t, u) { return '<a href="' + href(u) + '" target="_blank" rel="noopener">' + t + '</a>'; })
+      .replace(/(^|[\s(])(https:\/\/[^\s<)]+[^\s<).,;:!?])/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>')
+      .replace(/(^|[\s(])(\/[a-z][\w\-\/]*[\w\/])(?=[\s).,;:!?]|$)/gm, '$1<a href="' + APP + '$2" target="_blank" rel="noopener">$2</a>')
+      .replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>').replace(/^\s*[-*•]\s+/gm, '• ').replace(/\n/g, '<br>');
+  }
   function build() {
     var base = icon.replace(/assets\/favicon\.svg$/, ''), BK = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
     var AV = '<span class="fr-cp-av"><img src="' + icon + '" alt="" width="32" height="29"></span>';
@@ -251,7 +270,8 @@
       '<p class="fr-cp-note">AI answers can be wrong.</p></div>' +
       '<div class="fr-cp-ans" data-v="chat" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" data-to="home" aria-label="Back">' + BK + '</button>' + AV + '<div><b>Finrock Assistant</b><span>AI assistant · Replies instantly</span></div></div>' +
       '<div class="fr-cp-log" aria-live="polite"></div>' +
-      '<div class="fr-cp-foot"><button type="button" class="fr-cp-ask" data-chat><span>Ask a question about Finrock…</span><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></button>' +
+      '<div class="fr-cp-foot">' + (AI ? '<form class="fr-cp-box"><textarea rows="1" maxlength="1500" placeholder="Ask a question about Finrock…" aria-label="Your question"></textarea><button type="submit" class="fr-cp-go" aria-label="Send"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></form>'
+        : '<button type="button" class="fr-cp-ask" data-chat><span>Ask a question about Finrock…</span><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></button>') +
       '<p class="fr-cp-note">AI answers can be wrong. <button type="button" class="fr-cp-a" data-sup="chat">Contact support</button></p></div></div>' +
       '<div class="fr-cp-ans fr-cp-sup" data-v="sup" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><div><b>Contact support</b><span>The Finrock support team replies by email</span></div></div>' +
       '<form class="fr-cp-form" novalidate><label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label>' +
@@ -260,13 +280,36 @@
       '<div class="fr-cp-done" hidden><svg class="fr-cp-tick" viewBox="0 0 52 52" width="64" height="64" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none"/><path fill="none" d="M15 27l7.5 7.5L37.5 19"/></svg><h3>Message sent</h3><p>Your question has been sent to the Finrock support team. We’ll reply by email.</p><button type="button" class="fr-cp-send" data-to="home">Back to chat</button></div></div>';
     document.body.appendChild(panel);
     var log = panel.querySelector('.fr-cp-log'), sup = panel.querySelector('.fr-cp-sup'), form = sup.querySelector('form'), done = sup.querySelector('.fr-cp-done'), status = sup.querySelector('.fr-cp-status'), lastQ = '';
-    function view(v) { [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== v; }); if (v === 'home') panel.firstChild.scrollTop = 0; }
+    function view(v) { [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== v; }); if (v === 'home') panel.firstChild.scrollTop = 0; if (AI) keep(v === 'chat'); if (v === 'chat') log.scrollTop = log.scrollHeight; }
     function say(who, text) {
       var m = document.createElement('div'); m.className = 'fr-cp-m ' + who;
-      m.innerHTML = (who === 'bot' ? AV : '') + '<div>' + (text === null ? '<span class="fr-cp-dots"><i></i><i></i><i></i></span>' : txt(text)) + '</div>';
+      m.innerHTML = (who === 'bot' ? AV : '') + '<div>' + (text === null ? '<span class="fr-cp-dots"><i></i><i></i><i></i></span>' : who === 'bot' && AI ? fmt(text) : txt(text)) + '</div>';
       log.appendChild(m); log.scrollTop = log.scrollHeight; return m;
     }
     panel.__support = function (from) { support(from); };
+    var box = panel.querySelector('.fr-cp-box'), ta = box && box.querySelector('textarea'), go = box && box.querySelector('.fr-cp-go'), busy = false;
+    panel.__chat = function (focus) { view('chat'); if (focus && ta) ta.focus(); };
+    msgs.forEach(function (m) { say(m.role === 'user' ? 'user' : 'bot', m.content); });
+    function grow() { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; }
+    function ask(q) {
+      q = q.trim().slice(0, 1500); if (!q || busy) return; busy = true; go.disabled = true; lastQ = q; ta.value = ''; grow();
+      msgs.push({ role: 'user', content: q }); save(); say('user', q); var w = say('bot', null);
+      var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function () { if (ctl) ctl.abort(); }, 30000);
+      /* Sent as plain text so the browser asks no permission first: the answer arrives in one round trip. */
+      fetch(AI, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ messages: msgs.slice(-10) }), signal: ctl ? ctl.signal : undefined })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j.status = r.status; return j; }); })
+        .then(function (j) { if (!j.answer) throw j; msgs.push({ role: 'assistant', content: j.answer }); save(); w.lastChild.innerHTML = fmt(j.answer); })
+        .catch(function (j) {
+          msgs.pop(); save();
+          w.lastChild.innerHTML = (j && j.status === 429 ? 'That’s a lot of questions in a short time. Please wait a little and try again, or ' : 'Sorry, I couldn’t answer just now. Please try again, or ') + '<button type="button" class="fr-cp-a" data-sup="chat">contact support</button>.';
+        })
+        .then(function () { clearTimeout(tm); busy = false; go.disabled = false; log.scrollTop = log.scrollHeight; });
+    }
+    if (box) {
+      box.addEventListener('submit', function (e) { e.preventDefault(); ask(ta.value); });
+      ta.addEventListener('input', grow);
+      ta.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); ask(ta.value); } });
+    }
     function support(from) {
       sup.querySelector('.fr-cp-back').setAttribute('data-to', from); sup.querySelector('.fr-cp-back').hidden = false; form.hidden = false; done.hidden = true; status.textContent = ''; form.querySelector('.fr-cp-send').disabled = false;
       if (!form.elements.query.value && lastQ) form.elements.query.value = lastQ;
@@ -277,6 +320,7 @@
       if (t.hasAttribute('data-sup')) return support(t.getAttribute('data-sup'));
       if (t.hasAttribute('data-to')) return view(t.getAttribute('data-to'));
       var x = QA[+t.getAttribute('data-q')]; lastQ = x[0]; view('chat'); say('user', x[0]); var w = say('bot', null);
+      if (AI) { msgs.push({ role: 'user', content: x[0] }, { role: 'assistant', content: x[1] }); save(); setTimeout(function () { w.lastChild.innerHTML = fmt(x[1]); log.scrollTop = log.scrollHeight; if (ta) ta.focus(); }, 450); return; }
       setTimeout(function () {
         w.lastChild.textContent = x[1]; var more = document.createElement('button'); more.type = 'button'; more.className = 'fr-cp-a fr-cp-more'; more.setAttribute('data-sup', 'chat'); more.textContent = 'Didn’t answer my question?';
         log.appendChild(more); log.scrollTop = log.scrollHeight;
@@ -313,12 +357,12 @@
   function showPanel() {
     if (!panel) build();
     [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== 'home'; });
-    var live = false; try { live = !!(T && T.isChatOngoing && T.isChatOngoing()); } catch (e) {}
+    var live = AI ? msgs.length > 0 : false; try { if (!AI) live = !!(T && T.isChatOngoing && T.isChatOngoing()); } catch (e) {}
     var go = panel.querySelector('.fr-cp-home .fr-cp-link[data-chat]'); go.firstChild.nodeValue = live ? 'Continue conversation ' : 'Start conversation ';
     root.classList.toggle('chat-anim', !!showPanel.anim); showPanel.anim = false;
     root.classList.add('chat-panel', 'chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close'); panel.querySelector('.fr-cp-home').scrollTop = 0; panel.focus();
   }
-  function hidePanel(keepOpen) { root.classList.remove('chat-panel'); if (!keepOpen) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } }
+  function hidePanel(keepOpen) { root.classList.remove('chat-panel'); if (AI && !keepOpen) keep(false); if (!keepOpen) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && panelOpen()) { hidePanel(false); btn.focus(); } });
   var clickAt2 = 0;
   function openChat() { clickAt2 = Date.now(); [].forEach.call(document.querySelectorAll('iframe[title="Chat widget"]'), function (f) { var r = f.getBoundingClientRect(); if (r.height > 200 || !r.height) f.style.setProperty('visibility', 'hidden', 'important'); }); if (!T || !T.maximize) return; if (T.showWidget) T.showWidget(); T.maximize(); opened(); }
@@ -460,10 +504,13 @@
   }
   function allowed() { try { var c = JSON.parse(localStorage.getItem('fr-consent') || 'null'); return !!(c && (c.analytics || c.ads || c.all)); } catch (e) { return false; } }
   var again = false; try { again = sessionStorage.getItem('fr-chat-on') === '1'; } catch (e) {}
-  if (again) { wantChat = true; load(true); } else if (allowed()) load(false);
-  window.addEventListener('fr-consent', function () { if (allowed()) load(false); });
+  /* Our own assistant needs nothing loaded: a conversation open on the last page is shown again as it was. */
+  if (AI) { if (again) { var reopen = function () { showPanel(); panel.__chat(false); }; if (document.body) reopen(); else document.addEventListener('DOMContentLoaded', reopen); } }
+  else if (again) { wantChat = true; load(true); } else if (allowed()) load(false);
+  window.addEventListener('fr-consent', function () { if (!AI && allowed()) load(false); });
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-chat]'); if (!b) return; e.preventDefault();
     if (b === btn) { if (panelOpen()) hidePanel(false); else if (root.classList.contains('chat-open')) { if (T && T.minimize) T.minimize(); } else { showPanel.anim = true; showPanel(); } return; }
+    if (AI) { if (!panelOpen()) showPanel(); panel.__chat(true); return; }
     /* The panel stays on top until Tawk has drawn the chat underneath it, then the two swap in one frame. */
     swapping = true; setTimeout(function () { if (swapping) { swapping = false; hidePanel(true); } }, 4000);
     wantChat = true; wantAt = 0; load(true);
