@@ -220,7 +220,7 @@
   var PROPERTY = '6af506c501d7323c49b2e862', WIDGET = '1k76i4ter';
   if (!PROPERTY || !WIDGET) return;
   var root = document.documentElement; root.classList.add('has-chat');
-  var loaded = false, wantOpen = false, T;
+  var loaded = false, wantOpen = false, T, tawkAt = 0;
   /* Our own launcher: a pill in the site's colours with the Finrock mark. Tawk's default bubble stays hidden. */
   var me = document.querySelector('script[src*="fr.js"]'), icon = (me ? me.getAttribute('src').replace(/fr\.js.*$/, '') : 'assets/') + 'favicon.svg';
   var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fr-chat'; btn.setAttribute('data-chat', ''); btn.setAttribute('aria-label', 'Ask Finrock');
@@ -445,6 +445,22 @@
     function hasPass() { try { return !!sessionStorage.getItem('fr-ai-pass'); } catch (e) { return false; } }
     panel.__chat = function (focus) { view('chat'); greet(); if (!hasPass()) chatCheck(); if (focus && ta) ta.focus({ preventScroll: true }); };
     /* A chat that has ended is gone: the panel closes and the next one starts afresh with the greeting. */
+    /* The team has written to a visitor who is with the assistant: said once in the chat, which is opened to show it,
+       with the way into the team's chat. Nothing is sent for the visitor; they reply there in their own words. */
+    panel.__agentSaid = function () {
+      if (log.querySelector('.fr-cp-agent')) return;
+      if (!panelOpen()) showPanel(); panel.__chat(false);
+      var w = f0(); if (w) w.remove();
+      var m = say('bot', null);
+      setTimeout(function () {
+        reveal(m.lastChild, 'Someone from the Finrock team has sent you a message.', log); chime();
+        var b = document.createElement('div'); b.className = 'fr-cp-more fr-cp-acts fr-cp-agent';
+        b.innerHTML = '<button type="button" class="fr-cp-a">Open chat with the team</button>';
+        b.querySelector('button').addEventListener('click', function () { b.remove(); goLive(null, true); });
+        log.appendChild(b); log.scrollTop = log.scrollHeight;
+      }, 300);
+      function f0() { return log.querySelector('.fr-cp-who'); }
+    };
     panel.__ended = function () {
       try { sessionStorage.removeItem('fr-carry'); sessionStorage.removeItem('fr-kick'); sessionStorage.removeItem('fr-who'); } catch (e) {}
       msgs = []; save(); log.innerHTML = ''; lastQ = ''; asking = false;
@@ -935,6 +951,7 @@
     /* Tawk reopens a chat that was open on the last page without calling onChatMaximized, so the state is read, twice more after load. */
     function sync() { if (T.isChatMaximized && T.isChatMaximized() && !root.classList.contains('chat-open')) { if (T.showWidget) T.showWidget(); opened(); } }
     T.onLoad = function () {
+      tawkAt = Date.now();
       btn.classList.remove('busy');
       if (wantOpen) openChat();
       else if (AI) { if (T.isChatMaximized && T.isChatMaximized() && T.minimize) T.minimize(); if (T.hideWidget) T.hideWidget(); return; }
@@ -947,7 +964,14 @@
     /* Tawk minimises itself as a chat ends, so a chat ended by the visitor is told from one that timed out by how recently the window closed. */
     T.onChatEnded = function () { if (panelOpen() || Date.now() - endedAt < 5000) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; if (T.minimize) T.minimize(); if (AI) { if (!panel) build(); panel.__ended(); } else showPanel(); } };
     T.onChatMinimized = function () { closed(); if (T.hideWidget) T.hideWidget(); };
-    T.onChatMessageAgent = function () { if (!root.classList.contains('chat-open')) btn.classList.add('new'); };
+    /* Tawk is loaded behind our own chat to learn whether the team is there, so the team can see the visitor and write
+       to them in a window the visitor cannot see. A message from the team is brought into our chat with a way into
+       theirs. Tawk's own automatic greeting, sent as it loads, is not a person writing and is let pass. */
+    T.onChatMessageAgent = function () {
+      if (root.classList.contains('chat-open')) return;
+      btn.classList.add('new');
+      if (AI && tawkAt && Date.now() - tawkAt > 6000) { if (!panel) build(); panel.__agentSaid(); }
+    };
     /* The look goes on the moment Tawk's frame exists, before it has drawn anything. */
     var early = setInterval(function () { [].forEach.call(document.querySelectorAll('iframe[title="Chat widget"]'), skin); }, 40); setTimeout(function () { clearInterval(early); }, 20000);
     var s = document.createElement('script'); s.async = true; s.src = 'https://embed.tawk.to/' + PROPERTY + '/' + WIDGET;
@@ -975,14 +999,14 @@
     for (var i = msgs.length - 1; i >= 0; i--) { var c = String(msgs[i].content).trim(); if (msgs[i].role === 'user' && c.length > 3 && !SMALL.test(c) && out.indexOf(c) < 0) out.push(c); }
     return out;
   }
-  function goLive(me) {
+  function goLive(me, quiet) {
     try { if (AI) sessionStorage.setItem('fr-carry', JSON.stringify(panel && panel.__seen ? panel.__seen() : msgs.slice(-30))); } catch (e) {}
     /* Tawk opens a chat for the team only when the visitor sends something, so the transfer sends the visitor's
        request for them. Tawk's secure mode, on because the app signs its customers into the same chat, refuses a
        page's name, email and events, so everything the team needs is in the words of that first message: who it is,
        how to reach them, what they need, and the other questions they asked the assistant. */
     try {
-      if (AI) {
+      if (AI && !quiet) {
         var w = me || {}, qs = realQuestions(), lastQ = qs[0] || '', need = w.need ? w.need.slice(0, 500) : '';
         var said = need || ('I’d like to speak to someone on the team.' + (lastQ ? ' My question was: “' + lastQ.slice(0, 300) + '”' : ''));
         var shown = need || lastQ, earlier = qs.filter(function (x) { return x !== shown; }).slice(0, 3);
