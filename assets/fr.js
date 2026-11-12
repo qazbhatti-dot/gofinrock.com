@@ -369,7 +369,7 @@
       q = q.trim().slice(0, 1500); if (!q || busy) return;
       if (HUMAN.test(q) && q.length < 160) {
         ta.value = ''; grow(); lastQ = ''; say('user', q); tick(); var h = say('bot', null);
-        setTimeout(function () { reveal(h.lastChild, 'I can probably answer that straight away. What’s it about? If I can’t help, I’ll pass you to the team.', log); chime(); offer('Or I can transfer you now.'); }, 400);
+        setTimeout(function () { reveal(h.lastChild, 'Happy to help. Tell me what it’s about and I’ll try to answer straight away. If I can’t, I’ll pass you to the team.', log); chime(); offer('Prefer to talk to a person now?'); }, 400);
         return;
       } busy = true; go.disabled = true; lastQ = q; ta.value = ''; grow();
       msgs.push({ role: 'user', content: q }); save(); say('user', q); tick(); var w = say('bot', null);
