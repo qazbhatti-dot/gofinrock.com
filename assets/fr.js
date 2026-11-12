@@ -261,13 +261,14 @@
       wait: function (done) { var n = 0; (function tick() { if (tok || ++n > 40) return done(tok); setTimeout(tick, 150); })(); }
     };
   }
-  /* With AI set to an address our own assistant answers in the panel and Tawk is never loaded; empty, the conversation
-     is Tawk's as before. One browser can be pointed at a test server with ?ai=<address>, kept for that browser; ?ai=off clears it. */
-  var AI = '', msgs = [], APP = 'https://app.gofinrock.com';
+  /* Our own assistant answers in the panel, from the live app, and Tawk is loaded only to hand a visitor to the team.
+     One browser can be pointed at a test server with ?ai=<address>, or back to Tawk alone with ?ai=off, kept for that
+     browser; ?ai=live returns it to the live app. */
+  var APP = 'https://app.gofinrock.com', AI = APP + '/api/public/help-chat', msgs = [];
   try {
     var qa = new URLSearchParams(location.search).get('ai');
-    if (qa === 'off') localStorage.removeItem('fr-ai'); else if (qa && /^(https:\/\/app\.gofinrock\.com|http:\/\/localhost(:\d+)?)\//.test(qa)) localStorage.setItem('fr-ai', qa);
-    AI = localStorage.getItem('fr-ai') || AI;
+    if (qa === 'live') localStorage.removeItem('fr-ai'); else if (qa === 'off') localStorage.setItem('fr-ai', 'off'); else if (qa && /^(https:\/\/app\.gofinrock\.com|http:\/\/localhost(:\d+)?)\//.test(qa)) localStorage.setItem('fr-ai', qa);
+    var kept = localStorage.getItem('fr-ai'); if (kept) AI = kept === 'off' ? '' : kept;
     if (AI) msgs = JSON.parse(sessionStorage.getItem('fr-ai-log') || '[]');
   } catch (e) {}
   /* A soft chime as an answer lands and a quiet tick as a question goes, drawn in the browser so nothing is fetched.
