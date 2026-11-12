@@ -459,13 +459,23 @@
       YES = /^\s*(y|ye|yes|yea|yeah|yep|yup|ya|ok|okay|sure|please|yes please|ok please|go on|go ahead|do it|transfer( me)?|connect me|put me through)\s*[.!]*\s*$/i,
       NO = /^\s*(n|no|nope|nah|no thanks|no thank you|not now|not yet|later)\s*[.!]*\s*$/i, asking = false;
     var ASK = 'Would you like me to transfer you to someone on the team?';
-    /* The transfer is asked in words first; the button comes only once they have said yes. */
-    function askTransfer(before) {
-      asking = true; var m = say('bot', null);
-      setTimeout(function () { reveal(m.lastChild, txt((before ? before + ' ' : '') + ASK), log); chime(); }, 400);
+    /* The transfer is asked in words first, and the details come once they have said yes. Tawk is fetched as soon as
+       the team is offered, to learn whether anybody is there: with nobody online there is nothing to transfer to, so
+       the visitor goes straight to leaving their details for an email reply. keepOff says whether what comes before
+       the offer still reads without it (an answer the assistant could not give does; an offer to try first does not). */
+    function askTransfer(before, keepOff) {
+      load(false);
+      var m = say('bot', null), n = 0;
+      setTimeout(function look() {
+        var st = teamStatus();
+        if (!st && ++n < 12) return setTimeout(look, 250);
+        if (st === 'offline' || st === 'away') {
+          if (before && keepOff) { reveal(m.lastChild, txt(before), log); chime(); } else m.remove();
+          who(); return;
+        }
+        asking = true; reveal(m.lastChild, txt((before ? before + ' ' : '') + ASK), log); chime();
+      }, 400);
     }
-    /* A person costs the team's time, so the team is offered only once the visitor has asked for them in words. Tawk
-       is fetched as the details are asked for, so the transfer opens it straight away. */
     /* Before the team is called: who they are talking to, and, if the visitor likes, an email to reply to once they
        have left and what it is about. The name is asked because a person answers; the rest is theirs to give. What
        they need starts as the last real question they asked, to keep or change. */
@@ -585,10 +595,10 @@
             acts.querySelector('.fr-cp-again').addEventListener('click', function () { if (busy) return; if (chatTs && !chatTs.token()) chatTs.reset(); ub.remove(); w.remove(); acts.remove(); ask(q); });
             log.appendChild(acts); log.scrollTop = log.scrollHeight; return;
           }
-          if (!j.answer && !j.handoff) throw j; if (j.answer) { msgs.push({ role: 'assistant', content: j.answer }); save(); } if (j.handoff) { w.remove(); askTransfer(j.answer); return; } reveal(w.lastChild, fmt(j.answer), log); chime(); })
+          if (!j.answer && !j.handoff) throw j; if (j.answer) { msgs.push({ role: 'assistant', content: j.answer }); save(); } if (j.handoff) { w.remove(); askTransfer(j.answer, true); return; } reveal(w.lastChild, fmt(j.answer), log); chime(); })
         .catch(function (j) {
           msgs.pop(); save();
-          w.remove(); askTransfer(j && j.status === 429 ? 'That’s a lot of questions in a short time.' : 'Sorry, I couldn’t answer just now.');
+          w.remove(); askTransfer(j && j.status === 429 ? 'That’s a lot of questions in a short time.' : 'Sorry, I couldn’t answer just now.', true);
         })
         .then(function () { clearTimeout(tm); busy = false; go.disabled = false; log.scrollTop = log.scrollHeight; });
       }
