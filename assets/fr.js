@@ -307,15 +307,15 @@
       '<p class="fr-cp-in">I’m the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.</p>' +
       '<div class="fr-cp-card"><h3>Ask Finrock</h3><p>Instant answers from the Finrock help centre</p><button type="button" class="fr-cp-link" data-chat>Start conversation ' + CH + '</button></div>' +
       '<div class="fr-cp-card fr-cp-list"><h3>Popular questions</h3>' + QA.map(function (x, i) { return '<button type="button" class="fr-cp-q" data-q="' + i + '"><span>' + txt(x[0]) + '</span>' + CH + '</button>'; }).join('') + '</div>' +
-      '<div class="fr-cp-card"><h3>Need a person?</h3><p>' + (AI ? 'Chat with the Finrock team or send us your question by email.' : 'Send your question to the Finrock support team and we’ll reply by email.') + '</p><button type="button" class="fr-cp-link" data-sup="home">' + (AI ? 'Talk to a person' : 'Contact support') + ' ' + CH + '</button></div>' +
+      '<div class="fr-cp-card"><h3>Need a person?</h3><p>Send your question to the Finrock support team and we’ll reply by email.</p><button type="button" class="fr-cp-link" data-sup="home">Contact support ' + CH + '</button></div>' +
       '<p class="fr-cp-note">AI answers can be wrong.</p></div>' +
       '<div class="fr-cp-ans" data-v="chat" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" data-to="home" aria-label="Back">' + BK + '</button>' + AV + '<div><b>Finrock Assistant</b><span>AI assistant · Replies instantly</span></div></div>' +
       '<div class="fr-cp-log" aria-live="polite"></div>' +
       '<div class="fr-cp-foot">' + (AI ? '<form class="fr-cp-box"><textarea rows="1" maxlength="1500" placeholder="Ask a question about Finrock…" aria-label="Your question"></textarea><button type="submit" class="fr-cp-go" aria-label="Send"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></form>'
         : '<button type="button" class="fr-cp-ask" data-chat><span>Ask a question about Finrock…</span><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></button>') +
-      '<p class="fr-cp-note">AI answers can be wrong. <button type="button" class="fr-cp-a" data-sup="chat">' + (AI ? 'Talk to a person' : 'Contact support') + '</button></p></div></div>' +
-      '<div class="fr-cp-ans fr-cp-sup" data-v="sup" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><div><b>' + (AI ? 'Talk to a person' : 'Contact support') + '</b><span>The Finrock support team replies by email</span></div></div>' +
-      '<form class="fr-cp-form" novalidate>' + (AI ? '<div class="fr-cp-live" hidden><span class="fr-cp-dot"></span><div><b>Live chat</b><span>Message the Finrock team here</span></div><button type="button" class="fr-cp-golive" data-chat data-live>Start chat</button></div><p class="fr-cp-or" hidden>or send it by email</p>' : '') + '<label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label>' +
+      '<p class="fr-cp-note">AI answers can be wrong. <button type="button" class="fr-cp-a" data-sup="chat">Contact support</button></p></div></div>' +
+      '<div class="fr-cp-ans fr-cp-sup" data-v="sup" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><div><b>Contact support</b><span>The Finrock support team replies by email</span></div></div>' +
+      '<form class="fr-cp-form" novalidate>' + '<label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label>' +
       '<label>Your question<textarea name="query" rows="5" maxlength="5000" required></textarea></label>' +
       '<button type="submit" class="fr-cp-send">Send to support</button><p class="fr-cp-status" role="status"></p></form>' +
       '<div class="fr-cp-done" hidden><svg class="fr-cp-tick" viewBox="0 0 52 52" width="64" height="64" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none"/><path fill="none" d="M15 27l7.5 7.5L37.5 19"/></svg><h3>Message sent</h3><p>Your question has been sent to the Finrock support team. We’ll reply by email.</p><button type="button" class="fr-cp-send" data-to="home">Back to chat</button></div></div>';
@@ -333,11 +333,21 @@
     msgs.forEach(function (m) { say(m.role === 'user' ? 'user' : 'bot', m.content); });
     function grow() { box.classList.toggle('has', !!ta.value.trim()); ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; }
     var HUMAN = /\b(human|real person|actual person|someone real|live (chat|agent|person|support)|(speak|talk|chat) (to|with) (someone|somebody|a person|a human|an agent|support|the team|your team|staff|a real)|customer (service|support)|(to|with) an agent|operator)\b/i;
+    /* A person costs the team's time, so live chat is offered only when the assistant has said it can't help. Tawk is
+       fetched as the offer appears, so Yes opens it straight away. */
+    function offer(text) {
+      load(false);
+      var o = document.createElement('div'); o.className = 'fr-cp-offer';
+      o.innerHTML = '<p>' + txt(text || 'Would you like me to transfer you to someone on the team?') + '</p><div><button type="button" class="fr-cp-yes" data-chat data-live>Yes, transfer me</button><button type="button" class="fr-cp-no">No thanks</button></div>';
+      o.querySelector('.fr-cp-no').addEventListener('click', function () { o.remove(); if (ta) ta.focus(); });
+      o.querySelector('.fr-cp-yes').addEventListener('click', function () { setTimeout(function () { o.remove(); }, 0); });
+      log.appendChild(o); log.scrollTop = log.scrollHeight;
+    }
     function ask(q) {
       q = q.trim().slice(0, 1500); if (!q || busy) return;
       if (HUMAN.test(q) && q.length < 160) {
         ta.value = ''; grow(); lastQ = ''; say('user', q); tick(); var h = say('bot', null);
-        setTimeout(function () { h.lastChild.textContent = 'Of course. Taking you to the team now.'; chime(); setTimeout(function () { support('chat'); }, 900); }, 400);
+        setTimeout(function () { reveal(h.lastChild, 'I can probably answer that straight away. What’s it about? If I can’t help, I’ll pass you to the team.', log); chime(); offer('Or I can transfer you now.'); }, 400);
         return;
       } busy = true; go.disabled = true; lastQ = q; ta.value = ''; grow();
       msgs.push({ role: 'user', content: q }); save(); say('user', q); tick(); var w = say('bot', null);
@@ -345,10 +355,11 @@
       /* Sent as plain text so the browser asks no permission first: the answer arrives in one round trip. */
       fetch(AI, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ messages: msgs.slice(-10) }), signal: ctl ? ctl.signal : undefined })
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j.status = r.status; return j; }); })
-        .then(function (j) { if (!j.answer) throw j; msgs.push({ role: 'assistant', content: j.answer }); save(); reveal(w.lastChild, fmt(j.answer), log); chime(); })
+        .then(function (j) { if (!j.answer) throw j; msgs.push({ role: 'assistant', content: j.answer }); save(); reveal(w.lastChild, fmt(j.answer), log); chime(); if (j.handoff) setTimeout(function () { offer(); }, 700); })
         .catch(function (j) {
           msgs.pop(); save();
-          w.lastChild.innerHTML = (j && j.status === 429 ? 'That’s a lot of questions in a short time. Please wait a little and try again, or ' : 'Sorry, I couldn’t answer just now. Please try again, or ') + '<button type="button" class="fr-cp-a" data-sup="chat">contact support</button>.';
+          w.lastChild.textContent = j && j.status === 429 ? 'That’s a lot of questions in a short time. Please wait a little and try again.' : 'Sorry, I couldn’t answer just now. Please try again.';
+          offer();
         })
         .then(function () { clearTimeout(tm); busy = false; go.disabled = false; log.scrollTop = log.scrollHeight; });
     }
@@ -359,14 +370,8 @@
     }
     function support(from) {
       sup.querySelector('.fr-cp-back').setAttribute('data-to', from); sup.querySelector('.fr-cp-back').hidden = false; form.hidden = false; done.hidden = true; status.textContent = ''; form.querySelector('.fr-cp-send').disabled = false;
-      if (!form.elements.query.value && lastQ) form.elements.query.value = lastQ;
+      if (!form.elements.query.value && lastQ && lastQ.length > 12) form.elements.query.value = lastQ;
       view('sup'); form.elements.email.focus();
-      /* With our own assistant answering, Tawk is kept for people: it is fetched when somebody asks for one, and live
-         chat is offered only while a member of the team is online. Otherwise the email form is the way to a person. */
-      if (AI) { load(false); var tries = 0, live = sup.querySelector('.fr-cp-live'), or = sup.querySelector('.fr-cp-or'), poll = setInterval(function () {
-        var on = false; try { on = !!(T && T.getStatus && T.getStatus() === 'online'); } catch (e) {}
-        live.hidden = or.hidden = !on; if (on || ++tries > 40) clearInterval(poll);
-      }, 250); }
     }
     panel.addEventListener('click', function (e) {
       var t = e.target.closest && e.target.closest('.fr-cp-q,[data-sup],[data-to]'); if (!t) return;
@@ -432,8 +437,8 @@
     '.tawk-route-back:not(:has(.tawk-toolbar-title))::after{content:"";display:block!important;flex:none;width:36px;height:36px;margin-left:6px;border-radius:50%;background:#fff url(' + ICON + ') center/22px no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
     '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title)){display:grid!important;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;column-gap:10px}' +
     '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title)) .tawk-route-back{grid-row:1/3;margin:0!important;overflow:visible!important}' +
-    '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title))::before{content:"Finrock Assistant";grid-column:2;grid-row:1;align-self:end;font:600 15px/1.3 Inter,system-ui,sans-serif;color:#18181b;white-space:nowrap}' +
-    '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title))::after{content:"AI assistant \\00B7  Replies instantly";grid-column:2;grid-row:2;align-self:start;font:400 12px/1.35 Inter,system-ui,sans-serif;color:#71717a;white-space:nowrap}' +
+    '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title))::before{content:"' + (AI ? 'Finrock team' : 'Finrock Assistant') + '";grid-column:2;grid-row:1;align-self:end;font:600 15px/1.3 Inter,system-ui,sans-serif;color:#18181b;white-space:nowrap}' +
+    '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title))::after{content:"' + (AI ? 'Live chat with a person' : 'AI assistant \\00B7  Replies instantly') + '";grid-column:2;grid-row:2;align-self:start;font:400 12px/1.35 Inter,system-ui,sans-serif;color:#71717a;white-space:nowrap}' +
     '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view{position:relative}' +
     '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::before{content:"Hi! I\\2019m the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.";display:block!important;position:absolute;z-index:2;left:50px;top:78px;max-width:calc(100% - 96px);padding:9px 13px;background:#fff;border:1px solid #e4e4e7;border-radius:16px 16px 16px 4px;font:400 14px/1.5 Inter,system-ui,sans-serif;color:#18181b;box-shadow:0 1px 2px rgba(24,24,27,.04);animation:frm .22s ease both}' +
     '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::after{content:"";display:block!important;position:absolute;z-index:2;left:14px;top:78px;width:28px;height:28px;border-radius:50%;background:#fff url(' + ICON + ') center/60% no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
@@ -473,13 +478,13 @@
         sb.addEventListener('click', function () { var ta = wr.querySelector('textarea'); if (!ta || !ta.value.trim()) { if (ta) ta.focus(); return; } ta.focus(); var w = d.defaultView, o = { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true }; ta.dispatchEvent(new w.KeyboardEvent('keydown', o)); ta.dispatchEvent(new w.KeyboardEvent('keypress', o)); });
         wr.appendChild(sb);
       }
-      if (ci && (!nt || nt.previousSibling !== ci)) { if (!nt) { nt = d.createElement('p'); nt.className = 'fr-note'; nt.innerHTML = 'AI answers can be wrong. <a class="fr-sup" href="#">Contact support</a>'; } ci.parentNode.insertBefore(nt, ci.nextSibling); }
+      if (ci && (!nt || nt.previousSibling !== ci)) { if (!nt) { nt = d.createElement('p'); nt.className = 'fr-note'; nt.innerHTML = AI ? 'Prefer email? <a class="fr-sup" href="#">Contact support</a>' : 'AI answers can be wrong. <a class="fr-sup" href="#">Contact support</a>'; } ci.parentNode.insertBefore(nt, ci.nextSibling); }
       var oldMore = d.querySelector('.fr-more'); if (oldMore) oldMore.parentNode.removeChild(oldMore);
       var hm = d.querySelectorAll('.tawk-home-view .tawk-header-text'), g = hm[1] && hm[1].textContent.replace(/\s+/g, ' ').trim();
       if (g && g !== greet) { greet = g; gs.textContent = '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::before{content:' + JSON.stringify('Hi! ' + g) + '!important}'; } var w = d.createTreeWalker(d.body, 4, null), n;
       while ((n = w.nextNode())) {
         var v = n.nodeValue && n.nodeValue.trim();
-        if (v === 'Customer Support') n.nodeValue = 'Finrock Assistant';
+        if (v === 'Customer Support') n.nodeValue = AI ? 'Finrock team' : 'Finrock Assistant';
         else if (v === 'New messages' && n.parentElement && !n.parentElement.style.fontSize) n.parentElement.style.cssText += ';background:#f4f4f6;color:#71717a;font-size:12px;padding:0 0 0 8px';
       }
     }
