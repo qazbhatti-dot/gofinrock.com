@@ -1589,3 +1589,16 @@ html.has-chat .chatbox{display:block;margin-bottom:28px}
  .fan.duo .l{transform:translateX(-50%) translateX(calc(var(--pw)*-.29)) rotate(-6deg) scale(.86)!important}
 }
 
+/* our chat launcher (replaces the Tawk bubble): a pill with the Finrock mark */
+.fr-chat{position:fixed;right:18px;bottom:18px;z-index:55;display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 20px 0 6px;border-radius:999px;border:0;cursor:pointer;background:var(--or);color:#140d02;font:600 16px/1 var(--disp);box-shadow:0 10px 28px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.18) inset;transition:transform .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent}
+.fr-chat:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.34),0 0 0 1px rgba(255,255,255,.18) inset}
+.fr-chat:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.fr-chat-mark{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#fff;flex:none}
+.fr-chat-mark img{display:block;width:26px;height:auto}
+.fr-chat i{display:none;position:absolute;top:0;right:2px;width:13px;height:13px;border-radius:50%;background:#e5484d;border:2px solid #fff}
+.fr-chat.new i{display:block}
+.fr-chat.busy .fr-chat-mark img{animation:frchat 1s ease-in-out infinite}
+@keyframes frchat{50%{opacity:.35}}
+html.chat-open .fr-chat{display:none}
+@media(max-width:759px){.fr-chat{right:14px;bottom:14px;height:48px;padding:0 16px 0 5px;font-size:15px}.fr-chat-mark{width:38px;height:38px}}
+@media print{.fr-chat{display:none}}
