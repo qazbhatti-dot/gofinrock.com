@@ -427,7 +427,7 @@
     panel.__chat = function (focus) { view('chat'); greet(); if (!hasPass()) chatCheck(); if (focus && ta) ta.focus({ preventScroll: true }); };
     /* A chat that has ended is gone: the panel closes and the next one starts afresh with the greeting. */
     panel.__ended = function () {
-      try { sessionStorage.removeItem('fr-carry'); sessionStorage.removeItem('fr-kick'); } catch (e) {}
+      try { sessionStorage.removeItem('fr-carry'); sessionStorage.removeItem('fr-kick'); sessionStorage.removeItem('fr-who'); } catch (e) {}
       msgs = []; save(); log.innerHTML = ''; lastQ = ''; asking = false;
       try { sessionStorage.removeItem('fr-live'); } catch (e) {}
       view('home'); hidePanel(false); btn.focus({ preventScroll: true });
@@ -447,20 +447,36 @@
       asking = true; var m = say('bot', null);
       setTimeout(function () { reveal(m.lastChild, txt((before ? before + ' ' : '') + ASK), log); chime(); }, 400);
     }
-    /* A person costs the team's time, so live chat is offered only when the assistant has said it can't help. Tawk is
-       fetched as the offer appears, so Yes opens it straight away. */
-    function offer(text, agreed) {
-      load(false);
-      var o = document.createElement('div'); o.className = 'fr-cp-offer';
-      o.innerHTML = (text ? '<p>' + txt(text) + '</p>' : '') + '<div><button type="button" class="fr-cp-yes">' + (agreed ? 'Transfer me' : 'Yes, transfer me') + '</button><button type="button" class="fr-cp-no">' + (agreed ? 'Not now' : 'No thanks') + '</button></div>';
-      o.querySelector('.fr-cp-no').addEventListener('click', function () { o.remove(); if (ta) ta.focus({ preventScroll: true }); });
-      o.querySelector('.fr-cp-yes').addEventListener('click', function () {
-        o.remove(); tick();
-        var m = say('bot', null);
-        setTimeout(function () { reveal(m.lastChild, 'Transferring you to a real support agent now. They’ll see what you’ve asked me, so there’s no need to repeat it.', log); chime(); }, 350);
-        setTimeout(function () { hand(); goLive(); }, 1700);
+    /* A person costs the team's time, so the team is offered only once the visitor has asked for them in words. Tawk
+       is fetched as the details are asked for, so the transfer opens it straight away. */
+    /* Before the team is called: who they are talking to, and, if the visitor likes, an email to reply to once they
+       have left and what it is about. The name is asked because a person answers; the rest is theirs to give. What
+       they need starts as the last real question they asked, to keep or change. */
+    function who() {
+      var known = {}; try { known = JSON.parse(sessionStorage.getItem('fr-who') || '{}') || {}; } catch (e) {}
+      var f = document.createElement('form'); f.className = 'fr-cp-offer fr-cp-who'; f.noValidate = true;
+      f.innerHTML = '<p>Before I put you through, who should the team ask for?</p>' +
+        '<label><b>Your name</b><input name="n" autocomplete="name" maxlength="80"></label>' +
+        '<label><b>Email <span>· optional, so we can reply if you leave</span></b><input name="e" type="email" autocomplete="email" maxlength="120"></label>' +
+        '<label><b>What do you need help with? <span>· optional</span></b><textarea name="q" rows="2" maxlength="500"></textarea></label>' +
+        '<p class="fr-cp-who-err" role="alert" hidden></p>' +
+        '<div><button type="submit" class="fr-cp-yes">Transfer me</button><button type="button" class="fr-cp-no">Not now</button></div>';
+      var n = f.elements.n, e = f.elements.e, q = f.elements.q, err = f.querySelector('.fr-cp-who-err');
+      n.value = known.name || ''; e.value = known.email || ''; q.value = realQuestion();
+      f.querySelector('.fr-cp-no').addEventListener('click', function () { f.remove(); if (ta) ta.focus({ preventScroll: true }); });
+      f.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var name = n.value.trim().replace(/\s+/g, ' '), email = e.value.trim(), need = q.value.trim();
+        var bad = !name ? 'Please add your name so the team knows who they’re talking to.' : email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'That email doesn’t look right. Check it, or leave it empty.' : '';
+        if (bad) { err.textContent = bad; err.hidden = false; (name ? e : n).focus({ preventScroll: true }); return; }
+        try { sessionStorage.setItem('fr-who', JSON.stringify({ name: name, email: email })); } catch (x) {}
+        f.remove(); tick();
+        var m = say('bot', null), first = name.split(' ')[0];
+        setTimeout(function () { reveal(m.lastChild, txt('Thanks, ' + first + '. Transferring you to the team now. They’ll see what you’ve asked me, so there’s no need to repeat it.'), log); chime(); }, 350);
+        setTimeout(function () { hand(); goLive({ name: name, email: email, need: need }); }, 1700);
       });
-      log.appendChild(o); log.scrollTop = log.scrollHeight;
+      log.appendChild(f); log.scrollTop = log.scrollHeight;
+      if (!n.value) n.focus({ preventScroll: true });
     }
     /* The agent is handed the conversation so far as an event on the visitor, which Tawk shows beside the chat. */
     function hand() {
@@ -476,7 +492,7 @@
       q = q.trim().slice(0, 1500); if (!q || busy) return;
       if (asking && (YES.test(q) || NO.test(q))) {
         asking = false; ta.value = ''; grow(); say('user', q); tick();
-        if (YES.test(q)) { var y = say('bot', null); setTimeout(function () { reveal(y.lastChild, 'Great. Tap below and I’ll put you through.', log); chime(); offer('', true); }, 400); }
+        if (YES.test(q)) { var y = say('bot', null); setTimeout(function () { reveal(y.lastChild, 'Great, I’ll put you through to the team.', log); chime(); load(false); who(); }, 400); }
         else { var n = say('bot', null); setTimeout(function () { reveal(n.lastChild, 'No problem. What else can I help with?', log); chime(); }, 400); }
         return;
       }
@@ -675,6 +691,9 @@
       var o = { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true };
       tx.dispatchEvent(new w.KeyboardEvent('keydown', o)); tx.dispatchEvent(new w.KeyboardEvent('keypress', o));
     }
+    var me = {}; try { me = JSON.parse(sessionStorage.getItem('fr-who') || '{}') || {}; } catch (e) {}
+    var at = {}; if (me.name) at.name = me.name; if (me.email) at.email = me.email;
+    try { if (T && T.setAttributes && (at.name || at.email)) T.setAttributes(at, function () {}); } catch (e) {}
     setTimeout(function () {
       try { sessionStorage.removeItem('fr-kick'); } catch (e) {}
       send(); setTimeout(function () { if (tx.value === k) send(); }, 1500);
@@ -900,16 +919,21 @@
     goLive();
   });
   /* The panel stays on top until Tawk has drawn the chat underneath it, then the two swap in one frame. */
-  function goLive() {
+  /* The last real question the visitor asked: a greeting, thanks or one-word reply says nothing the team can start from. */
+  function realQuestion() {
+    var SMALL = /^\s*(hi+|hiya|hello+|hey+|yo|hola|good (morning|afternoon|evening)|thanks?( you)?|thank u|ty|cheers|ok(ay)?|k|yes|yeah|yep|no|nope|cool|great|sure|test(ing)?|\?+)\s*[!.?]*\s*$/i;
+    for (var i = msgs.length - 1; i >= 0; i--) { var c = String(msgs[i].content).trim(); if (msgs[i].role === 'user' && c.length > 3 && !SMALL.test(c)) return c; }
+    return '';
+  }
+  function goLive(me) {
     try { if (AI) sessionStorage.setItem('fr-carry', JSON.stringify(panel && panel.__seen ? panel.__seen() : msgs.slice(-30))); } catch (e) {}
     /* Tawk opens a chat for the team only when the visitor sends something, so the transfer sends the visitor's
        request for them, with the last thing they asked: the team is told at once and knows what it is about. */
     try {
       if (AI) {
-        /* The last real question: a greeting, thanks or one-word reply says nothing the team can start from. */
-        var SMALL = /^\s*(hi+|hiya|hello+|hey+|yo|hola|good (morning|afternoon|evening)|thanks?( you)?|thank u|ty|cheers|ok(ay)?|k|yes|yeah|yep|no|nope|cool|great|sure|test(ing)?|\?+)\s*[!.?]*\s*$/i;
-        var lastQ = ''; for (var i = msgs.length - 1; i >= 0; i--) { var c = String(msgs[i].content).trim(); if (msgs[i].role === 'user' && c.length > 3 && !SMALL.test(c)) { lastQ = c; break; } }
-        sessionStorage.setItem('fr-kick', 'Hi, I’d like to speak to someone on the team.' + (lastQ ? ' My question was: “' + lastQ.slice(0, 300) + '”' : ''));
+        var lastQ = realQuestion(), w = me || {};
+        var said = w.need ? w.need.slice(0, 500) : 'I’d like to speak to someone on the team.' + (lastQ ? ' My question was: “' + lastQ.slice(0, 300) + '”' : '');
+        sessionStorage.setItem('fr-kick', (w.name ? 'Hi, I’m ' + w.name + '. ' : 'Hi. ') + said);
       }
     } catch (e) {}
     swapping = true; setTimeout(function () { if (swapping) { swapping = false; hidePanel(true); } }, 4000);

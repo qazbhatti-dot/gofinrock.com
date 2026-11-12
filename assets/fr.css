@@ -1758,3 +1758,12 @@ html.chat-panel iframe[title="Visit tawk.to"],html:not(.chat-open) iframe[title=
 .fr-ts-hint{margin:0 0 6px;text-align:center;font-size:12.5px;line-height:1.4;color:#52525b}
 .fr-ts-hint[hidden]{display:none}
 .fr-cp-ts.fr-ts-off{display:none}
+.fr-cp-who{display:flex;flex-direction:column;gap:9px;max-width:86%}
+.fr-cp-who p{margin:0}
+.fr-cp-who label{display:flex;flex-direction:column;gap:5px;font:600 12.5px/1.3 Inter,system-ui,sans-serif;color:#18181b}
+.fr-cp-who label b{font-weight:600}.fr-cp-who label span{font-weight:400;color:#71717a}
+.fr-cp-who input,.fr-cp-who textarea{box-sizing:border-box;width:100%;background:#fff;border:1px solid #e4e4e7;border-radius:10px;padding:8px 10px;font:400 14px/1.4 Inter,system-ui,sans-serif;color:#18181b;resize:none;outline:0;transition:border-color .12s,box-shadow .12s}
+.fr-cp-who input:focus,.fr-cp-who textarea:focus{border-color:#F6921A;box-shadow:0 0 0 3px rgba(246,146,26,.18)}
+.fr-cp-who .fr-cp-who-err{font-size:12.5px;color:#b91c1c}
+.fr-cp-who .fr-cp-who-err[hidden]{display:none}
+@media(hover:none) and (pointer:coarse){.fr-cp-who input,.fr-cp-who textarea{font-size:16px}}
