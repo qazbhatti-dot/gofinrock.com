@@ -1755,3 +1755,6 @@ html.chat-panel iframe[title="Visit tawk.to"],html:not(.chat-open) iframe[title=
 .fr-cp-ts:empty{display:none}
 .fr-cp-ts{display:flex;justify-content:center;margin:0 0 8px}
 .fr-cp-form .fr-cp-ts{margin:-4px 0 0}
+.fr-ts-hint{margin:0 0 6px;text-align:center;font-size:12.5px;line-height:1.4;color:#52525b}
+.fr-ts-hint[hidden]{display:none}
+.fr-cp-ts.fr-ts-off{display:none}

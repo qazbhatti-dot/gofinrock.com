@@ -259,13 +259,22 @@
      more by this page before it counts as failed: Cloudflare's first run in a panel that has only just opened can fail
      for a visitor who is plainly a person. Its own retry is off, so a failure is known the moment it happens. */
   function tsWidget(el) {
-    var id = null, tok = '', failed = false, retried = false, waiting = [];
+    var id = null, tok = '', failed = false, retried = false, asking = false, waiting = [];
+    /* Cloudflare asks for a tick only when it is unsure of a browser. Then the visitor is told what the box is for,
+       and a question waits for them however long they take; a check that fails for good is put out of sight, and
+       the page's own words (Try again, or email the team) take its place. */
+    var hint = document.createElement('p'); hint.className = 'fr-ts-hint'; hint.hidden = true;
+    hint.textContent = 'Please tick the box below so we know you’re a person, not a bot.';
+    if (el.parentNode) el.parentNode.insertBefore(hint, el);
+    function ask(on) { asking = on; hint.hidden = !on; if (on) el.classList.remove('fr-ts-off'); }
     function settle() { var w = waiting; waiting = []; w.forEach(function (f) { f(tok); }); }
-    function fail() { failed = true; settle(); }
-    function rerun() { tok = ''; failed = false; try { if (id !== null) window.turnstile.reset(id); } catch (e) {} }
+    function fail() { failed = true; ask(false); el.classList.add('fr-ts-off'); settle(); }
+    function rerun() { tok = ''; failed = false; el.classList.remove('fr-ts-off'); try { if (id !== null) window.turnstile.reset(id); } catch (e) {} }
     tsReady(function () { try { id = window.turnstile.render(el, { sitekey: TS_KEY, appearance: 'interaction-only', theme: 'light', retry: 'never',
-      callback: function (t) { tok = t; failed = false; settle(); },
+      callback: function (t) { var ticked = asking; tok = t; failed = false; ask(false); settle(); if (ticked) setTimeout(function () { if (tok && !asking) el.classList.add('fr-ts-off'); }, 1200); },
       'expired-callback': function () { tok = ''; },
+      'before-interactive-callback': function () { ask(true); },
+      'after-interactive-callback': function () { ask(false); },
       'error-callback': function () { tok = ''; if (!retried) { retried = true; setTimeout(rerun, 500); } else fail(); return true; } }); } catch (e) { fail(); } }, fail);
     /* A page the browser kept while the visitor was elsewhere (Back, on Safari above all) comes back with the check's
        frame frozen mid-run, and it then shows "Verification failed" for a check nobody failed. It is run again afresh. */
@@ -274,12 +283,13 @@
       token: function () { return tok; },
       reset: function () { retried = false; rerun(); },
       /* The token as soon as the check passes, or '' as soon as it has failed for good, and the server decides. A check
-         that is still running is waited for: a question sent without its token is refused even from a person, which is
-         what a short fixed wait did to a check that took a little longer than it. */
+         that is still running is waited for, up to 20 seconds, and one waiting on the visitor's tick for as long as
+         they take: a question sent without its token is refused even from a person. */
       wait: function (done) {
         if (tok || failed) return done(tok);
         var called = false, once = function (t) { if (!called) { called = true; done(t); } };
-        waiting.push(once); setTimeout(function () { once(tok); }, 20000);
+        waiting.push(once);
+        (function cap(n) { setTimeout(function () { if (asking && n < 600) return cap(n + 1); once(tok); }, n ? 1000 : 20000); })(0);
       }
     };
   }
@@ -605,7 +615,7 @@
     var told = false, tell = function () { if (told) return; told = true; try { if (T && T.minimize) T.minimize(); } catch (e) {} };
     requestAnimationFrame(function () { setTimeout(tell, 0); }); setTimeout(tell, 150);
   }
-  var SKIN = '.fr-carry{display:flex;flex-direction:column;gap:8px;padding:14px 12px 6px}.fr-carry-lbl{margin:0 0 2px;text-align:center;font:500 11.5px/1.3 Inter,system-ui,sans-serif;color:#a1a1aa}.fr-carry-m{max-width:84%;padding:8px 12px;border-radius:14px;font:400 13.5px/1.45 Inter,system-ui,sans-serif;opacity:.85}.fr-carry-m.u{align-self:flex-end;background:#F6921A;color:#111;border-bottom-right-radius:4px}.fr-carry-m.b{align-self:flex-start;background:#fff;border:1px solid #e4e4e7;color:#18181b;border-bottom-left-radius:4px}.fr-carry-m p{margin:0}.fr-carry-m p+p,.fr-carry-m p+ul,.fr-carry-m ul+p{margin-top:6px}.fr-carry-m ul,.fr-carry-m ol{margin:0;padding-left:18px}.fr-carry-sep{display:flex;align-items:center;gap:10px;margin:8px 0 2px;font:600 12px/1.3 Inter,system-ui,sans-serif;color:#16a34a}.fr-carry-sep::before,.fr-carry-sep::after{content:"";flex:1;height:1px;background:#e4e4e7}.tawk-router-view:has(.fr-carry)::before{display:none!important}.tawk-max-content:has(>.tawk-router-view>.fr-carry),.tawk-router-view:has(>.fr-carry){min-height:0!important}.tawk-router-view:has(>.fr-carry){flex-direction:column!important;overflow:hidden!important}.tawk-router-view>.fr-carry{flex:1 1 auto;min-height:0;overflow-y:auto;width:100%;box-sizing:border-box}' +
+  var SKIN = '.fr-carry{display:flex;flex-direction:column;gap:8px;padding:14px 12px 6px}.fr-carry-lbl{margin:0 0 2px;text-align:center;font:500 11.5px/1.3 Inter,system-ui,sans-serif;color:#a1a1aa}.fr-carry-m{max-width:84%;padding:8px 12px;border-radius:14px;font:400 13.5px/1.45 Inter,system-ui,sans-serif;opacity:.85}.fr-carry-m.u{align-self:flex-end;background:#F6921A;color:#111;border-bottom-right-radius:4px}.fr-carry-m.b{align-self:flex-start;background:#fff;border:1px solid #e4e4e7;color:#18181b;border-bottom-left-radius:4px}.fr-carry-m p{margin:0}.fr-carry-m p+p,.fr-carry-m p+ul,.fr-carry-m ul+p{margin-top:6px}.fr-carry-m ul,.fr-carry-m ol{margin:0;padding-left:18px}.fr-carry-sep{display:flex;align-items:center;gap:10px;margin:8px 0 2px;font:600 12px/1.3 Inter,system-ui,sans-serif;color:#16a34a}.fr-carry-sep::before,.fr-carry-sep::after{content:"";flex:1;height:1px;background:#e4e4e7}.fr-carry-who{margin:4px 0 -4px 2px;font:500 11.5px/1.3 Inter,system-ui,sans-serif;color:#71717a}.fr-carry-m.fr-carry-hi{opacity:1}.tawk-router-view:has(.fr-carry)::before{display:none!important}.tawk-max-content:has(>.tawk-router-view>.fr-carry),.tawk-router-view:has(>.fr-carry){min-height:0!important}.tawk-router-view:has(>.fr-carry){flex-direction:column!important;overflow:hidden!important}.tawk-router-view>.fr-carry{flex:1 1 auto;min-height:0;overflow-y:auto;width:100%;box-sizing:border-box}' +
     '.tawk-toolbar{position:relative}.tawk-toolbar:has(.fr-end){padding-right:100px!important}.tawk-toolbar-nav:has(.tawk-route-back)::before,.tawk-toolbar-nav:has(.tawk-route-back)::after{min-width:0;overflow:hidden;text-overflow:ellipsis}.fr-end{position:absolute;right:12px;top:50%;transform:translateY(-50%);height:30px;padding:0 12px;border:1px solid #e4e4e7;border-radius:9px;background:#fff;color:#18181b;font:600 13px/1 Inter,system-ui,sans-serif;cursor:pointer;z-index:2}.fr-end:hover{background:#fef2f2;border-color:#fecaca;color:#b91c1c}' +
     '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
     '.tawk-toolbar,.tawk-toolbar *{color:#18181b!important}.tawk-toolbar button.tawk-header-text svg,.tawk-toolbar button.tawk-header-text svg *{fill:#18181b!important}.tawk-button.tawk-custom-color{color:#111!important}' +
@@ -651,6 +661,15 @@
     '.fr-phone .tawk-main-panel .tawk-chat-panel .tawk-chat-panel-inner{padding-bottom:8px!important}' +
     '.fr-phone.fr-kb .fr-note{display:none}.fr-phone.fr-kb .tawk-padding-small:has(a[href*="tawk.to"]){padding:0 0 2px!important;opacity:.55}' +
     '.fr-phone.fr-kb .tawk-padding-small:has(a[href*="tawk.to"]) *{font-size:10px!important;line-height:1.2!important;color:#a1a1aa!important}.fr-phone.fr-kb .tawk-padding-small:has(a[href*="tawk.to"]) img{width:10px!important;height:auto!important}';
+  /* The team's first words under the history, said for them at once so the visitor is never left looking at
+     silence: who is there now, and what happens next. Tawk says whether anyone is online; with no answer, nothing
+     is promised. */
+  function teamHello() {
+    var st = ''; try { st = T && T.getStatus ? T.getStatus() : ''; } catch (e) {}
+    var say = st === 'online' ? 'Hi, thanks for getting in touch. Someone from the team will see your conversation so far and reply here shortly.'
+      : st === 'away' || st === 'offline' ? 'Hi, thanks for getting in touch. The team isn’t online right now. Leave your message here with your email and we’ll reply by email.' : '';
+    return say ? '<p class="fr-carry-who">Finrock team</p><div class="fr-carry-m b fr-carry-hi">' + say + '</div>' : '';
+  }
   function skin(f) {
     var d; try { d = f.contentDocument; } catch (e) { return; }
     if (!d || !d.head || !d.body || d.getElementById('fr-skin')) return;
@@ -684,7 +703,7 @@
           var cv = d.createElement('div'); cv.className = 'fr-carry';
           cv.innerHTML = '<p class="fr-carry-lbl">Your conversation with the assistant</p>' + carry.map(function (m) {
             return '<div class="fr-carry-m ' + (m.role === 'user' ? 'u' : 'b') + '">' + (m.html != null ? m.html : m.role === 'user' ? txt(m.content) : fmt(m.content)) + '</div>';
-          }).join('') + '<p class="fr-carry-sep"><span>You’re through to the Finrock team</span></p>';
+          }).join('') + '<p class="fr-carry-sep"><span>You’re through to the Finrock team</span></p>' + teamHello();
           box.insertBefore(cv, box.firstChild);
           /* In the empty chat the history scrolls in its own area, opened at its end, and Tawk's window is put back
              to its top so its header with End chat stays in sight. */
