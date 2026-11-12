@@ -584,7 +584,7 @@
      takes; Tawk's own end and minimise, which it reports back through onChatEnded and onChatMinimized, then find the
      chat already closed. */
   function endLive() {
-    endedAt = Date.now(); wantChat = false; swapping = false;
+    endedAt = Date.now(); wantChat = false; wantOpen = false; swapping = false;
     [].forEach.call(document.querySelectorAll('iframe[title="Chat widget"]'), function (f) { f.style.setProperty('visibility', 'hidden', 'important'); });
     closed();
     if (!panel) build();
@@ -599,7 +599,7 @@
   /* The team chat's close on a phone, where the pill is hidden under a chat that fills the screen. The chat carries on
      at Tawk; only the window goes, at once, and Tawk is told after the next paint. */
   function closeLive() {
-    wantChat = false; swapping = false;
+    wantChat = false; wantOpen = false; swapping = false;
     [].forEach.call(document.querySelectorAll('iframe[title="Chat widget"]'), function (f) { f.style.setProperty('visibility', 'hidden', 'important'); });
     closed(); btn.focus({ preventScroll: true });
     var told = false, tell = function () { if (told) return; told = true; try { if (T && T.minimize) T.minimize(); } catch (e) {} };
@@ -835,7 +835,9 @@
       else if (T.isChatMaximized && T.isChatMaximized()) sync(); else if (T.hideWidget) T.hideWidget();
       setTimeout(sync, 800); setTimeout(sync, 2500);
     };
-    T.onChatMaximized = function () { if (AI && !wantOpen) { if (T.minimize) T.minimize(); return; } opened(); };
+    /* Tawk draws its window again as a chat ends, reporting it maximised, which used to put the pill back to Close and
+       mark the chat live for the next page. Only a chat the visitor asked for counts as open. */
+    T.onChatMaximized = function () { if ((AI && !wantOpen) || Date.now() - endedAt < 5000) { if (T.minimize) T.minimize(); if (T.hideWidget) T.hideWidget(); return; } opened(); };
     /* Tawk minimises itself as a chat ends, so a chat ended by the visitor is told from one that timed out by how recently the window closed. */
     T.onChatEnded = function () { if (panelOpen() || Date.now() - endedAt < 5000) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; if (T.minimize) T.minimize(); if (AI) { if (!panel) build(); panel.__ended(); } else showPanel(); } };
     T.onChatMinimized = function () { closed(); if (T.hideWidget) T.hideWidget(); };
