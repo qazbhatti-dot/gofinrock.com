@@ -1702,3 +1702,5 @@ html.chat-panel.chat-anim .fr-cp{animation:frcp .18s ease both}
 @media print{.fr-cp{display:none!important}}
 @media(max-width:759px){.fr-chat{right:14px;bottom:14px;height:48px;padding:0 16px 0 5px;font-size:15px}.fr-chat-mark{width:38px;height:38px}}
 @media print{.fr-chat{display:none}}
+/* Tawk's "Powered by" tag belongs to its own window, so it shows only while that window is the one on screen. */
+html.chat-panel iframe[title="Visit tawk.to"],html:not(.chat-open) iframe[title="Visit tawk.to"]{display:none!important}
