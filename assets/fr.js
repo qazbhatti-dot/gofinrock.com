@@ -421,6 +421,8 @@
     T.onChatEnded = function () { if (panelOpen()) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; showPanel(); if (T.minimize) T.minimize(); } };
     T.onChatMinimized = function () { closed(); if (T.hideWidget) T.hideWidget(); };
     T.onChatMessageAgent = function () { if (!root.classList.contains('chat-open')) btn.classList.add('new'); };
+    /* The look goes on the moment Tawk's frame exists, before it has drawn anything. */
+    var early = setInterval(function () { [].forEach.call(document.querySelectorAll('iframe[title="Chat widget"]'), skin); }, 40); setTimeout(function () { clearInterval(early); }, 20000);
     var s = document.createElement('script'); s.async = true; s.src = 'https://embed.tawk.to/' + PROPERTY + '/' + WIDGET;
     s.charset = 'UTF-8'; s.setAttribute('crossorigin', '*'); document.head.appendChild(s);
   }
