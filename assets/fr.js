@@ -329,7 +329,13 @@
     }
     panel.__support = function (from) { support(from); };
     var box = panel.querySelector('.fr-cp-box'), ta = box && box.querySelector('textarea'), go = box && box.querySelector('.fr-cp-go'), busy = false;
-    panel.__chat = function (focus) { view('chat'); if (focus && ta) ta.focus(); };
+    /* An empty conversation opens with a greeting, typed in as the panel opens; it is the panel's, so it is never sent to the model. */
+    function greet() {
+      if (!AI || log.querySelector('.fr-cp-m')) return;
+      var m = say('bot', null);
+      setTimeout(function () { reveal(m.lastChild, txt('Hi there! 👋 I’m the Finrock assistant. Ask me anything about Finrock: plans and prices, banking, tax, invoices or your account.'), log); }, 450);
+    }
+    panel.__chat = function (focus) { view('chat'); greet(); if (focus && ta) ta.focus(); };
     panel.__ended = function () { view('chat'); var m = say('bot', null); setTimeout(function () { reveal(m.lastChild, AI ? 'Your chat with the team has ended. I’m still here if there’s anything else.' : 'Your chat has ended.', log); }, 300); };
     msgs.forEach(function (m) { say(m.role === 'user' ? 'user' : 'bot', m.content); });
     function grow() { box.classList.toggle('has', !!ta.value.trim()); ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; }
