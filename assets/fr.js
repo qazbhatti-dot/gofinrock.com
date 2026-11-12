@@ -343,7 +343,7 @@
     panel = document.createElement('div'); panel.className = 'fr-cp'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-label', 'Finrock help'); panel.tabIndex = -1;
     panel.innerHTML = '<div class="fr-cp-home" data-v="home"><div class="fr-cp-hero"><span class="fr-cp-mark"><img src="' + icon + '" alt="" width="22" height="20"></span><h2>Hi there 👋</h2>' +
       '<p class="fr-cp-in">Ask anything about Finrock: plans and prices, banking, tax, invoices or your account.</p></div>' +
-      '<button type="button" class="fr-cp-askcard" data-chat><span><b>Ask Finrock</b><small>Instant answers, any time of day</small></span><i>' + CH + '</i></button>' +
+      '<button type="button" class="fr-cp-askcard" data-chat><span><b>' + (AI ? 'Ask Finrock' : 'Chat with the team') + '</b><small>' + (AI ? 'Instant answers, any time of day' : 'A person from Finrock replies here') + '</small></span><i>' + CH + '</i></button>' +
       '<div class="fr-cp-card fr-cp-list"><h3>Popular questions</h3>' + QA.map(function (x, i) { return '<button type="button" class="fr-cp-q" data-q="' + i + '"><span>' + txt(x[0]) + '</span>' + CH + '</button>'; }).join('') + '</div>' +
       '<div class="fr-cp-card"><h3>Need a person?</h3><p>Send your question to the Finrock support team and we’ll reply by email.</p><button type="button" class="fr-cp-link" data-sup="home">Contact support ' + CH + '</button></div>' +
       '<p class="fr-cp-note">AI answers can be wrong.</p></div>' +
@@ -512,7 +512,7 @@
     if (!panel) build();
     [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== 'home'; });
     var live = AI ? msgs.length > 0 : false; try { if (!AI) live = !!(T && T.isChatOngoing && T.isChatOngoing()); } catch (e) {}
-    var go = panel.querySelector('.fr-cp-askcard b'); go.textContent = live ? 'Continue your conversation' : 'Ask Finrock';
+    var go = panel.querySelector('.fr-cp-askcard b'); go.textContent = live ? 'Continue your conversation' : AI ? 'Ask Finrock' : 'Chat with the team';
     root.classList.toggle('chat-anim', !!showPanel.anim); showPanel.anim = false;
     root.classList.add('chat-panel', 'chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close'); panel.querySelector('.fr-cp-home').scrollTop = 0; panel.focus();
   }
@@ -542,8 +542,8 @@
     '.tawk-route-back:not(:has(.tawk-toolbar-title))::after{content:"";display:block!important;flex:none;width:36px;height:36px;margin-left:6px;border-radius:50%;background:#fff url(' + ICON + ') center/22px no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
     '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title)){display:grid!important;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;column-gap:10px}' +
     '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title)) .tawk-route-back{grid-row:1/3;margin:0!important;overflow:visible!important}' +
-    '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title))::before{content:"' + (AI ? 'Finrock team' : 'Finrock Assistant') + '";grid-column:2;grid-row:1;align-self:end;font:600 15px/1.3 Inter,system-ui,sans-serif;color:#18181b;white-space:nowrap}' +
-    '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title))::after{content:"' + (AI ? 'Live chat with a person' : 'AI assistant \\00B7  Replies instantly') + '";grid-column:2;grid-row:2;align-self:start;font:400 12px/1.35 Inter,system-ui,sans-serif;color:#71717a;white-space:nowrap}' +
+    '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title))::before{content:"Finrock team";grid-column:2;grid-row:1;align-self:end;font:600 15px/1.3 Inter,system-ui,sans-serif;color:#18181b;white-space:nowrap}' +
+    '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title))::after{content:"Live chat with a person";grid-column:2;grid-row:2;align-self:start;font:400 12px/1.35 Inter,system-ui,sans-serif;color:#71717a;white-space:nowrap}' +
     '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view{position:relative}' +
     '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::before{content:"Hi! I\\2019m the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.";display:block!important;position:absolute;z-index:2;left:50px;top:78px;max-width:calc(100% - 96px);padding:9px 13px;background:#fff;border:1px solid #e4e4e7;border-radius:16px 16px 16px 4px;font:400 14px/1.5 Inter,system-ui,sans-serif;color:#18181b;box-shadow:0 1px 2px rgba(24,24,27,.04);animation:frm .22s ease both}' +
     '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::after{content:"";display:block!important;position:absolute;z-index:2;left:14px;top:78px;width:28px;height:28px;border-radius:50%;background:#fff url(' + ICON + ') center/60% no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
@@ -577,7 +577,7 @@
       busy = 0;
       var ci = [].filter.call(d.querySelectorAll('.tawk-footer .tawk-chatinput'), function (x) { return x.offsetWidth; })[0], nt = d.querySelector('.fr-note');
       var wr = ci && ci.querySelector('.tawk-chatinput-wrap');
-      var tx = AI && wr && wr.querySelector('textarea'); if (tx && tx.placeholder !== 'Message the Finrock team…') tx.placeholder = 'Message the Finrock team…';
+      var tx = wr && wr.querySelector('textarea'); if (tx && tx.placeholder !== 'Message the Finrock team…') tx.placeholder = 'Message the Finrock team…';
       if (wr && !wr.querySelector('.fr-send')) {
         var sb = d.createElement('button'); sb.type = 'button'; sb.className = 'fr-send'; sb.setAttribute('aria-label', 'Send');
         sb.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
@@ -607,11 +607,11 @@
         eb.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); endLive(); });
         bar.appendChild(eb);
       }
-      var hm = d.querySelectorAll('.tawk-home-view .tawk-header-text'), g = AI ? 'You’re through to the Finrock team. Send your message and we’ll reply here' : hm[1] && hm[1].textContent.replace(/\s+/g, ' ').trim();
+      var hm = d.querySelectorAll('.tawk-home-view .tawk-header-text'), g = 'You’re through to the Finrock team. Send your message and we’ll reply here';
       if (g && g !== greet) { greet = g; gs.textContent = '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::before{content:' + JSON.stringify('Hi! ' + g) + '!important}'; } var w = d.createTreeWalker(d.body, 4, null), n;
       while ((n = w.nextNode())) {
         var v = n.nodeValue && n.nodeValue.trim();
-        if (v === 'Customer Support') n.nodeValue = AI ? 'Finrock team' : 'Finrock Assistant';
+        if (v === 'Customer Support') n.nodeValue = 'Finrock team';
         else if (v === 'New messages' && n.parentElement && !n.parentElement.style.fontSize) n.parentElement.style.cssText += ';background:#f4f4f6;color:#71717a;font-size:12px;padding:0 0 0 8px';
       }
     }
