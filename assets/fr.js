@@ -277,7 +277,7 @@
     '.tawk-toolbar-agent-name{position:relative;padding-left:46px!important;min-height:36px;display:flex!important;flex-direction:column;justify-content:center;margin:0 0 0 4px!important;overflow:visible!important}' +
     '.tawk-toolbar-agent-name::before{content:"";position:absolute;left:0;top:50%;width:36px;height:36px;margin-top:-18px;border-radius:50%;background:#fff url(' + ICON + ') center/22px no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
     '.tawk-toolbar-agent-name::after{content:"AI assistant \\00B7  Replies instantly";font-weight:400;font-size:12px;color:#71717a}' +
-    'html body .tawk-overlay,html body .tawk-router-view,html body .tawk-main-panel,html body .tawk-chat-panel{background:#f4f4f6!important}' +
+    'html body .tawk-overlay,html body .tawk-router-view,html body .tawk-main-panel,html body .tawk-chat-panel.tawk-chat-panel.tawk-chat-panel.tawk-chat-panel{background:#f4f4f6!important}' +
     '.tawk-home-view .tawk-header-text,.tawk-home-view h1,.tawk-home-view h2,.tawk-home-view p{color:#18181b!important}' +
     '.tawk-agent-chat-bubble{background:#fff!important;color:#18181b!important;border:1px solid #e4e4e7!important;border-radius:16px 16px 16px 4px!important;padding:9px 13px!important}.tawk-agent-chat-bubble *{color:#18181b!important}.tawk-agent-chat-bubble a{color:#b45309!important}' +
     '.tawk-visitor-chat-bubble{background:#F6921A!important;color:#111!important;border-radius:16px 16px 4px 16px!important;padding:9px 13px!important}.tawk-visitor-chat-bubble *{color:#111!important}' +
