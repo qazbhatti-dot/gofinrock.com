@@ -906,7 +906,9 @@
        request for them, with the last thing they asked: the team is told at once and knows what it is about. */
     try {
       if (AI) {
-        var lastQ = ''; for (var i = msgs.length - 1; i >= 0; i--) if (msgs[i].role === 'user') { lastQ = String(msgs[i].content); break; }
+        /* The last real question: a greeting, thanks or one-word reply says nothing the team can start from. */
+        var SMALL = /^\s*(hi+|hiya|hello+|hey+|yo|hola|good (morning|afternoon|evening)|thanks?( you)?|thank u|ty|cheers|ok(ay)?|k|yes|yeah|yep|no|nope|cool|great|sure|test(ing)?|\?+)\s*[!.?]*\s*$/i;
+        var lastQ = ''; for (var i = msgs.length - 1; i >= 0; i--) { var c = String(msgs[i].content).trim(); if (msgs[i].role === 'user' && c.length > 3 && !SMALL.test(c)) { lastQ = c; break; } }
         sessionStorage.setItem('fr-kick', 'Hi, I’d like to speak to someone on the team.' + (lastQ ? ' My question was: “' + lastQ.slice(0, 300) + '”' : ''));
       }
     } catch (e) {}
