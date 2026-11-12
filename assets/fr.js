@@ -333,7 +333,7 @@
     '.tawk-chat-panel-inner:not(:has(.tawk-message-block))::after{content:"";position:absolute;left:14px;top:16px;width:28px;height:28px;border-radius:50%;background:#fff url(' + ICON + ') center/60% no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
     '.tawk-chat-panel-inner{position:relative}' +
     'html body .tawk-overlay,html body .tawk-router-view,html body .tawk-main-panel,html body .tawk-chat-panel.tawk-chat-panel.tawk-chat-panel.tawk-chat-panel{background:#f4f4f6!important}' +
-    '.tawk-home-view .tawk-header-text,.tawk-home-view h1,.tawk-home-view h2,.tawk-home-view p{color:#18181b!important}' +
+    '.tawk-home-view,.tawk-home-view~.tawk-bottom-navbar{visibility:hidden!important}' +
     '.tawk-agent-chat-bubble{background:#fff!important;color:#18181b!important;border:1px solid #e4e4e7!important;border-radius:16px 16px 16px 4px!important;padding:9px 13px!important}.tawk-agent-chat-bubble *{color:#18181b!important}.tawk-agent-chat-bubble a{color:#b45309!important}' +
     '.tawk-visitor-chat-bubble{background:#F6921A!important;color:#111!important;border-radius:16px 16px 4px 16px!important;padding:9px 13px!important}.tawk-visitor-chat-bubble *{color:#111!important}' +
     '.tawk-chat-name-margin{font-size:12px!important;color:#71717a!important}' +
@@ -360,7 +360,7 @@
     name();
     try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
   }
-  var fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0;
+  var fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0;
   function fit() {
     if (!root.classList.contains('chat-open') || panelOpen()) return;
     var vh = window.innerHeight, wide = window.innerWidth >= 760;
@@ -383,18 +383,18 @@
       var on = function (q) { var e = d.querySelector(q); return !!(e && e.offsetWidth); };
       var now = Date.now();
       /* A back arrow means a chat or Tawk's list of past chats is showing, not its Home. */
-      if (on('.tawk-chat-view') || on('.tawk-route-back')) { wantChat = false; homeTicks = 0; chatAt = now; return; }
+      if (on('.tawk-chat-view') || on('.tawk-route-back')) { wantChat = false; wantAt = 0; homeTicks = 0; chatAt = now; return; }
       if (!on('.tawk-home-view')) { homeTicks = 0; return; }
       if (wantChat) {
-        /* After a chat has ended Tawk's Home has no chat card. Its Messages tab is opened instead: new chat on top, past chats below. */
-        var c = d.querySelector('.tawk-home-card-chat'), nav = d.querySelector('.tawk-bottom-navbar');
+        /* After a chat has ended Tawk's Home has no chat card, so its Start New Chat is pressed; failing that, its Messages tab. */
+        var c = d.querySelector('.tawk-home-card-chat') || [].filter.call(d.querySelectorAll('button'), function (x) { return /start new chat/i.test(x.textContent); })[0], nav = d.querySelector('.tawk-bottom-navbar');
         if (!c && nav && nav.lastElementChild) c = nav.lastElementChild.querySelector('button,[role="button"]') || nav.lastElementChild;
-        if (!c) c = [].filter.call(d.querySelectorAll('button'), function (x) { return /start new chat/i.test(x.textContent); })[0];
+        if (!wantAt) wantAt = now; else if (now - wantAt > 5000) { wantChat = false; wantAt = 0; return; }
         if (c && now - clickAt > 1500) { clickAt = now; c.click(); }
         return;
       }
       /* Tawk shows Home for a moment while it changes screens, so it has to stay there before it counts as going back. */
-      if (++homeTicks >= 4 && now - chatAt > 1500) { homeTicks = 0; showPanel(); if (T && T.minimize) T.minimize(); }
+      if (++homeTicks >= 2 && now - chatAt > 600) { homeTicks = 0; showPanel(); if (T && T.minimize) T.minimize(); }
     });
   }
   function opened() { root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 150); }
@@ -409,6 +409,7 @@
     function sync() { if (T.isChatMaximized && T.isChatMaximized() && !root.classList.contains('chat-open')) { if (T.showWidget) T.showWidget(); opened(); } }
     T.onLoad = function () { btn.classList.remove('busy'); if (wantOpen) openChat(); else if (T.isChatMaximized && T.isChatMaximized()) sync(); else if (T.hideWidget) T.hideWidget(); setTimeout(sync, 800); setTimeout(sync, 2500); };
     T.onChatMaximized = opened;
+    T.onChatEnded = function () { if (root.classList.contains('chat-open') && !panelOpen()) { wantChat = false; showPanel(); if (T.minimize) T.minimize(); } };
     T.onChatMinimized = function () { closed(); if (T.hideWidget) T.hideWidget(); };
     T.onChatMessageAgent = function () { if (!root.classList.contains('chat-open')) btn.classList.add('new'); };
     var s = document.createElement('script'); s.async = true; s.src = 'https://embed.tawk.to/' + PROPERTY + '/' + WIDGET;
@@ -419,7 +420,7 @@
   window.addEventListener('fr-consent', function () { if (allowed()) load(false); });
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-chat]'); if (!b) return; e.preventDefault();
     if (b === btn) { if (panelOpen()) hidePanel(false); else if (root.classList.contains('chat-open')) { if (T && T.minimize) T.minimize(); } else showPanel(); return; }
-    hidePanel(true); wantChat = true; load(true);
+    hidePanel(true); wantChat = true; wantAt = 0; load(true);
   });
 })();
 
