@@ -493,7 +493,7 @@
     if (!panel) build();
     panel.__ended();
   }
-  var SKIN = '.tawk-toolbar{position:relative}.fr-end{position:absolute;right:12px;top:50%;transform:translateY(-50%);height:30px;padding:0 12px;border:1px solid #e4e4e7;border-radius:9px;background:#fff;color:#18181b;font:600 13px/1 Inter,system-ui,sans-serif;cursor:pointer;z-index:2}.fr-end:hover{background:#fef2f2;border-color:#fecaca;color:#b91c1c}' +
+  var SKIN = '.tawk-toolbar{position:relative}.tawk-toolbar:has(.fr-end){padding-right:100px!important}.tawk-toolbar-nav:has(.tawk-route-back)::before,.tawk-toolbar-nav:has(.tawk-route-back)::after{min-width:0;overflow:hidden;text-overflow:ellipsis}.fr-end{position:absolute;right:12px;top:50%;transform:translateY(-50%);height:30px;padding:0 12px;border:1px solid #e4e4e7;border-radius:9px;background:#fff;color:#18181b;font:600 13px/1 Inter,system-ui,sans-serif;cursor:pointer;z-index:2}.fr-end:hover{background:#fef2f2;border-color:#fecaca;color:#b91c1c}' +
     '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
     '.tawk-toolbar,.tawk-toolbar *{color:#18181b!important}.tawk-toolbar button.tawk-header-text svg,.tawk-toolbar button.tawk-header-text svg *{fill:#18181b!important}.tawk-button.tawk-custom-color{color:#111!important}' +
     '.tawk-toolbar-title,.tawk-toolbar-agent-name{font-weight:600!important;font-size:15px!important;line-height:1.3!important}' +
@@ -586,7 +586,8 @@
       var room = wide ? 84 : 74, side = wide ? 18 : 14, h = Math.max(240, Math.min(640, vh - room - (wide ? 20 : 16)));
       P('height', h + 'px'); P('max-height', h + 'px'); P('min-height', '0px'); P('top', 'auto'); P('bottom', room + 'px'); P('right', side + 'px');
       if (wide) { P('left', 'auto'); P('width', '384px'); P('min-width', '0px'); P('max-width', 'calc(100vw - 36px)'); }
-      else { P('left', side + 'px'); P('width', 'auto'); P('min-width', '0px'); P('max-width', 'none'); }
+      /* A frame given width:auto falls back to the browser's narrow default, so on a phone it is told the panel's width. */
+      else { P('left', side + 'px'); P('width', (document.documentElement.clientWidth - 2 * side) + 'px'); P('min-width', '0px'); P('max-width', 'none'); }
       /* Hidden until Tawk has drawn the chat, so reopening never shows an empty window. */
       if (f.style.getPropertyValue('visibility') === 'hidden') { var dd; try { dd = f.contentDocument; } catch (e) {} var rb = dd && dd.querySelector('.tawk-route-back'); if (!dd || (rb && rb.offsetWidth) || Date.now() - clickAt2 > 2500) f.style.setProperty('visibility', 'visible', 'important'); }
       P('border-radius', '18px'); P('box-shadow', '0 16px 48px rgba(0,0,0,.24)');
