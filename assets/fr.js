@@ -274,7 +274,7 @@
         : '<button type="button" class="fr-cp-ask" data-chat><span>Ask a question about Finrock…</span><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></button>') +
       '<p class="fr-cp-note">AI answers can be wrong. <button type="button" class="fr-cp-a" data-sup="chat">Contact support</button></p></div></div>' +
       '<div class="fr-cp-ans fr-cp-sup" data-v="sup" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><div><b>Contact support</b><span>The Finrock support team replies by email</span></div></div>' +
-      '<form class="fr-cp-form" novalidate><label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label>' +
+      '<form class="fr-cp-form" novalidate>' + (AI ? '<div class="fr-cp-live" hidden><span class="fr-cp-dot"></span><div><b>The team is online</b><span>Chat with a person here, now</span></div><button type="button" class="fr-cp-golive" data-chat data-live>Chat live</button></div><p class="fr-cp-or" hidden>or send it by email</p>' : '') + '<label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label>' +
       '<label>Your question<textarea name="query" rows="5" maxlength="5000" required></textarea></label>' +
       '<button type="submit" class="fr-cp-send">Send to support</button><p class="fr-cp-status" role="status"></p></form>' +
       '<div class="fr-cp-done" hidden><svg class="fr-cp-tick" viewBox="0 0 52 52" width="64" height="64" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none"/><path fill="none" d="M15 27l7.5 7.5L37.5 19"/></svg><h3>Message sent</h3><p>Your question has been sent to the Finrock support team. We’ll reply by email.</p><button type="button" class="fr-cp-send" data-to="home">Back to chat</button></div></div>';
@@ -314,6 +314,12 @@
       sup.querySelector('.fr-cp-back').setAttribute('data-to', from); sup.querySelector('.fr-cp-back').hidden = false; form.hidden = false; done.hidden = true; status.textContent = ''; form.querySelector('.fr-cp-send').disabled = false;
       if (!form.elements.query.value && lastQ) form.elements.query.value = lastQ;
       view('sup'); form.elements.email.focus();
+      /* With our own assistant answering, Tawk is kept for people: it is fetched when somebody asks for one, and live
+         chat is offered only while a member of the team is online. Otherwise the email form is the way to a person. */
+      if (AI) { load(false); var tries = 0, live = sup.querySelector('.fr-cp-live'), or = sup.querySelector('.fr-cp-or'), poll = setInterval(function () {
+        var on = false; try { on = !!(T && T.getStatus && T.getStatus() === 'online'); } catch (e) {}
+        live.hidden = or.hidden = !on; if (on || ++tries > 40) clearInterval(poll);
+      }, 250); }
     }
     panel.addEventListener('click', function (e) {
       var t = e.target.closest && e.target.closest('.fr-cp-q,[data-sup],[data-to]'); if (!t) return;
@@ -481,8 +487,8 @@
   }
   /* A chat left open carries on to the next page of the visit: the visitor asked for it once already. */
   function keep(on) { try { if (on) sessionStorage.setItem('fr-chat-on', '1'); else sessionStorage.removeItem('fr-chat-on'); } catch (e) {} }
-  function opened() { keep(true); root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 50); }
-  function closed() { keep(false); closedAt = Date.now(); if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
+  function opened() { keep(true); if (AI) try { sessionStorage.setItem('fr-live', '1'); } catch (e) {} root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 50); }
+  function closed() { keep(false); try { sessionStorage.removeItem('fr-live'); } catch (e) {} closedAt = Date.now(); if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
   function load(open) {
     if (open) wantOpen = true;
     if (loaded) { if (open) openChat(); return; }
@@ -505,12 +511,14 @@
   function allowed() { try { var c = JSON.parse(localStorage.getItem('fr-consent') || 'null'); return !!(c && (c.analytics || c.ads || c.all)); } catch (e) { return false; } }
   var again = false; try { again = sessionStorage.getItem('fr-chat-on') === '1'; } catch (e) {}
   /* Our own assistant needs nothing loaded: a conversation open on the last page is shown again as it was. */
-  if (AI) { if (again) { var reopen = function () { showPanel(); panel.__chat(false); }; if (document.body) reopen(); else document.addEventListener('DOMContentLoaded', reopen); } }
+  var liveOn = false; try { liveOn = sessionStorage.getItem('fr-live') === '1'; } catch (e) {}
+  if (AI && liveOn) { wantChat = true; load(true); }
+  else if (AI) { if (again) { var reopen = function () { showPanel(); panel.__chat(false); }; if (document.body) reopen(); else document.addEventListener('DOMContentLoaded', reopen); } }
   else if (again) { wantChat = true; load(true); } else if (allowed()) load(false);
   window.addEventListener('fr-consent', function () { if (!AI && allowed()) load(false); });
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-chat]'); if (!b) return; e.preventDefault();
     if (b === btn) { if (panelOpen()) hidePanel(false); else if (root.classList.contains('chat-open')) { if (T && T.minimize) T.minimize(); } else { showPanel.anim = true; showPanel(); } return; }
-    if (AI) { if (!panelOpen()) showPanel(); panel.__chat(true); return; }
+    if (AI && !b.hasAttribute('data-live')) { if (!panelOpen()) showPanel(); panel.__chat(true); return; }
     /* The panel stays on top until Tawk has drawn the chat underneath it, then the two swap in one frame. */
     swapping = true; setTimeout(function () { if (swapping) { swapping = false; hidePanel(true); } }, 4000);
     wantChat = true; wantAt = 0; load(true);
