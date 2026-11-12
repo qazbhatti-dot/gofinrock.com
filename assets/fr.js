@@ -325,7 +325,7 @@
   var SKIN = '.tawk-toolbar{background:#fff!important;background-image:none!important;box-shadow:none!important;border-bottom:1px solid #e4e4e7!important;padding:10px 14px!important}' +
     '.tawk-toolbar,.tawk-toolbar *{color:#18181b!important}.tawk-toolbar svg,.tawk-toolbar svg *{fill:#18181b!important}' +
     '.tawk-toolbar-title,.tawk-toolbar-agent-name{font-weight:600!important;font-size:15px!important;line-height:1.3!important}' +
-    '.tawk-toolbar-agent-avatars,.tawk-toolbar button[aria-label="Minimize"]{display:none!important}' +
+    '.tawk-toolbar-agent-avatars,.tawk-toolbar-agent-name,.tawk-toolbar button[aria-label="Minimize"]{display:none!important}' +
     '.tawk-toolbar-title{font-weight:600!important;font-size:15px!important;line-height:1.3!important}' +
     '.tawk-route-back:not(:has(.tawk-toolbar-title))::after{content:"";display:block!important;flex:none;width:36px;height:36px;margin-left:6px;border-radius:50%;background:#fff url(' + ICON + ') center/22px no-repeat;box-shadow:0 0 0 1px #e4e4e7}' +
     '.tawk-toolbar-nav:has(.tawk-route-back):not(:has(.tawk-toolbar-title)){display:grid!important;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;column-gap:10px}' +
@@ -351,9 +351,12 @@
     if (!d || !d.head || !d.body || d.getElementById('fr-skin')) return;
     var ln = d.createElement('link'); ln.rel = 'stylesheet'; ln.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'; d.head.appendChild(ln);
     var st = d.createElement('style'); st.id = 'fr-skin'; st.textContent = SKIN; d.head.appendChild(st);
-    var busy = 0;
+    /* The greeting in an empty chat is the home message set in Tawk, read from Tawk's own Home screen. */
+    var busy = 0, greet = '', gs = d.createElement('style'); d.head.appendChild(gs);
     function name() {
-      busy = 0; var w = d.createTreeWalker(d.body, 4, null), n;
+      busy = 0;
+      var hm = d.querySelectorAll('.tawk-home-view .tawk-header-text'), g = hm[1] && hm[1].textContent.replace(/\s+/g, ' ').trim();
+      if (g && g !== greet) { greet = g; gs.textContent = '.tawk-max-container:has(.tawk-route-back):not(:has(.tawk-toolbar-title)):not(:has(.tawk-message-block)) .tawk-max-content>.tawk-router-view::before{content:' + JSON.stringify('Hi! ' + g) + '!important}'; } var w = d.createTreeWalker(d.body, 4, null), n;
       while ((n = w.nextNode())) {
         var v = n.nodeValue && n.nodeValue.trim();
         if (v === 'Customer Support') n.nodeValue = 'Finrock Assistant';
