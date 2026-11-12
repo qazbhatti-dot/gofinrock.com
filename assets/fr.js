@@ -248,6 +248,47 @@
     AI = localStorage.getItem('fr-ai') || AI;
     if (AI) msgs = JSON.parse(sessionStorage.getItem('fr-ai-log') || '[]');
   } catch (e) {}
+  /* A soft chime as an answer lands and a quiet tick as a question goes, drawn in the browser so nothing is fetched.
+     Browsers allow sound only after a tap or a key, so the player is made on the first question. */
+  var snd = null;
+  function tone(notes, vol) {
+    try {
+      if (!snd) { var A = window.AudioContext || window.webkitAudioContext; if (!A) return; snd = new A(); }
+      if (snd.state === 'suspended') snd.resume();
+      var t = snd.currentTime;
+      notes.forEach(function (n) {
+        var o = snd.createOscillator(), g = snd.createGain(); o.type = 'sine'; o.frequency.value = n[0];
+        g.gain.setValueAtTime(0, t + n[1]); g.gain.linearRampToValueAtTime(vol, t + n[1] + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + n[2]);
+        o.connect(g); g.connect(snd.destination); o.start(t + n[1]); o.stop(t + n[1] + n[2] + 0.05);
+      });
+    } catch (e) {}
+  }
+  function pop(from, to, len, vol) {
+    try {
+      if (!snd) { var A = window.AudioContext || window.webkitAudioContext; if (!A) return; snd = new A(); }
+      if (snd.state === 'suspended') snd.resume();
+      var t = snd.currentTime, o = snd.createOscillator(), g = snd.createGain(); o.type = 'sine';
+      o.frequency.setValueAtTime(from, t); o.frequency.exponentialRampToValueAtTime(to, t + len * 0.6);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+      o.connect(g); g.connect(snd.destination); o.start(t); o.stop(t + len + 0.03);
+    } catch (e) {}
+  }
+  function tick() { pop(520, 760, 0.07, 0.05); }
+  function chime() { pop(380, 1040, 0.16, 0.16); setTimeout(function () { pop(620, 1480, 0.14, 0.09); }, 70); }
+  /* An answer writes itself in over about a second, word by word, as if typed; links and bold are in place from the start. */
+  function reveal(el, html, log) {
+    el.innerHTML = html;
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var nodes = [], w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n, total = 0;
+    while ((n = w.nextNode())) { nodes.push([n, n.nodeValue]); total += n.nodeValue.length; n.nodeValue = ''; }
+    var shown = 0, step = Math.max(3, Math.ceil(total / 55));
+    (function frame() {
+      shown += step; var left = shown;
+      nodes.forEach(function (x) { var k = Math.max(0, Math.min(x[1].length, left)); x[0].nodeValue = x[1].slice(0, k); left -= x[1].length; });
+      if (log) log.scrollTop = log.scrollHeight;
+      if (shown < total) requestAnimationFrame(frame);
+    })();
+  }
   function save() { try { sessionStorage.setItem('fr-ai-log', JSON.stringify(msgs.slice(-20))); } catch (e) {} }
   /* An answer is the server's plain text: links, bold and list lines are drawn, everything else is escaped. An app page
      is named by its path, so a path becomes a link into the app. */
@@ -266,15 +307,15 @@
       '<p class="fr-cp-in">I’m the Finrock AI assistant. Ask me anything about using Finrock: banking, tax, invoices, bills or your account.</p>' +
       '<div class="fr-cp-card"><h3>Ask Finrock</h3><p>Instant answers from the Finrock help centre</p><button type="button" class="fr-cp-link" data-chat>Start conversation ' + CH + '</button></div>' +
       '<div class="fr-cp-card fr-cp-list"><h3>Popular questions</h3>' + QA.map(function (x, i) { return '<button type="button" class="fr-cp-q" data-q="' + i + '"><span>' + txt(x[0]) + '</span>' + CH + '</button>'; }).join('') + '</div>' +
-      '<div class="fr-cp-card"><h3>Need a person?</h3><p>Send your question to the Finrock support team and we’ll reply by email.</p><button type="button" class="fr-cp-link" data-sup="home">Contact support ' + CH + '</button></div>' +
+      '<div class="fr-cp-card"><h3>Need a person?</h3><p>' + (AI ? 'Chat with the Finrock team or send us your question by email.' : 'Send your question to the Finrock support team and we’ll reply by email.') + '</p><button type="button" class="fr-cp-link" data-sup="home">' + (AI ? 'Talk to a person' : 'Contact support') + ' ' + CH + '</button></div>' +
       '<p class="fr-cp-note">AI answers can be wrong.</p></div>' +
       '<div class="fr-cp-ans" data-v="chat" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" data-to="home" aria-label="Back">' + BK + '</button>' + AV + '<div><b>Finrock Assistant</b><span>AI assistant · Replies instantly</span></div></div>' +
       '<div class="fr-cp-log" aria-live="polite"></div>' +
       '<div class="fr-cp-foot">' + (AI ? '<form class="fr-cp-box"><textarea rows="1" maxlength="1500" placeholder="Ask a question about Finrock…" aria-label="Your question"></textarea><button type="submit" class="fr-cp-go" aria-label="Send"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></form>'
         : '<button type="button" class="fr-cp-ask" data-chat><span>Ask a question about Finrock…</span><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></button>') +
-      '<p class="fr-cp-note">AI answers can be wrong. <button type="button" class="fr-cp-a" data-sup="chat">Contact support</button></p></div></div>' +
-      '<div class="fr-cp-ans fr-cp-sup" data-v="sup" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><div><b>Contact support</b><span>The Finrock support team replies by email</span></div></div>' +
-      '<form class="fr-cp-form" novalidate>' + (AI ? '<div class="fr-cp-live" hidden><span class="fr-cp-dot"></span><div><b>The team is online</b><span>Chat with a person here, now</span></div><button type="button" class="fr-cp-golive" data-chat data-live>Chat live</button></div><p class="fr-cp-or" hidden>or send it by email</p>' : '') + '<label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label>' +
+      '<p class="fr-cp-note">AI answers can be wrong. <button type="button" class="fr-cp-a" data-sup="chat">' + (AI ? 'Talk to a person' : 'Contact support') + '</button></p></div></div>' +
+      '<div class="fr-cp-ans fr-cp-sup" data-v="sup" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><div><b>' + (AI ? 'Talk to a person' : 'Contact support') + '</b><span>The Finrock support team replies by email</span></div></div>' +
+      '<form class="fr-cp-form" novalidate>' + (AI ? '<div class="fr-cp-live" hidden><span class="fr-cp-dot"></span><div><b>Live chat</b><span>Message the Finrock team here</span></div><button type="button" class="fr-cp-golive" data-chat data-live>Start chat</button></div><p class="fr-cp-or" hidden>or send it by email</p>' : '') + '<label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label>' +
       '<label>Your question<textarea name="query" rows="5" maxlength="5000" required></textarea></label>' +
       '<button type="submit" class="fr-cp-send">Send to support</button><p class="fr-cp-status" role="status"></p></form>' +
       '<div class="fr-cp-done" hidden><svg class="fr-cp-tick" viewBox="0 0 52 52" width="64" height="64" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none"/><path fill="none" d="M15 27l7.5 7.5L37.5 19"/></svg><h3>Message sent</h3><p>Your question has been sent to the Finrock support team. We’ll reply by email.</p><button type="button" class="fr-cp-send" data-to="home">Back to chat</button></div></div>';
@@ -283,22 +324,28 @@
     function view(v) { [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== v; }); if (v === 'home') panel.firstChild.scrollTop = 0; if (AI) keep(v === 'chat'); if (v === 'chat') log.scrollTop = log.scrollHeight; }
     function say(who, text) {
       var m = document.createElement('div'); m.className = 'fr-cp-m ' + who;
-      m.innerHTML = (who === 'bot' ? AV : '') + '<div>' + (text === null ? '<span class="fr-cp-dots"><i></i><i></i><i></i></span>' : who === 'bot' && AI ? fmt(text) : txt(text)) + '</div>';
+      m.innerHTML = (who === 'bot' ? AV : '') + '<div>' + (text === null ? '<span class="fr-cp-dots"><i></i><i></i><i></i></span>' + (AI && who === 'bot' ? '<span class="fr-cp-think">Thinking…</span>' : '') : who === 'bot' && AI ? fmt(text) : txt(text)) + '</div>';
       log.appendChild(m); log.scrollTop = log.scrollHeight; return m;
     }
     panel.__support = function (from) { support(from); };
     var box = panel.querySelector('.fr-cp-box'), ta = box && box.querySelector('textarea'), go = box && box.querySelector('.fr-cp-go'), busy = false;
     panel.__chat = function (focus) { view('chat'); if (focus && ta) ta.focus(); };
     msgs.forEach(function (m) { say(m.role === 'user' ? 'user' : 'bot', m.content); });
-    function grow() { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; }
+    function grow() { box.classList.toggle('has', !!ta.value.trim()); ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; }
+    var HUMAN = /\b(human|real person|actual person|someone real|live (chat|agent|person|support)|(speak|talk|chat) (to|with) (someone|somebody|a person|a human|an agent|support|the team|your team|staff|a real)|customer (service|support)|(to|with) an agent|operator)\b/i;
     function ask(q) {
-      q = q.trim().slice(0, 1500); if (!q || busy) return; busy = true; go.disabled = true; lastQ = q; ta.value = ''; grow();
-      msgs.push({ role: 'user', content: q }); save(); say('user', q); var w = say('bot', null);
+      q = q.trim().slice(0, 1500); if (!q || busy) return;
+      if (HUMAN.test(q) && q.length < 160) {
+        ta.value = ''; grow(); lastQ = ''; say('user', q); tick(); var h = say('bot', null);
+        setTimeout(function () { h.lastChild.textContent = 'Of course. Taking you to the team now.'; chime(); setTimeout(function () { support('chat'); }, 900); }, 400);
+        return;
+      } busy = true; go.disabled = true; lastQ = q; ta.value = ''; grow();
+      msgs.push({ role: 'user', content: q }); save(); say('user', q); tick(); var w = say('bot', null);
       var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function () { if (ctl) ctl.abort(); }, 30000);
       /* Sent as plain text so the browser asks no permission first: the answer arrives in one round trip. */
       fetch(AI, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ messages: msgs.slice(-10) }), signal: ctl ? ctl.signal : undefined })
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j.status = r.status; return j; }); })
-        .then(function (j) { if (!j.answer) throw j; msgs.push({ role: 'assistant', content: j.answer }); save(); w.lastChild.innerHTML = fmt(j.answer); })
+        .then(function (j) { if (!j.answer) throw j; msgs.push({ role: 'assistant', content: j.answer }); save(); reveal(w.lastChild, fmt(j.answer), log); chime(); })
         .catch(function (j) {
           msgs.pop(); save();
           w.lastChild.innerHTML = (j && j.status === 429 ? 'That’s a lot of questions in a short time. Please wait a little and try again, or ' : 'Sorry, I couldn’t answer just now. Please try again, or ') + '<button type="button" class="fr-cp-a" data-sup="chat">contact support</button>.';
@@ -326,7 +373,7 @@
       if (t.hasAttribute('data-sup')) return support(t.getAttribute('data-sup'));
       if (t.hasAttribute('data-to')) return view(t.getAttribute('data-to'));
       var x = QA[+t.getAttribute('data-q')]; lastQ = x[0]; view('chat'); say('user', x[0]); var w = say('bot', null);
-      if (AI) { msgs.push({ role: 'user', content: x[0] }, { role: 'assistant', content: x[1] }); save(); setTimeout(function () { w.lastChild.innerHTML = fmt(x[1]); log.scrollTop = log.scrollHeight; if (ta) ta.focus(); }, 450); return; }
+      if (AI) { msgs.push({ role: 'user', content: x[0] }, { role: 'assistant', content: x[1] }); save(); tick(); setTimeout(function () { reveal(w.lastChild, fmt(x[1]), log); chime(); log.scrollTop = log.scrollHeight; if (ta) ta.focus(); }, 450); return; }
       setTimeout(function () {
         w.lastChild.textContent = x[1]; var more = document.createElement('button'); more.type = 'button'; more.className = 'fr-cp-a fr-cp-more'; more.setAttribute('data-sup', 'chat'); more.textContent = 'Didn’t answer my question?';
         log.appendChild(more); log.scrollTop = log.scrollHeight;
@@ -497,8 +544,14 @@
     T.onBeforeLoad = function () { if (!wantOpen && T.hideWidget) T.hideWidget(); };
     /* Tawk reopens a chat that was open on the last page without calling onChatMaximized, so the state is read, twice more after load. */
     function sync() { if (T.isChatMaximized && T.isChatMaximized() && !root.classList.contains('chat-open')) { if (T.showWidget) T.showWidget(); opened(); } }
-    T.onLoad = function () { btn.classList.remove('busy'); if (wantOpen) openChat(); else if (T.isChatMaximized && T.isChatMaximized()) sync(); else if (T.hideWidget) T.hideWidget(); setTimeout(sync, 800); setTimeout(sync, 2500); };
-    T.onChatMaximized = opened;
+    T.onLoad = function () {
+      btn.classList.remove('busy');
+      if (wantOpen) openChat();
+      else if (AI) { if (T.isChatMaximized && T.isChatMaximized() && T.minimize) T.minimize(); if (T.hideWidget) T.hideWidget(); return; }
+      else if (T.isChatMaximized && T.isChatMaximized()) sync(); else if (T.hideWidget) T.hideWidget();
+      setTimeout(sync, 800); setTimeout(sync, 2500);
+    };
+    T.onChatMaximized = function () { if (AI && !wantOpen) { if (T.minimize) T.minimize(); return; } opened(); };
     /* Tawk minimises itself as a chat ends, so a chat ended by the visitor is told from one that timed out by how recently the window closed. */
     T.onChatEnded = function () { if (panelOpen()) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; showPanel(); if (T.minimize) T.minimize(); } };
     T.onChatMinimized = function () { closed(); if (T.hideWidget) T.hideWidget(); };
