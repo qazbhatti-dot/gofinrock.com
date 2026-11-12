@@ -242,27 +242,45 @@
   var CONTACT = 'https://app.gofinrock.com/api/public/contact';
   /* Cloudflare Turnstile: the check that a person is there, usually invisible. The site key is public; the server holds
      the secret and decides whether to ask for the check at all. The script is fetched only when a form or the chat needs it. */
-  var TS_KEY = '0x4AAAAAAF92mSnXNrDBme8C', tsWait = [];
-  function tsReady(cb) {
+  var TS_KEY = '0x4AAAAAAF92mSnXNrDBme8C', tsWait = [], tsFail = [];
+  /* fail is called instead of cb when Cloudflare's script cannot be fetched (a blocker, a network that refuses it), so
+     a question waiting on the check is sent at once rather than after the longest wait. */
+  function tsReady(cb, fail) {
     if (window.turnstile && window.turnstile.render) return cb();
-    tsWait.push(cb);
+    if (tsReady.broken) return fail && fail();
+    tsWait.push(cb); if (fail) tsFail.push(fail);
     if (tsReady.asked) return; tsReady.asked = true;
-    window.frTsReady = function () { var w = tsWait; tsWait = []; w.forEach(function (f) { try { f(); } catch (e) {} }); };
-    var sc = document.createElement('script'); sc.async = true; sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=frTsReady'; document.head.appendChild(sc);
+    window.frTsReady = function () { tsFail = []; var w = tsWait; tsWait = []; w.forEach(function (f) { try { f(); } catch (e) {} }); };
+    var sc = document.createElement('script'); sc.async = true; sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=frTsReady';
+    sc.onerror = function () { tsReady.broken = true; tsWait = []; var f = tsFail; tsFail = []; f.forEach(function (g) { try { g(); } catch (e) {} }); };
+    document.head.appendChild(sc);
   }
-  /* A widget drawn in el; token() is its latest passed check, or '' while it has none. */
+  /* A widget drawn in el; token() is its latest passed check, or '' while it has none. A check that errors is run once
+     more by this page before it counts as failed: Cloudflare's first run in a panel that has only just opened can fail
+     for a visitor who is plainly a person. Its own retry is off, so a failure is known the moment it happens. */
   function tsWidget(el) {
-    var id = null, tok = '';
-    tsReady(function () { try { id = window.turnstile.render(el, { sitekey: TS_KEY, appearance: 'interaction-only', theme: 'light',
-      callback: function (t) { tok = t; }, 'expired-callback': function () { tok = ''; }, 'error-callback': function () { tok = ''; } }); } catch (e) {} });
+    var id = null, tok = '', failed = false, retried = false, waiting = [];
+    function settle() { var w = waiting; waiting = []; w.forEach(function (f) { f(tok); }); }
+    function fail() { failed = true; settle(); }
+    function rerun() { tok = ''; failed = false; try { if (id !== null) window.turnstile.reset(id); } catch (e) {} }
+    tsReady(function () { try { id = window.turnstile.render(el, { sitekey: TS_KEY, appearance: 'interaction-only', theme: 'light', retry: 'never',
+      callback: function (t) { tok = t; failed = false; settle(); },
+      'expired-callback': function () { tok = ''; },
+      'error-callback': function () { tok = ''; if (!retried) { retried = true; setTimeout(rerun, 500); } else fail(); return true; } }); } catch (e) { fail(); } }, fail);
     /* A page the browser kept while the visitor was elsewhere (Back, on Safari above all) comes back with the check's
        frame frozen mid-run, and it then shows "Verification failed" for a check nobody failed. It is run again afresh. */
-    window.addEventListener('pageshow', function (e) { if (e.persisted && id !== null) { tok = ''; try { window.turnstile.reset(id); } catch (x) {} } });
+    window.addEventListener('pageshow', function (e) { if (e.persisted && id !== null) { retried = false; rerun(); } });
     return {
       token: function () { return tok; },
-      reset: function () { tok = ''; try { if (id !== null) window.turnstile.reset(id); } catch (e) {} },
-      /* The token, waiting up to a few seconds for the check to finish; '' if it never does, and the server decides. */
-      wait: function (done) { var n = 0; (function tick() { if (tok || ++n > 40) return done(tok); setTimeout(tick, 150); })(); }
+      reset: function () { retried = false; rerun(); },
+      /* The token as soon as the check passes, or '' as soon as it has failed for good, and the server decides. A check
+         that is still running is waited for: a question sent without its token is refused even from a person, which is
+         what a short fixed wait did to a check that took a little longer than it. */
+      wait: function (done) {
+        if (tok || failed) return done(tok);
+        var called = false, once = function (t) { if (!called) { called = true; done(t); } };
+        waiting.push(once); setTimeout(function () { once(tok); }, 20000);
+      }
     };
   }
   /* Our own assistant answers in the panel, from the live app, and Tawk is loaded only to hand a visitor to the team.
@@ -448,7 +466,7 @@
         askTransfer('Sure. I can also try to answer straight away if you tell me what it’s about.');
         return;
       } busy = true; go.disabled = true; lastQ = q; ta.value = ''; grow();
-      msgs.push({ role: 'user', content: q }); save(); say('user', q); tick(); var w = say('bot', null);
+      msgs.push({ role: 'user', content: q }); save(); var ub = say('user', q); tick(); var w = say('bot', null);
       /* A conversation carries the pass the server gave its first checked question; without one, this question carries
          the page's Turnstile check, waited for a moment if it is still running. */
       var pass = ''; try { pass = sessionStorage.getItem('fr-ai-pass') || ''; } catch (e) {}
@@ -462,7 +480,16 @@
           if (j.pass) try { sessionStorage.setItem('fr-ai-pass', j.pass); } catch (e) {}
           /* Cloudflare could not confirm a person. A bot must not reach an agent, so live chat is not offered: the check is
              drawn again for another try, and the email form (checked itself) carries the question to the team. */
-          if (j.check) { try { sessionStorage.removeItem('fr-ai-pass'); } catch (e) {} if (chatTs) chatTs.reset(); else chatCheck(); reveal(w.lastChild, 'I couldn’t complete the quick security check, so I can’t answer here just now. Tick the box above and send your question again, or email it to the team.', log); chime(); var em = document.createElement('button'); em.type = 'button'; em.className = 'fr-cp-a fr-cp-more'; em.setAttribute('data-sup', 'chat'); em.textContent = 'Email the team'; log.appendChild(em); log.scrollTop = log.scrollHeight; return; }
+          /* The refused question leaves the conversation, so it is never sent again as an earlier turn with no answer;
+             Try again asks it afresh once the check has run again. */
+          if (j.check) {
+            msgs.pop(); save(); try { sessionStorage.removeItem('fr-ai-pass'); } catch (e) {} if (chatTs) chatTs.reset(); else chatCheck();
+            reveal(w.lastChild, 'Cloudflare’s security check couldn’t confirm this browser, so I can’t answer here just now. If a box appears below, tick it, then try again. Or email your question to the team.', log); chime();
+            var acts = document.createElement('div'); acts.className = 'fr-cp-more fr-cp-acts';
+            acts.innerHTML = '<button type="button" class="fr-cp-a fr-cp-again">Try again</button><button type="button" class="fr-cp-a" data-sup="chat">Email the team</button>';
+            acts.querySelector('.fr-cp-again').addEventListener('click', function () { if (busy) return; if (chatTs && !chatTs.token()) chatTs.reset(); ub.remove(); w.remove(); acts.remove(); ask(q); });
+            log.appendChild(acts); log.scrollTop = log.scrollHeight; return;
+          }
           if (!j.answer && !j.handoff) throw j; if (j.answer) { msgs.push({ role: 'assistant', content: j.answer }); save(); } if (j.handoff) { w.remove(); askTransfer(j.answer); return; } reveal(w.lastChild, fmt(j.answer), log); chime(); })
         .catch(function (j) {
           msgs.pop(); save();
