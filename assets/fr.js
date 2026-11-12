@@ -970,12 +970,14 @@
        read once Tawk has settled, so its own automatic greeting as it loads is not taken for a person writing; any
        rise after that is the team, brought into our chat with a way into theirs. */
     function teamWrote() { btn.classList.add('new'); if (AI) { if (!panel) build(); panel.__agentSaid(); } }
-    T.onChatMessageAgent = function () { if (!root.classList.contains('chat-open') && tawkAt && Date.now() - tawkAt > 6000) teamWrote(); };
+    /* The team's own chat on screen, as against our panel, which wears the same open state. */
+    function teamChatShown() { return root.classList.contains('chat-open') && !panelOpen(); }
+    T.onChatMessageAgent = function () { if (!teamChatShown() && tawkAt && Date.now() - tawkAt > 6000) teamWrote(); };
     var unreadSeen = -1;
     setInterval(function () {
       if (!tawkAt) return;
       var n = tawkUnread();
-      if (root.classList.contains('chat-open')) { unreadSeen = n; return; }
+      if (teamChatShown()) { unreadSeen = n; return; }
       if (unreadSeen < 0) { if (Date.now() - tawkAt > 6000) unreadSeen = n; return; }
       if (n > unreadSeen) { unreadSeen = n; teamWrote(); }
     }, 1000);
