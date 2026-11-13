@@ -14,18 +14,21 @@ Website: https://gofinrock.com · App: https://app.gofinrock.com · Company: Fin
 - Personal finance: net worth (cash, investments, pensions, property, mortgages), spending, subscriptions with cancel-and-switch help, price-rise alerts, cash-flow calendar.
 - My Life: property, vehicles (MOT, tax, insurance), pension, insurance, pets (vet, jabs, cost), family birthdays and yearly dates, travel (passports, health card, cover), life-change checklists (moving house, a new baby, a new job, getting married, a death), identity documents, will, warranties, receipts, documents — with renewal reminders.
 - Accountant portal: free for practices; scoped read-only access to client books, quarterly-review workflow, alerts.
-- Optional accountant check: +£10/month. A qualified UK accountant reviews every return (Self Assessment, quarterly updates, VAT) and submits it to HMRC for you through their agent account.
+- Our accountant: +£10/month on your own trade and lets (or Limited company + accountant, per company). A qualified UK accountant checks every return against your books, queries anything odd, and files it for you wherever the rules let an accountant — and tells you when a return needs your own confirmation.
 
 ## Pricing (monthly, inclusive of VAT, cancel any time, no price-rise emails)
 
 Priced per person by what HMRC asks of you — never per income source. A sole trader who is also a landlord pays once.
 
 - Every plan: 7 days free, no card. After the trial an unpaid account can read its books but not add or change anything.
-- My Life — £9.99/mo: every account and bill in one view, renewals, documents vault, net worth, unlimited scans. For people who are not self-employed (salary, pension, savings, dividends).
-- Sole trader & Landlord — £14.99/mo: self-employment and/or rental income under the MTD threshold (£50,000 qualifying income 2026/27; £30,000 from April 2027; £20,000 from April 2028). Self Assessment prepared incl. property pages, invoicing, mileage. Every trade and property included. 7-day trial.
-- Sole trader & Landlord · MTD — £24.99/mo (most popular): inside MTD for Income Tax. Quarterly updates prepared for every trade and every property, Self Assessment and VAT prepared, jointly-owned lets. One plan, not one per income source. 7-day trial.
-- Limited company — £49.99/mo per company: qualified accountant reviews and signs off the year end (included, always). Includes the director's personal Sole trader & Landlord plan; +£10/mo if the director is personally inside MTD (quarterly updates), £59.99 in total. Accounts, CT600, confirmation statement, payroll, dividends, director's loan. 7-day trial.
-- Accountant check add-on: +£10/mo on either personal plan — accountant reviews and submits to HMRC for you. On the Limited company plan the included sign-off covers the company (accounts, CT600); the director’s personal return check is the same +£10 add-on.
+- One subscription built from the workspaces you keep. My Life is included free with any other plan.
+- My Life — £9.99/mo on its own: every account and bill in one view, renewals, documents vault, net worth, unlimited scans. For people who are not self-employed (salary, pension, savings, dividends).
+- Sole trader & Landlord — £14.99/mo: your own trade and lets under the MTD threshold (£50,000 qualifying income 2026/27; £30,000 from April 2027; £20,000 from April 2028). Self Assessment prepared incl. property pages, invoicing, mileage. One plan for every trade and property. 7-day trial.
+- Sole trader & Landlord · MTD — £24.99/mo: inside MTD for Income Tax (decided by income, never sold as an upgrade). Quarterly updates prepared for every trade and every property, Self Assessment and VAT prepared, jointly-owned lets. 7-day trial.
+- Limited company — £39.99/mo per company when your own accountant files: accounts, CT600, confirmation statement, payroll, dividends, director's loan prepared. Includes the director's My Life workspace and their own Self Assessment for salary and dividends; it does not include the director's own trade or lets. A company return needs an accountant or filing software (HMRC's free company filing service closed on 31 March 2026).
+- Limited company + accountant — £49.99/mo per company: as above, with our accountant checking every return against your books.
+- Together: a director who also has their own trade or lets adds Sole trader & Landlord at £5 off (£9.99, or £19.99 inside MTD). Example: company + own trade £49.98; company with our accountant + own trade £59.98. A second company is another company at the same price.
+- Our accountant on your own trade and lets: +£10/mo (£24.99 / £34.99). They check every return against your books, query anything odd, file it for you wherever the rules let an accountant, and tell you when a return needs your own confirmation.
 - Banking (Finrock current account): planned, no date.
 - Filing: returns are prepared, ready to file; direct HMRC submission switches on when recognition lands.
 
@@ -39,7 +42,7 @@ Sole traders and freelancers · side hustlers and landlords · limited company d
 - [Sole traders](https://gofinrock.com/finrock-sole-traders.html): Self Assessment, MTD quarterly updates, expenses
 - [Side hustlers & landlords](https://gofinrock.com/finrock-side-hustlers.html)
 - [MTD check](https://gofinrock.com/mtd-check/): free two-minute check of whether you are in Making Tax Digital for Income Tax and from which April (qualifying income = self-employment turnover + your share of gross rent, before expenses); no account needed
-- [Landlords](https://gofinrock.com/landlords/): every let on its own page (rent, costs, mortgage, Section 24, certificates, tenancy dates), nation-specific rules, SA105 and quarterly updates prepared; £14.99/mo every property included
+- [Landlords](https://gofinrock.com/landlords/): every let on its own page (rent, costs, mortgage, Section 24, certificates, tenancy dates), nation-specific rules, SA105 and quarterly updates prepared; £14.99/mo every property included, My Life free
 - [Business (sole trader & Ltd)](https://gofinrock.com/finrock-business.html): invoices, bills, VAT, payroll
 - [My Life — personal](https://gofinrock.com/finrock-personal.html): property, pension, vehicle, insurance, documents, renewals
 - [Accountants](https://gofinrock.com/finrock-accountants.html): the practice portal
@@ -57,7 +60,7 @@ Sole traders and freelancers · side hustlers and landlords · limited company d
 - MTD for Income Tax is live from 6 April 2026 for sole traders and landlords with qualifying income over £50,000; £30,000 from April 2027; £20,000 from April 2028.
 - Prices are quoted including VAT because most sole traders cannot reclaim it. A sole trader's Finrock subscription is an allowable business expense.
 - Bank connections are read-only; Finrock never moves money and never sees bank logins.
-- Finrock is software, not your accountant. The accountant-check add-on is a qualified UK accountant reviewing filings.
+- Finrock is software, not your accountant. Our accountant (an add-on) is a qualified UK accountant checking returns.
 - Accounts software holds business books only; budgeting apps hold personal money only. Finrock holds both in one ledger plus life admin, so its assistant can answer from the whole picture ("AI can't help with what it can't see").
 
 ## Contact

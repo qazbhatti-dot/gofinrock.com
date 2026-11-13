@@ -35,9 +35,10 @@
   if (ch) {
     var sel = {}, over = null;
     var q2 = ch.querySelector('.q2'), out = ch.querySelector('.answer p'), go = ch.querySelector('.answer a');
-    var plans = { life: ['My Life', '£9.99'], st: ['Sole trader & Landlord', '£14.99'], se: ['Sole trader & Landlord · MTD', '£24.99'], ltd: ['Limited company', '£49.99'] };
+    var P = function (id, fb) { return window.frPlanPrice ? window.frPlanPrice(id, fb) : fb; };
     function pick(k) { document.querySelectorAll('.plan').forEach(function (p) { p.classList.toggle('pick', p.dataset.plan === k); }); }
     function run() {
+      var plans = { life: ['My Life', P('individual', '£9.99')], st: ['Sole trader & Landlord', P('sole_trader', '£14.99')], se: ['Sole trader & Landlord · MTD', P('self_employed', '£24.99')] };
       var trade = sel.se || sel.prop;
       q2.classList.toggle('show', !!trade);
       var k, msg;
@@ -45,17 +46,17 @@
       if (trade && over === null) { out.innerHTML = 'One more — is your <b>self-employed and rental income together</b> over £50,000?'; pick(null); return; }
       if (sel.ltd) {
         k = 'ltd';
-        if (trade && over) msg = '<b>Limited company</b> · <span class="num">£59.99</span>/mo — the company (accountant sign-off included) plus your personal MTD quarterly updates (+£10). Want the accountant to check and submit your personal return too? +£10 more.';
-        else if (trade) msg = '<b>Limited company</b> · <span class="num">£49.99</span>/mo — includes your personal plan, so your trade and lets are covered. Accountant sign-off covers the company; add +£10 for them to check and submit your personal return.';
-        else msg = '<b>Limited company</b> · <span class="num">£49.99</span>/mo per company — accountant sign-off and your personal My Life included.';
+        if (trade && over) msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company, plus your own trade and lets as <b>Sole trader &amp; Landlord · MTD</b> at £5 off: <span class="num">' + P('company_own_and_self_employed', '£59.98') + '</span> in all when your own accountant files. Our accountant on the company is £10 more.';
+        else if (trade) msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company, plus your own trade and lets as <b>Sole trader &amp; Landlord</b> at £5 off: <span class="num">' + P('company_own_and_sole_trader', '£49.98') + '</span> in all when your own accountant files, <span class="num">' + P('company_ours_and_sole_trader', '£59.98') + '</span> with ours. Your My Life is included.';
+        else msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company when your own accountant files, <span class="num">' + P('company_ours', '£49.99') + '</span> with our accountant. Your My Life is included.';
       } else {
         if (trade) k = over ? 'se' : 'st'; else k = 'life';
         var p = plans[k];
         msg = '<b>' + p[0] + '</b> · <span class="num">' + p[1] + '</span>/mo';
-        if (trade && sel.se && sel.prop) msg += ' — your trade <i>and</i> your lets, one price.';
+        if (trade && sel.se && sel.prop) msg += ' — your trade <i>and</i> your lets, one price, My Life included.';
         else if (k === 'life') msg += ' — salary, pension, savings and dividends are all in.';
-        else if (k === 'st') msg += ' — Self Assessment incl. property pages, no quarterly updates yet.';
-        else msg += ' — every trade and every property, quarterly updates included.';
+        else if (k === 'st') msg += ' — Self Assessment incl. property pages, My Life included, no quarterly updates yet.';
+        else msg += ' — every trade and every property, quarterly updates included, My Life included.';
       }
       var them = 0, bits = [];
       if (sel.ltd) { them += 76; bits.push('company software + accountant retainer'); }
@@ -75,7 +76,7 @@
         run();
       });
     });
-    run();
+    run(); document.addEventListener('frplans', run);
   }
   
   // hero demo sequence
@@ -141,7 +142,7 @@
       if (s.life) { rows.push(['A budgeting app', 9.99]); them += 9.99; }
       if (!rows.length) { rows.push(['Nothing selected', 0]); }
       var me, plan;
-      if (s.ltd) { plan = 'Finrock Limited company' + ((s.se || s.prop) ? '' : ''); me = ((s.se || s.prop) && over) ? 59.99 : 49.99; }
+      if (s.ltd) { plan = 'Finrock Limited company' + ((s.se || s.prop) ? '' : ''); me = (s.se || s.prop) ? 49.98 : 39.99; }
       else if (s.se || s.prop) { plan = 'Finrock Sole trader & Landlord · MTD'; me = 24.99; }
       else { plan = 'Finrock My Life'; me = 9.99; }
       document.getElementById('calc-rows').innerHTML = rows.map(function (r) { return '<div class="row"><span>' + r[0] + '</span><b>' + (r[1] ? fmt(r[1]) : '—') + '</b></div>'; }).join('');
@@ -233,7 +234,7 @@
     ["How do I get started with Finrock?", "It takes about three minutes:\n\n1. Press **Start free** at the top of the page. It's 7 days free with no card.\n2. Answer a few questions about how you earn: a job, a trade, a let or a company.\n3. Connect your bank, and each transaction arrives with a suggested category for you to confirm."],
     ["How do I connect my bank?", "On a new account, Home leads with **Connect your bank**.\n\n1. Pick your bank.\n2. Approve access in your own banking app.\n3. New transactions appear in Activity within a few minutes.\n\nMost UK banks are supported. If an account can't be connected, you can import a statement instead."],
     ["Is bank access safe?", "Yes. The connection is read-only, through a regulated Open Banking provider.\n\n- Finrock can read your accounts, balances and transactions\n- It can never move, send or withdraw money\n- You approve access in your own banking app, and we never see your bank login"],
-    ["Does Finrock file my tax return?", "Finrock prepares your Self Assessment, Making Tax Digital quarterly updates and VAT return from your books, ready to file.\n\n**Filing with HMRC**\nFinrock can’t send returns to HMRC itself yet. We’re working through HMRC’s software recognition process, and the app will tell you when direct filing is switched on.\n\n**Until then, you can:**\n- File the prepared figures yourself in your HMRC online account\n- Ask your own accountant to file them\n- Add the accountant check for £10 a month: a qualified UK accountant reviews your return and files it with HMRC for you"],
+    ["Does Finrock file my tax return?", "Finrock prepares your Self Assessment, Making Tax Digital quarterly updates and VAT return from your books, ready to file.\n\n**Filing with HMRC**\nFinrock can’t send returns to HMRC itself yet. We’re working through HMRC’s software recognition process, and the app will tell you when direct filing is switched on.\n\n**Until then, you can:**\n- File the prepared figures yourself in your HMRC online account\n- Ask your own accountant to file them\n- Add our accountant for £10 a month on your own trade and lets: a qualified UK accountant checks every return against your books, queries anything odd, and files it for you wherever the rules let an accountant, and tells you when a return needs your own confirmation"],
     ["Can my accountant use it too?", "Yes. Invite your accountant from **Filing & deadlines**, under **Change who files**.\n\n- Choose **Business only** or **My whole tax return**\n- They get a portal of their own and see the same figures you do\n- They suggest changes for you to accept or decline\n- You can disconnect them at any time"]
   ];
   var TOUCH = !!(window.matchMedia && matchMedia('(hover:none) and (pointer:coarse)').matches);
