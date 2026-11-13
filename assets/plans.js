@@ -4,6 +4,7 @@
      data-plan-price="sole_trader"            the monthly price, "£14.99"
      data-plan-saving="company_own_and_sole_trader"   what the two together save, "£5"
      data-accountant-adds="sole_trader"       what our accountant adds to that plan, "£10"
+     data-together-price="sole_trader"        that plan's price beside a company, "£9.99"
    It also leaves window.frPlanPrice(id, fallback) for scripts that write prices into sentences. */
 (function () {
   var URL = 'https://app.gofinrock.com/api/public/plans?country=GB', byId = {}, done = false;
@@ -28,6 +29,10 @@
     });
     [].forEach.call(document.querySelectorAll('[data-plan-saving]'), function (el) {
       var p = byId[el.getAttribute('data-plan-saving')]; if (p && typeof p.together_saving_minor === 'number') el.textContent = money(p.together_saving_minor, p.currency);
+    });
+    [].forEach.call(document.querySelectorAll('[data-together-price]'), function (el) {
+      var c = byId['company_own_and_' + el.getAttribute('data-together-price')], co = byId.company_own;
+      if (c && co) el.textContent = money(c.price_minor - co.price_minor, c.currency);
     });
     [].forEach.call(document.querySelectorAll('[data-accountant-adds]'), function (el) {
       var p = byId[el.getAttribute('data-accountant-adds') + '#adds']; if (p) el.textContent = money(p.price_minor, p.currency);
