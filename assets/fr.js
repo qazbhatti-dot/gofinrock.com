@@ -46,8 +46,8 @@
       if (trade && over === null) { out.innerHTML = 'One more — is your <b>self-employed and rental income together</b> over £50,000?'; pick(null); return; }
       if (sel.ltd) {
         k = 'ltd';
-        if (trade && over) msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company, plus your own trade and lets as <b>Sole trader &amp; Landlord · MTD</b> at £10 off: <span class="num">' + P('company_own_and_self_employed', '£54.98') + '</span> in all when your own accountant files. Our accountant on the company is £10 more.';
-        else if (trade) msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company, plus your own trade and lets as <b>Sole trader &amp; Landlord</b> at £10 off: <span class="num">' + P('company_own_and_sole_trader', '£44.98') + '</span> in all when your own accountant files, <span class="num">' + P('company_ours_and_sole_trader', '£54.98') + '</span> with ours. Your My Life is included.';
+        if (trade && over) msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company, plus your own trade and lets as <b>Sole trader &amp; Landlord · MTD</b> at £9.99 off: <span class="num">' + P('company_own_and_self_employed', '£54.99') + '</span> in all when your own accountant files. Our accountant on the company is £10 more.';
+        else if (trade) msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company, plus your own trade and lets as <b>Sole trader &amp; Landlord</b> at £9.99 off: <span class="num">' + P('company_own_and_sole_trader', '£44.99') + '</span> in all when your own accountant files, <span class="num">' + P('company_ours_and_sole_trader', '£54.99') + '</span> with ours. Your My Life is included.';
         else msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company when your own accountant files, <span class="num">' + P('company_ours', '£49.99') + '</span> with our accountant. Your My Life is included.';
       } else {
         if (trade) k = over ? 'se' : 'st'; else k = 'life';
@@ -142,7 +142,7 @@
       if (s.life) { rows.push(['A budgeting app', 9.99]); them += 9.99; }
       if (!rows.length) { rows.push(['Nothing selected', 0]); }
       var me, plan;
-      if (s.ltd) { plan = 'Finrock Limited company' + ((s.se || s.prop) ? '' : ''); me = (s.se || s.prop) ? 49.98 : 39.99; }
+      if (s.ltd) { plan = 'Finrock Limited company' + ((s.se || s.prop) ? '' : ''); me = (s.se || s.prop) ? 44.99 : 39.99; }
       else if (s.se || s.prop) { plan = 'Finrock Sole trader & Landlord · MTD'; me = 24.99; }
       else { plan = 'Finrock My Life'; me = 9.99; }
       document.getElementById('calc-rows').innerHTML = rows.map(function (r) { return '<div class="row"><span>' + r[0] + '</span><b>' + (r[1] ? fmt(r[1]) : '—') + '</b></div>'; }).join('');
