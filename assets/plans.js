@@ -5,6 +5,9 @@
      data-plan-saving="company_own_and_sole_trader"   what the two together save, "£5"
      data-accountant-adds="sole_trader"       what our accountant adds to that plan, "£10"
      data-together-price="sole_trader"        that plan's price beside a company, "£9.99"
+     data-plan-name / data-plan-tagline       a plan's name and its one line, as the console's Plans page words them
+     data-plan-features="sole_trader"         a plan's lines, as the list's items
+     data-accountant-steps="sole_trader"      what our accountant does, step by step
    It also leaves window.frPlanPrice(id, fallback) for scripts that write prices into sentences. */
 (function () {
   var URL = 'https://app.gofinrock.com/api/public/plans?country=GB', byId = {}, done = false;
@@ -30,6 +33,28 @@
     [].forEach.call(document.querySelectorAll('[data-plan-saving]'), function (el) {
       var p = byId[el.getAttribute('data-plan-saving')]; if (p && typeof p.together_saving_minor === 'number') el.textContent = money(p.together_saving_minor, p.currency);
     });
+    [].forEach.call(document.querySelectorAll('[data-plan-name]'), function (el) {
+      var p = byId[el.getAttribute('data-plan-name')]; if (p && p.name) el.textContent = p.name;
+    });
+    [].forEach.call(document.querySelectorAll('[data-plan-tagline]'), function (el) {
+      var p = byId[el.getAttribute('data-plan-tagline')]; if (p && p.tagline) el.textContent = p.tagline;
+    });
+    function items(el, lines, icon) {
+      if (!lines || !lines.length) return;
+      el.innerHTML = '';
+      lines.forEach(function (line) {
+        var li = document.createElement('li');
+        if (icon) { var i = document.createElement('i'); i.setAttribute('data-lucide', 'check'); li.appendChild(i); }
+        var s = document.createElement('span'); s.textContent = line; li.appendChild(s); el.appendChild(li);
+      });
+    }
+    [].forEach.call(document.querySelectorAll('[data-plan-features]'), function (el) {
+      var p = byId[el.getAttribute('data-plan-features')]; if (p) items(el, p.features, true);
+    });
+    [].forEach.call(document.querySelectorAll('[data-accountant-steps]'), function (el) {
+      var p = byId[el.getAttribute('data-accountant-steps')]; if (p && p.filed_upgrade) items(el, p.filed_upgrade.steps, false);
+    });
+    if (window.lucide && window.lucide.createIcons) { try { window.lucide.createIcons(); } catch (e) {} }
     [].forEach.call(document.querySelectorAll('[data-together-price]'), function (el) {
       var c = byId['company_own_and_' + el.getAttribute('data-together-price')], co = byId.company_own;
       if (c && co) el.textContent = money(c.price_minor - co.price_minor, c.currency);
