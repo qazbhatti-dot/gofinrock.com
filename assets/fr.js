@@ -313,12 +313,13 @@
   /* Our own assistant answers in the panel, from the live app, and Tawk is loaded only to hand a visitor to the team.
      One browser can be pointed at a test server with ?ai=<address>, or back to Tawk alone with ?ai=off, kept for that
      browser; ?ai=live returns it to the live app. */
-  var APP = 'https://app.gofinrock.com', AI = APP + '/api/public/help-chat', msgs = [];
+  var APP = 'https://app.gofinrock.com', AI = APP + '/api/public/help-chat', msgs = [], IDLE = 5 * 60 * 1000;
   try {
     var qa = new URLSearchParams(location.search).get('ai');
     if (qa === 'live') localStorage.removeItem('fr-ai'); else if (qa === 'off') localStorage.setItem('fr-ai', 'off'); else if (qa && /^(https:\/\/app\.gofinrock\.com|http:\/\/localhost(:\d+)?)\//.test(qa)) localStorage.setItem('fr-ai', qa);
     var kept = localStorage.getItem('fr-ai'); if (kept) AI = kept === 'off' ? '' : kept;
     if (AI) msgs = JSON.parse(sessionStorage.getItem('fr-ai-log') || '[]');
+    if (AI && msgs.length && idleFor('fr-ai-at') > IDLE) { msgs = []; sessionStorage.removeItem('fr-ai-log'); sessionStorage.removeItem('fr-ai-at'); sessionStorage.removeItem('fr-chat-on'); }
   } catch (e) {}
   /* A soft chime as an answer lands and a quiet tick as a question goes, drawn in the browser so nothing is fetched.
      Browsers allow sound only after a tap or a key, so the player is made on the first question. */
@@ -361,7 +362,12 @@
       if (shown < total) requestAnimationFrame(frame);
     })();
   }
-  function save() { try { sessionStorage.setItem('fr-ai-log', JSON.stringify(msgs.slice(-20))); } catch (e) {} }
+  function save() { try { sessionStorage.setItem('fr-ai-log', JSON.stringify(msgs.slice(-20))); } catch (e) {} if (msgs.length) touch(); }
+  /* Every chat closes itself after five minutes without a message, the assistant's and the team's alike, so no
+     conversation is left open: the visitor starts a new one when they need it. The times are kept for the visit, so a
+     conversation left on one page is closed on the next. */
+  function touch(k) { try { sessionStorage.setItem(k || 'fr-ai-at', String(Date.now())); } catch (e) {} }
+  function idleFor(k) { try { var at = +sessionStorage.getItem(k) || 0; return at ? Date.now() - at : 0; } catch (e) { return 0; } }
   /* An answer is the server's plain text: links, bold and list lines are drawn, everything else is escaped. An app page
      is named by its path, so a path becomes a link into the app. */
   function fmt(s) {
@@ -398,23 +404,23 @@
       '<div class="fr-cp-card fr-cp-list"><h3>Popular questions</h3>' + QA.map(function (x, i) { return '<button type="button" class="fr-cp-q" data-q="' + i + '"><span>' + txt(x[0]) + '</span>' + CH + '</button>'; }).join('') + '</div>' +
       '<div class="fr-cp-card"><h3>Need a person?</h3><p>Send your question to the Finrock support team and we’ll reply by email.</p><button type="button" class="fr-cp-link" data-sup="home">Contact support ' + CH + '</button></div>' +
       '<p class="fr-cp-note">AI answers can be wrong.</p></div>' +
-      '<div class="fr-cp-ans" data-v="chat" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" data-to="home" aria-label="Back">' + BK + '</button>' + AV + '<div><b>Finrock Assistant</b><span>AI assistant · Replies instantly</span></div>' + XX + '</div>' +
+      '<div class="fr-cp-ans" data-v="chat" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" data-to="home" aria-label="Back">' + BK + '</button>' + AV + '<div><b>Finrock Assistant</b><span>AI assistant · Replies instantly</span></div><button type="button" class="fr-cp-end" data-end hidden>End chat</button>' + XX + '</div>' +
       '<div class="fr-cp-log" aria-live="polite"></div>' +
       '<div class="fr-cp-foot">' + (AI ? '<div class="fr-cp-ts"></div><form class="fr-cp-box"><textarea rows="1" maxlength="1500" placeholder="Ask a question about Finrock…" aria-label="Your question"></textarea><button type="submit" class="fr-cp-go" aria-label="Send"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></form>'
         : '<button type="button" class="fr-cp-ask" data-chat><span>Ask a question about Finrock…</span><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></i></button>') +
       '<p class="fr-cp-note">AI answers can be wrong. <button type="button" class="fr-cp-a" data-sup="chat">Contact support</button></p></div></div>' +
       '<div class="fr-cp-ans fr-cp-sup" data-v="sup" hidden><div class="fr-cp-head"><button type="button" class="fr-cp-back" aria-label="Back">' + BK + '</button><div><b>Contact support</b><span>The Finrock support team replies by email</span></div>' + XX + '</div>' +
-      '<form class="fr-cp-form" novalidate>' + '<label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label>' +
+      '<form class="fr-cp-form" novalidate><p class="fr-cp-lead">Tell us what you need and the Finrock team will get back to you by email as soon as they can. The more detail you give, the quicker we can help.</p>' + '<label>Your email<input type="email" name="email" autocomplete="email" maxlength="254" required></label>' +
       '<label>Your question<textarea name="query" rows="5" maxlength="5000" required></textarea></label>' +
       '<div class="fr-cp-ts"></div><button type="submit" class="fr-cp-send">Send to support</button><p class="fr-cp-status" role="status"></p></form>' +
-      '<div class="fr-cp-done" hidden><svg class="fr-cp-tick" viewBox="0 0 52 52" width="64" height="64" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none"/><path fill="none" d="M15 27l7.5 7.5L37.5 19"/></svg><h3>Message sent</h3><p>Your question has been sent to the Finrock support team. We’ll reply by email.</p><button type="button" class="fr-cp-send" data-to="home">Back to chat</button></div></div>';
+      '<div class="fr-cp-done" hidden><svg class="fr-cp-tick" viewBox="0 0 52 52" width="64" height="64" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none"/><path fill="none" d="M15 27l7.5 7.5L37.5 19"/></svg><h3>Message sent</h3><p>Thanks. Your message is with the Finrock team, and they’ll reply to you by email as soon as they can.</p><button type="button" class="fr-cp-send" data-to="home">Back to chat</button></div></div>';
     document.body.appendChild(panel);
-    var log = panel.querySelector('.fr-cp-log'), sup = panel.querySelector('.fr-cp-sup'), form = sup.querySelector('form'), done = sup.querySelector('.fr-cp-done'), status = sup.querySelector('.fr-cp-status'), lastQ = '';
+    var log = panel.querySelector('.fr-cp-log'), endBtn = panel.querySelector('[data-end]'), sup = panel.querySelector('.fr-cp-sup'), form = sup.querySelector('form'), done = sup.querySelector('.fr-cp-done'), status = sup.querySelector('.fr-cp-status'), lastQ = '';
     function view(v) { [].forEach.call(panel.children, function (c) { c.hidden = c.getAttribute('data-v') !== v; }); if (v === 'home') panel.firstChild.scrollTop = 0; if (AI) keep(v === 'chat'); if (v === 'chat') log.scrollTop = log.scrollHeight; }
     function say(who, text) {
       var m = document.createElement('div'); m.className = 'fr-cp-m ' + who;
       m.innerHTML = (who === 'bot' ? AV : '') + '<div>' + (text === null ? '<span class="fr-cp-dots"><i></i><i></i><i></i></span>' + (AI && who === 'bot' ? '<span class="fr-cp-think">Thinking…</span>' : '') : who === 'bot' ? fmt(text) : txt(text)) + '</div>';
-      log.appendChild(m); log.scrollTop = log.scrollHeight; return m;
+      log.appendChild(m); log.scrollTop = log.scrollHeight; endBtn.hidden = !log.querySelector('.fr-cp-m.user'); return m;
     }
     panel.__support = function (from) { support(from); };
     /* What the visitor has seen in the panel, bubble by bubble as it reads: the greeting, the exchanges the panel
@@ -463,9 +469,15 @@
     };
     panel.__ended = function () {
       try { sessionStorage.removeItem('fr-carry'); sessionStorage.removeItem('fr-kick'); sessionStorage.removeItem('fr-who'); } catch (e) {}
-      msgs = []; save(); log.innerHTML = ''; lastQ = ''; asking = false;
+      msgs = []; save(); log.innerHTML = ''; lastQ = ''; asking = false; endBtn.hidden = true;
       try { sessionStorage.removeItem('fr-live'); } catch (e) {}
       view('home'); hidePanel(false); btn.focus({ preventScroll: true });
+    };
+    /* A conversation left five minutes without a message is closed, so nothing is left open for anybody. A visitor
+       looking at it is told in the chat, and the next question starts afresh. */
+    panel.__idle = function () {
+      msgs = []; save(); log.innerHTML = ''; lastQ = ''; asking = false; endBtn.hidden = true;
+      if (panelOpen() && !panel.querySelector('[data-v="chat"]').hidden) say('bot', 'This chat was closed after 5 minutes without a message. Ask a new question whenever you like.');
     };
     msgs.forEach(function (m) { say(m.role === 'user' ? 'user' : 'bot', m.content); });
     /* A log that was at its end stays there when the panel changes height, as it does when a phone's keyboard opens. */
@@ -481,7 +493,9 @@
        the team is offered, to learn whether anybody is there: with nobody online there is nothing to transfer to, so
        the visitor goes straight to leaving their details for an email reply. keepOff says whether what comes before
        the offer still reads without it (an answer the assistant could not give does; an offer to try first does not). */
-    function askTransfer(before, keepOff) {
+    /* asked says the visitor asked for a person; otherwise the assistant is offering, and with nobody online the
+       offer to leave a message is asked in words too, never put in front of them as a form. */
+    function askTransfer(before, keepOff, asked) {
       load(false);
       var m = say('bot', null), n = 0, last = '', same = 0;
       /* Tawk says "online" for a moment as it connects, before the team's real status arrives, so an answer counts
@@ -490,6 +504,7 @@
         var st = teamStatus(); same = st && st === last ? same + 1 : 0; last = st;
         if ((!st || same < 4) && ++n < 24) return setTimeout(look, 250);
         if (st === 'offline' || st === 'away') {
+          if (!asked) { asking = true; reveal(m.lastChild, txt((before ? before + ' ' : '') + 'The team isn’t online right now, but you can leave them a message and they’ll reply by email. Would you like to?'), log); chime(); return; }
           if (before && keepOff) { reveal(m.lastChild, txt(before), log); chime(); } else m.remove();
           who(); return;
         }
@@ -505,7 +520,7 @@
       f.innerHTML = '<p class="fr-cp-who-lead"></p>' +
         '<label><b>Your name</b><input name="n" autocomplete="name" maxlength="80"></label>' +
         '<label><b>Email <span class="fr-cp-who-opt"></span></b><input name="e" type="email" autocomplete="email" maxlength="120"></label>' +
-        '<label><b>What do you need help with? <span>· optional</span></b><textarea name="q" rows="2" maxlength="500"></textarea></label>' +
+        '<label><b><span class="fr-cp-who-ql">What do you need help with?</span> <span class="fr-cp-who-qo">· optional</span></b><textarea name="q" rows="3" maxlength="500"></textarea></label>' +
         '<div class="fr-cp-ts fr-cp-who-ts" hidden></div><p class="fr-cp-who-err" role="alert" hidden></p>' +
         '<div><button type="submit" class="fr-cp-yes"></button><button type="button" class="fr-cp-no">Not now</button></div>';
       var n = f.elements.n, e = f.elements.e, q = f.elements.q, err = f.querySelector('.fr-cp-who-err'), goBtn = f.querySelector('.fr-cp-yes'), off = null, offTs = null;
@@ -515,7 +530,9 @@
          has said, the card reads as for a team that is there. */
       function mode(o) {
         if (o === off) return; off = o;
-        f.querySelector('.fr-cp-who-lead').textContent = o ? 'The team isn’t online right now. Leave your details and they’ll reply by email.' : 'Before I put you through, who should the team ask for?';
+        f.querySelector('.fr-cp-who-lead').textContent = o ? 'Leave the team a message and they’ll get back to you by email as soon as they can. Your conversation with the assistant goes with it, so there’s no need to repeat anything.' : 'Before I put you through, who should the team ask for?';
+        f.querySelector('.fr-cp-who-ql').textContent = o ? 'Your message' : 'What do you need help with?';
+        f.querySelector('.fr-cp-who-qo').hidden = o;
         f.querySelector('.fr-cp-who-opt').textContent = o ? '' : '· optional, so we can reply if you leave';
         goBtn.textContent = o ? 'Send to the team' : 'Transfer me';
         var tsEl = f.querySelector('.fr-cp-who-ts'); tsEl.hidden = !o; if (o && !offTs) offTs = tsWidget(tsEl);
@@ -529,6 +546,7 @@
         var name = n.value.trim().replace(/\s+/g, ' '), email = e.value.trim(), need = q.value.trim();
         var bad = !name ? 'Please add your name so the team knows who they’re talking to.'
           : off && !email ? 'Please add your email so the team can reply.'
+          : off && !need ? 'Please write a short message so the team knows how to help.'
           : email && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email) ? (off ? 'That email doesn’t look right. Please check it.' : 'That email doesn’t look right. Check it, or leave it empty.') : '';
         if (bad) { err.textContent = bad; err.hidden = false; (name ? e : n).focus({ preventScroll: true }); return; }
         try { sessionStorage.setItem('fr-who', JSON.stringify({ name: name, email: email })); } catch (x) {}
@@ -578,7 +596,7 @@
       asking = false;
       if (HUMAN.test(q) && q.length < 160) {
         ta.value = ''; grow(); lastQ = ''; say('user', q); tick();
-        askTransfer('Sure. I can also try to answer straight away if you tell me what it’s about.');
+        askTransfer('Sure. I can also try to answer straight away if you tell me what it’s about.', false, true);
         return;
       } busy = true; go.disabled = true; lastQ = q; ta.value = ''; grow();
       msgs.push({ role: 'user', content: q }); save(); var ub = say('user', q); tick(); var w = say('bot', null);
@@ -605,17 +623,17 @@
             acts.querySelector('.fr-cp-again').addEventListener('click', function () { if (busy) return; if (chatTs && !chatTs.token()) chatTs.reset(); ub.remove(); w.remove(); acts.remove(); ask(q); });
             log.appendChild(acts); log.scrollTop = log.scrollHeight; return;
           }
-          if (!j.answer && !j.handoff) throw j; if (j.answer) { msgs.push({ role: 'assistant', content: j.answer }); save(); } if (j.handoff) { w.remove(); askTransfer(j.answer, true); return; } reveal(w.lastChild, fmt(j.answer), log); chime(); })
+          if (!j.answer && !j.handoff) throw j; if (j.answer) { msgs.push({ role: 'assistant', content: j.answer }); save(); } if (j.handoff) { w.remove(); askTransfer(j.answer, true, !j.answer); return; } reveal(w.lastChild, fmt(j.answer), log); chime(); })
         .catch(function (j) {
           msgs.pop(); save();
-          w.remove(); askTransfer(j && j.status === 429 ? 'That’s a lot of questions in a short time.' : 'Sorry, I couldn’t answer just now.', true);
+          reveal(w.lastChild, txt(j && j.status === 429 ? 'That’s a lot of questions in a short time. Please try again in a little while.' : 'Sorry, I couldn’t answer just now. Please try again in a moment.'), log); chime();
         })
         .then(function () { clearTimeout(tm); busy = false; go.disabled = false; log.scrollTop = log.scrollHeight; });
       }
     }
     if (box) {
       box.addEventListener('submit', function (e) { e.preventDefault(); ask(ta.value); });
-      ta.addEventListener('input', grow);
+      ta.addEventListener('input', function () { grow(); if (msgs.length) touch(); });
       ta.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); ask(ta.value); } });
     }
     function support(from) {
@@ -626,6 +644,7 @@
     }
     panel.addEventListener('click', function (e) {
       if (e.target.closest && e.target.closest('[data-close]')) { hidePanel(false); btn.focus({ preventScroll: true }); return; }
+      if (e.target.closest && e.target.closest('[data-end]')) { panel.__ended(); return; }
       var t = e.target.closest && e.target.closest('.fr-cp-q,[data-sup],[data-to]'); if (!t) return;
       if (t.hasAttribute('data-sup')) return support(t.getAttribute('data-sup'));
       if (t.hasAttribute('data-to')) return view(t.getAttribute('data-to'));
@@ -679,6 +698,7 @@
      takes; Tawk's own end and minimise, which it reports back through onChatEnded and onChatMinimized, then find the
      chat already closed. */
   function endLive() {
+    try { sessionStorage.removeItem('fr-team-at'); } catch (e) {}
     endedAt = Date.now(); wantChat = false; wantOpen = false; swapping = false;
     [].forEach.call(document.querySelectorAll('iframe[title="Chat widget"]'), function (f) { f.style.setProperty('visibility', 'hidden', 'important'); });
     closed();
@@ -839,7 +859,7 @@
     }, true);
     try { new MutationObserver(function () { if (!busy) busy = setTimeout(name, 60); }).observe(d.body, { childList: true, subtree: true, characterData: true }); } catch (e) {}
   }
-  var swapReady = 0, swapping = false, fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0, closedAt = 0, endedAt = 0;
+  var endAtTawk = false, swapReady = 0, swapping = false, fitting = 0, wantChat = false, homeTicks = 0, clickAt = 0, chatAt = 0, wantAt = 0, closedAt = 0, endedAt = 0;
   /* On a phone the chat fills the screen, and the screen is the visual viewport: a keyboard shrinks only that, leaving
      the page and anything fixed to its bottom full height behind the keys, and the browser pans to the focused box. So
      the chat is laid over exactly what is seen, read from window.visualViewport at most once a frame. */
@@ -952,6 +972,7 @@
     function sync() { if (T.isChatMaximized && T.isChatMaximized() && !root.classList.contains('chat-open')) { if (T.showWidget) T.showWidget(); opened(); } }
     T.onLoad = function () {
       tawkAt = Date.now();
+      if (endAtTawk) { endAtTawk = false; try { if (T.endChat) T.endChat(); } catch (e) {} }
       btn.classList.remove('busy');
       if (wantOpen) openChat();
       else if (AI) { if (T.isChatMaximized && T.isChatMaximized() && T.minimize) T.minimize(); if (T.hideWidget) T.hideWidget(); return; }
@@ -962,17 +983,19 @@
        mark the chat live for the next page. Only a chat the visitor asked for counts as open. */
     T.onChatMaximized = function () { if ((AI && !wantOpen) || Date.now() - endedAt < 5000) { if (T.minimize) T.minimize(); if (T.hideWidget) T.hideWidget(); return; } opened(); };
     /* Tawk minimises itself as a chat ends, so a chat ended by the visitor is told from one that timed out by how recently the window closed. */
-    T.onChatEnded = function () { if (panelOpen() || Date.now() - endedAt < 5000) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; if (T.minimize) T.minimize(); if (AI) { if (!panel) build(); panel.__ended(); } else showPanel(); } };
+    T.onChatMessageVisitor = function () { touch('fr-team-at'); };
+    T.onChatStarted = function () { touch('fr-team-at'); };
+    T.onChatEnded = function () { try { sessionStorage.removeItem('fr-team-at'); } catch (e) {} if (panelOpen() || Date.now() - endedAt < 5000) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; if (T.minimize) T.minimize(); if (AI) { if (!panel) build(); panel.__ended(); } else showPanel(); } };
     T.onChatMinimized = function () { closed(); if (T.hideWidget) T.hideWidget(); };
     /* Tawk is loaded behind our own chat to learn whether the team is there, so the team can see the visitor and write
        to them in a window the visitor cannot see. While that window is hidden Tawk calls none of its events, and what
        it does keep is its count of unread messages (its badge, and the page's title), so that count is watched. It is
        read once Tawk has settled, so its own automatic greeting as it loads is not taken for a person writing; any
        rise after that is the team, brought into our chat with a way into theirs. */
-    function teamWrote() { btn.classList.add('new'); if (AI) { if (!panel) build(); panel.__agentSaid(); } }
+    function teamWrote() { touch('fr-team-at'); btn.classList.add('new'); if (AI) { if (!panel) build(); panel.__agentSaid(); } }
     /* The team's own chat on screen, as against our panel, which wears the same open state. */
     function teamChatShown() { return root.classList.contains('chat-open') && !panelOpen(); }
-    T.onChatMessageAgent = function () { if (!teamChatShown() && tawkAt && Date.now() - tawkAt > 6000) teamWrote(); };
+    T.onChatMessageAgent = function () { touch('fr-team-at'); if (!teamChatShown() && tawkAt && Date.now() - tawkAt > 6000) teamWrote(); };
     var unreadSeen = -1;
     setInterval(function () {
       if (!tawkAt) return;
@@ -990,6 +1013,8 @@
   var again = false; try { again = sessionStorage.getItem('fr-chat-on') === '1'; } catch (e) {}
   /* Our own assistant needs nothing loaded: a conversation open on the last page is shown again as it was. */
   var liveOn = false; try { liveOn = sessionStorage.getItem('fr-live') === '1'; } catch (e) {}
+  /* A team chat that went quiet on an earlier page is not opened again; idleCheck ends it at Tawk. */
+  if (idleFor('fr-team-at') > IDLE) liveOn = false;
   if (AI && liveOn) { wantChat = true; load(true); }
   else if (AI) { if (again) { var reopen = function () { showPanel(); panel.__chat(false); }; if (document.body) reopen(); else document.addEventListener('DOMContentLoaded', reopen); } }
   else if (again) { wantChat = true; load(true); } else if (allowed()) load(false);
@@ -1032,8 +1057,18 @@
       }
     } catch (e) {}
     swapping = true; setTimeout(function () { if (swapping) { swapping = false; hidePanel(true); } }, 4000);
-    wantChat = true; wantAt = 0; load(true);
+    touch('fr-team-at'); wantChat = true; wantAt = 0; load(true);
   }
+  /* The clock both chats close by. The team's chat is ended at Tawk too, on screen or not, so the team is not left
+     with a conversation nobody is in. */
+  function idleCheck() {
+    if (AI && msgs.length && idleFor('fr-ai-at') > IDLE) { if (panel) panel.__idle(); else { msgs = []; save(); } try { sessionStorage.removeItem('fr-ai-at'); } catch (e) {} }
+    if (idleFor('fr-team-at') > IDLE) {
+      if (root.classList.contains('chat-open') && !panelOpen()) endLive();
+      else { try { sessionStorage.removeItem('fr-team-at'); sessionStorage.removeItem('fr-live'); } catch (e) {} endAtTawk = true; if (T && T.endChat && tawkAt) { endAtTawk = false; try { T.endChat(); } catch (e) {} } else if (!loaded) load(false); }
+    }
+  }
+  setInterval(idleCheck, 15000); idleCheck();
 })();
 
 /* Films marked data-lazy load and play only when scrolled into view, and pause when out of it. */
