@@ -213,13 +213,11 @@
   if (!read() && window.FR_TRACKING) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { open(false); }); else open(false); }
 })();
 
-/* Live chat (Tawk.to). Set the two ids from the Tawk dashboard (Administration > Chat Widget > Direct Chat Link:
-   https://tawk.to/chat/<PROPERTY>/<WIDGET>). While either is empty nothing loads and the contact form stays.
-   The widget sets its own cookies, so it loads only after the visitor accepts non-essential cookies, or when
-   they press a "Chat with us" button (which is them asking for it). */
+/* The chat: Finrock's own assistant, and the team behind it. Nobody waits live on the website: a visitor who wants a
+   person leaves the team a message here, which lands on Finrock's Support desk with the conversation and is
+   answered by email, usually the same working day. Nothing is loaded from another company, so the chat sets no
+   cookies of its own. */
 (function () {
-  var PROPERTY = '6af506c501d7323c49b2e862', WIDGET = '1k76i4ter';
-  if (!PROPERTY || !WIDGET) return;
   var root = document.documentElement; root.classList.add('has-chat');
   var loaded = false, wantOpen = false, T, tawkAt = 0;
   /* Our own launcher: a pill in the site's colours with the Finrock mark. Tawk's default bubble stays hidden. */
@@ -497,7 +495,6 @@
     /* asked says the visitor asked for a person; otherwise the assistant is offering, and with nobody online the
        offer to leave a message is asked in words too, never put in front of them as a form. */
     function askTransfer(before, keepOff, asked) {
-      load(false);
       var m = say('bot', null), n = 0, last = '', same = 0;
       /* Tawk says "online" for a moment as it connects, before the team's real status arrives, so an answer counts
          once it has held for a second. */
@@ -505,7 +502,7 @@
         var st = teamStatus(); same = st && st === last ? same + 1 : 0; last = st;
         if ((!st || same < 4) && ++n < 24) return setTimeout(look, 250);
         if (st === 'offline' || st === 'away') {
-          if (!asked) { asking = true; reveal(m.lastChild, txt((before ? before + ' ' : '') + 'The team isn’t online right now, but you can leave them a message and they’ll reply by email. Would you like to?'), log); chime(); return; }
+          if (!asked) { asking = true; reveal(m.lastChild, txt((before ? before + ' ' : '') + 'You can leave the team a message here, and they’ll reply by email, usually the same working day. Would you like to?'), log); chime(); return; }
           if (before && keepOff) { reveal(m.lastChild, txt(before), log); chime(); } else m.remove();
           who(); return;
         }
@@ -563,7 +560,7 @@
         goBtn.disabled = true; goBtn.textContent = 'Sending…';
         offTs.wait(function (tok) {
           postContact({ 'cf-turnstile-response': tok, form: 'contact', website: '', name: name.slice(0, 100), email: email, topic: 'Something else', who: '',
-            message: offlineMessage(need) + '\n\nSent from the chat on ' + location.href.split('?')[0] + ' while the team was offline.' }, function (r) {
+            message: offlineMessage(need) + '\n\nSent from the chat on ' + location.href.split('?')[0] + '.' }, function (r) {
             if (r === 'sent' || r === 'ok') {
               f.remove(); tick(); var m = say('bot', null);
               setTimeout(function () { reveal(m.lastChild, txt('Thanks, ' + first + '. I’ve sent your message and our conversation to the team. They’ll reply to ' + email + ' by email.'), log); chime(); }, 350);
@@ -788,8 +785,8 @@
   function teamHello() {
     return teamStatus() === 'online' ? '<p class="fr-carry-note">Someone from the team will reply here shortly.</p>' : '';
   }
-  /* What Tawk says of the team: 'online', 'away' or 'offline', or '' before it has said. */
-  function teamStatus() { try { return T && T.getStatus ? T.getStatus() || '' : ''; } catch (e) { return ''; } }
+  /* Nobody is ever live here: the team answers on its Support desk, by email, so every way to a person is a message. */
+  function teamStatus() { return 'offline'; }
   function skin(f) {
     var d; try { d = f.contentDocument; } catch (e) { return; }
     if (!d || !d.head || !d.body || d.getElementById('fr-skin')) return;
@@ -963,53 +960,8 @@
   function keep(on) { try { if (on) sessionStorage.setItem('fr-chat-on', '1'); else sessionStorage.removeItem('fr-chat-on'); } catch (e) {} }
   function opened() { keep(true); if (AI) try { sessionStorage.setItem('fr-live', '1'); } catch (e) {} root.classList.add('chat-open'); btn.classList.remove('new'); btn.setAttribute('aria-label', 'Close chat'); fit(); if (!fitting) fitting = setInterval(fit, 50); }
   function closed() { keep(false); try { sessionStorage.removeItem('fr-live'); } catch (e) {} closedAt = Date.now(); if (!panelOpen()) { root.classList.remove('chat-open'); btn.setAttribute('aria-label', 'Ask Finrock'); } if (fitting) { clearInterval(fitting); fitting = 0; } }
-  function load(open) {
-    if (open) wantOpen = true;
-    if (loaded) { if (open) openChat(); return; }
-    loaded = true; if (open) btn.classList.add('busy');
-    T = window.Tawk_API = window.Tawk_API || {}; window.Tawk_LoadStart = new Date();
-    T.onBeforeLoad = function () { if (!wantOpen && T.hideWidget) T.hideWidget(); };
-    /* Tawk reopens a chat that was open on the last page without calling onChatMaximized, so the state is read, twice more after load. */
-    function sync() { if (T.isChatMaximized && T.isChatMaximized() && !root.classList.contains('chat-open')) { if (T.showWidget) T.showWidget(); opened(); } }
-    T.onLoad = function () {
-      tawkAt = Date.now();
-      if (endAtTawk) { endAtTawk = false; try { if (T.endChat) T.endChat(); } catch (e) {} }
-      btn.classList.remove('busy');
-      if (wantOpen) openChat();
-      else if (AI) { if (T.isChatMaximized && T.isChatMaximized() && T.minimize) T.minimize(); if (T.hideWidget) T.hideWidget(); return; }
-      else if (T.isChatMaximized && T.isChatMaximized()) sync(); else if (T.hideWidget) T.hideWidget();
-      setTimeout(sync, 800); setTimeout(sync, 2500);
-    };
-    /* Tawk draws its window again as a chat ends, reporting it maximised, which used to put the pill back to Close and
-       mark the chat live for the next page. Only a chat the visitor asked for counts as open. */
-    T.onChatMaximized = function () { if ((AI && !wantOpen) || Date.now() - endedAt < 5000) { if (T.minimize) T.minimize(); if (T.hideWidget) T.hideWidget(); return; } opened(); };
-    /* Tawk minimises itself as a chat ends, so a chat ended by the visitor is told from one that timed out by how recently the window closed. */
-    T.onChatMessageVisitor = function () { touch('fr-team-at'); };
-    T.onChatStarted = function () { touch('fr-team-at'); };
-    T.onChatEnded = function () { try { sessionStorage.removeItem('fr-team-at'); } catch (e) {} if (panelOpen() || Date.now() - endedAt < 5000) return; if (root.classList.contains('chat-open') || Date.now() - closedAt < 2000) { wantChat = false; if (T.minimize) T.minimize(); if (AI) { if (!panel) build(); panel.__ended(); } else showPanel(); } };
-    T.onChatMinimized = function () { closed(); if (T.hideWidget) T.hideWidget(); };
-    /* Tawk is loaded behind our own chat to learn whether the team is there, so the team can see the visitor and write
-       to them in a window the visitor cannot see. While that window is hidden Tawk calls none of its events, and what
-       it does keep is its count of unread messages (its badge, and the page's title), so that count is watched. It is
-       read once Tawk has settled, so its own automatic greeting as it loads is not taken for a person writing; any
-       rise after that is the team, brought into our chat with a way into theirs. */
-    function teamWrote() { touch('fr-team-at'); btn.classList.add('new'); if (AI) { if (!panel) build(); panel.__agentSaid(); } }
-    /* The team's own chat on screen, as against our panel, which wears the same open state. */
-    function teamChatShown() { return root.classList.contains('chat-open') && !panelOpen(); }
-    T.onChatMessageAgent = function () { touch('fr-team-at'); if (!teamChatShown() && tawkAt && Date.now() - tawkAt > 6000) teamWrote(); };
-    var unreadSeen = -1;
-    setInterval(function () {
-      if (!tawkAt) return;
-      var n = tawkUnread();
-      if (teamChatShown()) { unreadSeen = n; return; }
-      if (unreadSeen < 0) { if (Date.now() - tawkAt > 6000) unreadSeen = n; return; }
-      if (n > unreadSeen) { unreadSeen = n; teamWrote(); }
-    }, 1000);
-    /* The look goes on the moment Tawk's frame exists, before it has drawn anything. */
-    var early = setInterval(function () { [].forEach.call(document.querySelectorAll('iframe[title="Chat widget"]'), skin); }, 40); setTimeout(function () { clearInterval(early); }, 20000);
-    var s = document.createElement('script'); s.async = true; s.src = 'https://embed.tawk.to/' + PROPERTY + '/' + WIDGET;
-    s.charset = 'UTF-8'; s.setAttribute('crossorigin', '*'); document.head.appendChild(s);
-  }
+  /* Asked to open a chat with the team, the assistant's own panel is opened: that is where a message is left. */
+  function load(open) { if (open && AI && !panelOpen()) showPanel(); }
   function allowed() { try { var c = JSON.parse(localStorage.getItem('fr-consent') || 'null'); return !!(c && (c.analytics || c.ads || c.all)); } catch (e) { return false; } }
   var again = false; try { again = sessionStorage.getItem('fr-chat-on') === '1'; } catch (e) {}
   /* Our own assistant needs nothing loaded: a conversation open on the last page is shown again as it was. */
@@ -1042,24 +994,8 @@
     });
     return n;
   }
-  function goLive(me, quiet) {
-    try { if (AI) sessionStorage.setItem('fr-carry', JSON.stringify(panel && panel.__seen ? panel.__seen() : msgs.slice(-30))); } catch (e) {}
-    /* Tawk opens a chat for the team only when the visitor sends something, so the transfer sends the visitor's
-       request for them. Tawk's secure mode, on because the app signs its customers into the same chat, refuses a
-       page's name, email and events, so everything the team needs is in the words of that first message: who it is,
-       how to reach them, what they need, and the other questions they asked the assistant. */
-    try {
-      if (AI && !quiet) {
-        var w = me || {}, qs = realQuestions(), lastQ = qs[0] || '', need = w.need ? w.need.slice(0, 500) : '';
-        var said = need || ('I’d like to speak to someone on the team.' + (lastQ ? ' My question was: “' + lastQ.slice(0, 300) + '”' : ''));
-        var shown = need || lastQ, earlier = qs.filter(function (x) { return x !== shown; }).slice(0, 3);
-        var who = w.name ? 'Hi, I’m ' + w.name + (w.email ? ' (' + w.email + ')' : '') + '. ' : 'Hi. ';
-        sessionStorage.setItem('fr-kick', who + said + (earlier.length ? ' Earlier I asked the assistant: ' + earlier.map(function (x) { return '“' + x.slice(0, 150) + '”'; }).join('; ') + '.' : ''));
-      }
-    } catch (e) {}
-    swapping = true; setTimeout(function () { if (swapping) { swapping = false; hidePanel(true); } }, 4000);
-    touch('fr-team-at'); wantChat = true; wantAt = 0; load(true);
-  }
+  /* Every way to the team is a message left in the assistant's panel. */
+  function goLive() { if (!panelOpen()) showPanel(); if (panel && panel.__chat) panel.__chat(true); }
   /* The clock both chats close by. The team's chat is ended at Tawk too, on screen or not, so the team is not left
      with a conversation nobody is in. */
   function idleCheck() {
