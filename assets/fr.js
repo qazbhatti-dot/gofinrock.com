@@ -36,7 +36,7 @@
     var sel = {}, over = null;
     var q2 = ch.querySelector('.q2'), out = ch.querySelector('.answer p'), go = ch.querySelector('.answer a');
     var P = function (id, fb) { return window.frPlanPrice ? window.frPlanPrice(id, fb) : fb; };
-    function pick(k) { document.querySelectorAll('.plan').forEach(function (p) { p.classList.toggle('pick', p.dataset.plan === k); }); }
+    function pick(k) { document.querySelectorAll('.plan').forEach(function (p) { p.classList.toggle('pick', p.dataset.plan === k); }); if (k && window.frPickPlan) window.frPickPlan(k); }
     function run() {
       var plans = { life: ['My Life', 'Free'], st: ['Sole trader & Landlord', P('sole_trader', '£14.99')], se: ['Sole trader & Landlord · MTD', P('self_employed', '£24.99')] };
       var trade = sel.se || sel.prop;
@@ -127,8 +127,66 @@
   }
   var mc = document.querySelector('.mcta'), hero = document.querySelector('.hero');
   if (mc && hero) { var onS = function () { mc.classList.toggle('show', scrollY > hero.offsetHeight * .7 && scrollY + innerHeight < document.body.scrollHeight - 200); }; addEventListener('scroll', onS, { passive: true }); onS(); }
-  var seg = document.querySelector('.seg');
-  if (seg) seg.querySelectorAll('button').forEach(function (b) { b.addEventListener('click', function () { seg.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-selected', x === b); }); document.querySelectorAll('.cmp-list').forEach(function (l) { l.classList.toggle('on', l.dataset.p === b.dataset.p); }); }); });
+  // A row of plan chips: one is chosen, and what it chooses is shown under it. The chosen chip is brought to the middle.
+  function chipRow(labels, onPick, first) {
+    var row = document.createElement('div'), btns = [];
+    row.className = 'chips'; row.setAttribute('role', 'tablist');
+    var choose = function (i, move) {
+      btns.forEach(function (x, j) { x.setAttribute('aria-selected', j === i); });
+      if (move) row.scrollTo({ left: btns[i].offsetLeft - (row.clientWidth - btns[i].offsetWidth) / 2, behavior: 'smooth' });
+      onPick(i);
+    };
+    labels.forEach(function (html, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.innerHTML = html;
+      b.addEventListener('click', function () { choose(i, true); });
+      btns.push(b); row.appendChild(b);
+    });
+    choose(first || 0, false);
+    requestAnimationFrame(function () { var s = btns[first || 0]; row.scrollLeft = s.offsetLeft - (row.clientWidth - s.offsetWidth) / 2; });
+    return { el: row, choose: choose };
+  }
+  // A wide table's cells carry their column's heading, so a phone can set each row out under its own labels.
+  [].forEach.call(document.querySelectorAll('table.cmp'), function (tb) {
+    var hs = tb.querySelectorAll('thead th');
+    [].forEach.call(tb.querySelectorAll('tbody tr'), function (tr) { [].forEach.call(tr.cells, function (td, i) { if (i && hs[i]) td.setAttribute('data-l', hs[i].textContent); }); });
+  });
+  // On a phone the plan comparison is one plan at a time. It is built from the table a wide screen shows, so the two
+  // can never say different things, and a price the table is given later is given to the chips as well.
+  var cm = document.querySelector('.cmp-m'), tb = document.querySelector('.tbl');
+  if (cm && tb) {
+    var ths = tb.querySelectorAll('thead th'), trs = tb.querySelectorAll('tbody tr'), panes = [], labels = [], hot = 0;
+    for (var c = 1; c < ths.length; c++) {
+      labels.push(ths[c].innerHTML); if (/MTD/.test(ths[c].textContent)) hot = c - 1;
+      var inc = '', exc = '';
+      [].forEach.call(trs, function (tr) {
+        var td = tr.cells[c], name = tr.cells[0].innerHTML;
+        if (td.classList.contains('n')) exc += '<li>' + name + '</li>';
+        else inc += '<li><span>' + name + '</span>' + (td.classList.contains('y') ? '' : '<b>' + td.innerHTML + '</b>') + '</li>';
+      });
+      var pane = document.createElement('div'); pane.className = 'cmp-pane'; pane.setAttribute('role', 'tabpanel');
+      pane.innerHTML = '<ul class="cmp-in">' + inc + '</ul>' + (exc ? '<p class="cmp-h">Not in this plan</p><ul class="cmp-out">' + exc + '</ul>' : '');
+      panes.push(pane);
+    }
+    var cr = chipRow(labels, function (i) { panes.forEach(function (p, j) { p.classList.toggle('on', j === i); }); }, hot);
+    cm.appendChild(cr.el); panes.forEach(function (p) { cm.appendChild(p); });
+  }
+  // Three or more plan cards are one card at a time on a phone, chosen from the same chips, each with its name and price.
+  var planTabs = [];
+  [].forEach.call(document.querySelectorAll('.plans'), function (ps) {
+    var cards = [].filter.call(ps.children, function (x) { return x.classList.contains('plan'); });
+    if (cards.length < 3 || ps.classList.contains('m-hide')) return;
+    var first = 0, ls = cards.map(function (p, i) {
+      if (p.classList.contains('hot')) first = i;
+      var h = p.querySelector('h3'), pr = p.querySelector('.price'), own = p.querySelector('.own [data-plan-price]');
+      // A card that leads with our accountant's price shows the plan's own price on its chip, which is the plan the chip names.
+      if (own && pr && pr.querySelector('[data-plan-price]')) return (h ? h.innerHTML : '') + '<span>from ' + own.outerHTML + '</span>';
+      return (h ? (h.hasAttribute('data-plan-name') ? '<b data-plan-name="' + h.getAttribute('data-plan-name') + '">' + h.innerHTML + '</b>' : h.innerHTML) : '') + '<span>' + (pr ? pr.innerHTML.replace(/<small>[\s\S]*?<\/small>/g, '') : '') + '</span>';
+    });
+    var t = chipRow(ls, function (i) { cards.forEach(function (p, j) { p.classList.toggle('sel', j === i); }); }, first);
+    t.el.classList.add('plan-tabs'); ps.classList.add('tabbed'); ps.parentNode.insertBefore(t.el, ps);
+    planTabs.push({ cards: cards, choose: t.choose });
+  });
+  window.frPickPlan = function (k) { planTabs.forEach(function (t) { t.cards.forEach(function (p, i) { if (p.dataset.plan === k) t.choose(i, true); }); }); };
   // pricing calculator
   var calc = document.querySelector('.calc');
   if (calc) {
