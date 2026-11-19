@@ -25,11 +25,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Sans:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/fr.css?v=20261119b">
+<link rel="stylesheet" href="assets/fr.css?v=20261119c">
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer fetchpriority="low"></script>
-<script src="assets/plans.js?v=20261113b" defer></script>
-<script src="assets/fr.js?v=20261119b" defer></script>
+<script src="assets/plans.js?v=20261119c" defer></script>
+<script src="assets/fr.js?v=20261119c" defer></script>
 <script src="assets/fr-analytics.js?v=20261029g"></script>
 </head>
 <body>
@@ -131,10 +131,11 @@
       <div class="plan" data-plan="st">
         <h3 data-plan-name="sole_trader">Sole trader &amp; Landlord</h3>
         <p class="who" data-plan-tagline="sole_trader">Your own trade and lets, under the MTD threshold. One plan for every trade and property.</p>
-        <p class="price"><span data-plan-price="sole_trader_filed">£24.99</span><small>/mo</small></p>
-        <p class="per">incl. VAT · our accountant included · 7-day free trial</p>
-        <p class="own">Have your own accountant? <b><span data-plan-price="sole_trader">£14.99</span>/mo</b></p>
-        <p class="acct-inc"><i data-lucide="shield-check"></i><span>A qualified accountant checks and files your returns</span></p>
+        <button class="acc-sw" type="button" aria-pressed="true"><i class="acc-sw-k" aria-hidden="true"></i><span>Our qualified accountant checks and files</span></button>
+        <p class="price"><span class="p-on"><span data-plan-price="sole_trader_filed">£24.99</span></span><span class="p-off"><span data-plan-price="sole_trader">£14.99</span></span><small>/mo</small></p>
+        <p class="per">incl. VAT · 7-day free trial</p>
+        <p class="own"><span class="p-on"><b><span data-plan-price="sole_trader">£14.99</span></b> if you file it yourself</span><span class="p-off"><b><span data-plan-price="sole_trader_filed">£24.99</span></b> with our accountant</span></p>
+        <p class="acc-tick p-on"><i data-lucide="check"></i><span>Checked and filed by a qualified accountant where the rules allow</span></p>
         <ul data-plan-features="sole_trader">
           <li><i data-lucide="check"></i><span>My Life Plus included</span></li>
           <li><i data-lucide="check"></i><span>Self Assessment prepared, incl. property pages</span></li>
@@ -147,10 +148,11 @@
         <span class="tag">Most popular</span>
         <h3 data-plan-name="self_employed">Sole trader &amp; Landlord · MTD</h3>
         <p class="who" data-plan-tagline="self_employed">Inside MTD. Every trade and every property — one price.</p>
-        <p class="price"><span data-plan-price="self_employed_filed">£34.99</span><small>/mo</small></p>
-        <p class="per">incl. VAT · our accountant included · about £25.90 after tax relief</p>
-        <p class="own">Have your own accountant? <b><span data-plan-price="self_employed">£24.99</span>/mo</b></p>
-        <p class="acct-inc"><i data-lucide="shield-check"></i><span>A qualified accountant checks and files your returns</span></p>
+        <button class="acc-sw" type="button" aria-pressed="true"><i class="acc-sw-k" aria-hidden="true"></i><span>Our qualified accountant checks and files</span></button>
+        <p class="price"><span class="p-on"><span data-plan-price="self_employed_filed">£34.99</span></span><span class="p-off"><span data-plan-price="self_employed">£24.99</span></span><small>/mo</small></p>
+        <p class="per">incl. VAT · about <span class="p-on">£25.90</span><span class="p-off">£18.50</span> after tax relief</p>
+        <p class="own"><span class="p-on"><b><span data-plan-price="self_employed">£24.99</span></b> if you file it yourself</span><span class="p-off"><b><span data-plan-price="self_employed_filed">£34.99</span></b> with our accountant</span></p>
+        <p class="acc-tick p-on"><i data-lucide="check"></i><span>Checked and filed by a qualified accountant where the rules allow</span></p>
         <ul data-plan-features="self_employed">
           <li><i data-lucide="check"></i><span>Everything under the threshold</span></li>
           <li><i data-lucide="check"></i><span>Quarterly updates prepared, every source</span></li>
@@ -162,11 +164,12 @@
       <div class="plan" data-plan="ltd">
         <span class="tag g">Per company</span>
         <h3>Limited company</h3>
-        <p class="who" data-plan-tagline="company_ours">Company books, accounts and CT600 — signed off and filed for you.</p>
-        <p class="price"><span data-plan-price="company_ours">£49.99</span><small>/mo</small></p>
-        <p class="per">incl. VAT · per company · our accountant included</p>
-        <p class="own">Have your own accountant? <b><span data-plan-price="company_own">£39.99</span>/mo</b></p>
-        <p class="acct-inc"><i data-lucide="shield-check"></i><span>A qualified accountant signs off and files your year end</span></p>
+        <p class="who">Company books, accounts, CT600 and payroll. One plan per company.</p>
+        <button class="acc-sw" type="button" aria-pressed="true"><i class="acc-sw-k" aria-hidden="true"></i><span>Our qualified accountant checks and files</span></button>
+        <p class="price"><span class="p-on"><span data-plan-price="company_ours">£49.99</span></span><span class="p-off"><span data-plan-price="company_own">£39.99</span></span><small>/mo</small></p>
+        <p class="per">incl. VAT · per company · 7-day free trial</p>
+        <p class="own"><span class="p-on"><b><span data-plan-price="company_own">£39.99</span></b> if your own accountant files</span><span class="p-off"><b><span data-plan-price="company_ours">£49.99</span></b> with our accountant</span></p>
+        <p class="acc-tick p-on"><i data-lucide="check"></i><span>Year end checked and filed by a qualified accountant where the rules allow</span></p>
         <ul data-plan-features="company_own">
           <li><i data-lucide="check"></i><span>Accounts, CT600, confirmation statement prepared</span></li>
           <li><i data-lucide="check"></i><span>Payroll, dividends, director’s loan</span></li>
@@ -187,12 +190,7 @@
           <li>They file it for you wherever the rules let an accountant, and tell you when a return needs your own confirmation</li>
         </ol>
       </div>
-      <div class="acct-side">
-        <div class="acct-price"><span>Sole trader &amp; Landlord + accountant</span><b data-plan-price="sole_trader_filed">£24.99</b></div>
-        <div class="acct-price"><span>Sole trader &amp; Landlord · MTD + accountant</span><b data-plan-price="self_employed_filed">£34.99</b></div>
-        <div class="acct-price"><span>Limited company + accountant, per company</span><b data-plan-price="company_ours">£49.99</b></div>
-        <a class="btn btn-ink acct-cta" href="https://app.gofinrock.com/register">Try 7 days free</a>
-        <p class="acct-fine">Have your own accountant? Every plan is <span data-accountant-adds="sole_trader">£10</span> a month less, and you can invite them in. Cancel any time.</p>
+      <div class="acct-side"><p class="acct-fine">A qualified UK accountant, not just software. Have your own accountant already? Switch ours off on any plan and invite yours in. Cancel any time.</p>
       </div>
     </div>
     <p class="note">Every plan is free for 7 days, no card. All prices include VAT. Finrock prepares your returns; sending from the app switches on when HMRC recognition lands. After the trial an unpaid account can still read its books.</p>
@@ -223,7 +221,7 @@
     <div class="cmp-m" aria-label="Compare plans"></div>
     <div class="tblw rv">
       <table class="tbl">
-        <thead><tr><th scope="col">Included</th><th scope="col">My Life<span>Free</span></th><th scope="col">My Life Plus<span><span data-plan-price="individual">£4.99</span></span></th><th scope="col">Sole trader &amp; Landlord<span><span data-plan-price="sole_trader">£14.99</span></span></th><th scope="col">Sole trader &amp; Landlord · MTD<span><span data-plan-price="self_employed">£24.99</span></span></th><th scope="col">Limited company<span><span data-plan-price="company_own">£39.99</span></span></th></tr></thead>
+        <thead><tr><th scope="col">Included<button class="acc-sw" type="button" aria-pressed="true"><i class="acc-sw-k" aria-hidden="true"></i><span>Our qualified accountant checks and files</span></button></th><th scope="col">My Life<span>Free</span></th><th scope="col">My Life Plus<span><span data-plan-price="individual">£4.99</span></span></th><th scope="col">Sole trader &amp; Landlord<span><span class="p-on"><span data-plan-price="sole_trader_filed">£24.99</span></span><span class="p-off"><span data-plan-price="sole_trader">£14.99</span></span></span></th><th scope="col">Sole trader &amp; Landlord · MTD<span><span class="p-on"><span data-plan-price="self_employed_filed">£34.99</span></span><span class="p-off"><span data-plan-price="self_employed">£24.99</span></span></span></th><th scope="col">Limited company<span><span class="p-on"><span data-plan-price="company_ours">£49.99</span></span><span class="p-off"><span data-plan-price="company_own">£39.99</span></span></span></th></tr></thead>
         <tbody>
           <tr><td>Bills, subscriptions, price rises</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
           <tr><td>Renewals and reminders: MOT, insurance, road tax</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
@@ -240,24 +238,13 @@
           <tr><td>VAT return prepared</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td></tr>
           <tr><td>Accounts, CT600, Companies House</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
           <tr><td>Payroll, dividends, director’s loan</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
-          <tr><td>Our qualified accountant checks &amp; files where the rules allow</td><td class="n">—</td><td class="n">—</td><td>+<span data-accountant-adds="sole_trader">£10</span>/mo</td><td>+<span data-accountant-adds="self_employed">£10</span>/mo</td><td>+<span data-accountant-adds="company_own">£10</span>/mo</td></tr>
+          <tr><td>Our qualified accountant checks &amp; files where the rules allow</td><td class="n">—</td><td class="n">—</td><td><span class="p-on">Included</span><span class="p-off">+<span data-accountant-adds="sole_trader">£10</span>/mo</span></td><td><span class="p-on">Included</span><span class="p-off">+<span data-accountant-adds="self_employed">£10</span>/mo</span></td><td><span class="p-on">Included</span><span class="p-off">+<span data-accountant-adds="company_own">£10</span>/mo</span></td></tr>
         </tbody>
       </table>
     </div>
     
   </div>
 </section>
-
-<section class="sec" style="padding-top:0">
-  <div class="wrap">
-    <div class="quotes rv">
-      <figure class="qt"><blockquote>“I run the books for a security firm. Before, that was three apps and a spreadsheet. Now it’s one.”</blockquote><figcaption><span class="av">A</span><span><b>Adam</b><small>Finance, security services</small></span></figcaption></figure>
-      <figure class="qt"><blockquote>“I just wanted to see where the money goes each month. Now I know, I budget better, and I can see what’s coming before it hits the account. It caught the MOT I’d forgotten too — and now it watches the road tax and home insurance for me.”</blockquote><figcaption><span class="av">S</span><span><b>Saira</b><small>Household budgeting</small></span></figcaption></figure>
-      <p class="note center" style="grid-column:1/-1;margin-top:4px">Budgeting, forecasting and renewals — the things you’d buy a budgeting app for, included in every plan.</p>
-    </div>
-  </div>
-</section>
-
 <section class="sec" id="faq" style="padding-top:0">
   <div class="wrap">
     <div class="center rv"><h2 class="big">Pricing questions</h2></div>
@@ -266,7 +253,7 @@
       <details><summary>I’m a sole trader and a landlord. Do I pay twice?</summary><p>No. You’re one taxpayer, so it’s one plan. Every trade and every property sits on the same subscription — <span data-plan-price="sole_trader">£14.99</span> under the MTD threshold, <span data-plan-price="self_employed">£24.99</span> inside it.</p></details>
       <details><summary>What counts towards the MTD threshold?</summary><p>Self-employment turnover plus gross rent, before expenses. Over £50,000 for 2026/27, £30,000 from April 2027 and £20,000 from April 2028. Salary, pension and dividends don’t count.</p></details>
       <details><summary>What happens when HMRC brings me into MTD?</summary><p>Switch from Sole trader &amp; Landlord to the MTD plan in one tap. Your books, receipts and history carry straight over — nothing to re-enter.</p></details>
-      <details><summary>Does the company plan cover my own trade or lets?</summary><p>Your company plan includes your My Life workspace and your own Self Assessment for salary and dividends, prepared from your books, ready to file. It no longer includes your own trade or lets: those are Sole trader &amp; Landlord at £9.99 off, with our accountant +<span data-accountant-adds="sole_trader">£10</span> as for anyone.</p></details>
+      <details><summary>Does the company plan cover my own trade or lets?</summary><p>Your company plan includes your My Life workspace and your own Self Assessment for salary and dividends, prepared from your books, ready to file. It no longer includes your own trade or lets: those are Sole trader &amp; Landlord at <span data-plan-discount="company_own+sole_trader">£9.99</span> off, with our accountant +<span data-accountant-adds="sole_trader">£10</span> as for anyone.</p></details>
       <details><summary>Does a limited company need an accountant?</summary><p>A company return needs an accountant or filing software — HMRC’s free company filing service closed on 31 March 2026. Limited company is <span data-plan-price="company_own">£39.99</span> when your own accountant files. Limited company + accountant is <span data-plan-price="company_ours">£49.99</span>: ours checks every return against your books, queries anything odd, and files it for you wherever the rules let an accountant — and tells you when a return needs your own confirmation.</p></details>
       <details><summary>I have a limited company and rental income. What do I pay?</summary><p><span data-plan-price="company_own_and_sole_trader">£44.99</span> if your own accountant files the company, <span data-plan-price="company_ours_and_sole_trader">£54.99</span> with our accountant: the company plan plus Sole trader &amp; Landlord at <span data-plan-saving="company_own_and_sole_trader">£9.99</span> off. If your trade and rent together are inside MTD, it is <span data-plan-price="company_own_and_self_employed">£54.99</span> if your own accountant files the company, or <span data-plan-price="company_ours_and_self_employed">£64.99</span> with ours on the company.</p></details><details><summary>Do I get a discount for having more than one thing?</summary><p>You never pay per income: every trade and every property is one plan, and My Life is free with any other plan. A director who also has their own trade or lets adds Sole trader &amp; Landlord at <span data-plan-saving="company_own_and_sole_trader">£9.99</span> off. A second company is another company at the same price — separate accounts, a separate CT600.</p></details>
       <details><summary>Why do your prices include VAT?</summary><p>Because most sole traders can’t reclaim it. A “£19 + VAT” plan really costs £22.80. <span data-plan-price="self_employed">£24.99</span> means <span data-plan-price="self_employed">£24.99</span> leaves your account.</p></details>

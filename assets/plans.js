@@ -5,6 +5,7 @@
      data-plan-saving="company_own_and_sole_trader"   what the two together save, "£5"
      data-accountant-adds="sole_trader"       what our accountant adds to that plan, "£10"
      data-together-price="sole_trader"        that plan's price beside a company, "£9.99"
+     data-plan-discount="company_own+sole_trader"   what the two cost apart less what they cost as one, "£9.99"
      data-plan-name / data-plan-tagline       a plan's name and its one line, as the console's Plans page words them
      data-plan-features="sole_trader"         a plan's lines, as the list's items
      data-accountant-steps="sole_trader"      what our accountant does, step by step
@@ -59,10 +60,19 @@
       var c = byId['company_own_and_' + el.getAttribute('data-together-price')], co = byId.company_own;
       if (c && co) el.textContent = money(c.price_minor - co.price_minor, c.currency);
     });
+    [].forEach.call(document.querySelectorAll('[data-plan-discount]'), function (el) {
+      var d = discount(el.getAttribute('data-plan-discount')); if (d) el.textContent = d;
+    });
     [].forEach.call(document.querySelectorAll('[data-accountant-adds]'), function (el) {
       var p = byId[el.getAttribute('data-accountant-adds') + '#adds']; if (p) el.textContent = money(p.price_minor, p.currency);
     });
   }
+  // What two plans save when kept together: the two on their own, less the two as one. "company_own+sole_trader".
+  function discount(pair) {
+    var ab = String(pair || '').split('+'), a = byId[ab[0]], b = byId[ab[1]], c = byId[ab[0] + '_and_' + ab[1]];
+    return a && b && c ? money(a.price_minor + b.price_minor - c.price_minor, c.currency) : null;
+  }
+  window.frPlanDiscount = function (pair, fallback) { return discount(pair) || fallback; };
   window.frPlanPrice = function (id, fallback) { var p = byId[id]; return p ? money(p.price_minor, p.currency) : fallback; };
   if (!window.fetch) return;
   var ctl = window.AbortController ? new AbortController() : null, t = setTimeout(function () { if (ctl) ctl.abort(); }, 4000);

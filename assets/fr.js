@@ -36,6 +36,7 @@
     var sel = {}, over = null;
     var q2 = ch.querySelector('.q2'), out = ch.querySelector('.answer p'), go = ch.querySelector('.answer a');
     var P = function (id, fb) { return window.frPlanPrice ? window.frPlanPrice(id, fb) : fb; };
+    var D = function (pair) { return window.frPlanDiscount ? window.frPlanDiscount(pair, '£9.99') : '£9.99'; };
     function pick(k) { document.querySelectorAll('.plan').forEach(function (p) { p.classList.toggle('pick', p.dataset.plan === k); }); if (k && window.frPickPlan) window.frPickPlan(k); }
     function run() {
       var plans = { life: ['My Life', 'Free'], st: ['Sole trader & Landlord', P('sole_trader', '£14.99')], se: ['Sole trader & Landlord · MTD', P('self_employed', '£24.99')] };
@@ -46,8 +47,8 @@
       if (trade && over === null) { out.innerHTML = 'One more — is your <b>self-employed and rental income together</b> over £50,000?'; pick(null); return; }
       if (sel.ltd) {
         k = 'ltd';
-        if (trade && over) msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company, plus your own trade and lets as <b>Sole trader &amp; Landlord · MTD</b> at £9.99 off: <span class="num">' + P('company_own_and_self_employed', '£54.99') + '</span> in all when your own accountant files. Our accountant on the company is £10 more.';
-        else if (trade) msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company, plus your own trade and lets as <b>Sole trader &amp; Landlord</b> at £9.99 off: <span class="num">' + P('company_own_and_sole_trader', '£44.99') + '</span> in all when your own accountant files, <span class="num">' + P('company_ours_and_sole_trader', '£54.99') + '</span> with ours. Your My Life is included.';
+        if (trade && over) msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company, plus your own trade and lets as <b>Sole trader &amp; Landlord · MTD</b> at ' + D('company_own+self_employed') + ' off: <span class="num">' + P('company_own_and_self_employed', '£54.99') + '</span> in all when your own accountant files. Our accountant on the company is £10 more.';
+        else if (trade) msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company, plus your own trade and lets as <b>Sole trader &amp; Landlord</b> at ' + D('company_own+sole_trader') + ' off: <span class="num">' + P('company_own_and_sole_trader', '£44.99') + '</span> in all when your own accountant files, <span class="num">' + P('company_ours_and_sole_trader', '£54.99') + '</span> with ours. Your My Life is included.';
         else msg = '<b>Limited company</b> · <span class="num">' + P('company_own', '£39.99') + '</span>/mo per company when your own accountant files, <span class="num">' + P('company_ours', '£49.99') + '</span> with our accountant. Your My Life is included.';
       } else {
         if (trade) k = over ? 'se' : 'st'; else k = 'life';
@@ -127,6 +128,15 @@
   }
   var mc = document.querySelector('.mcta'), hero = document.querySelector('.hero');
   if (mc && hero) { var onS = function () { mc.classList.toggle('show', scrollY > hero.offsetHeight * .7 && scrollY + innerHeight < document.body.scrollHeight - 200); }; addEventListener('scroll', onS, { passive: true }); onS(); }
+  // Our accountant is one switch for the whole page, on unless somebody turns it off: every card, chip and column shows
+  // the price for its state. The page reads right with it on and no script; the choice is kept for the visit.
+  var setAcc = function (on, keep) {
+    document.documentElement.classList.toggle('acc-off', !on);
+    [].forEach.call(document.querySelectorAll('.acc-sw'), function (b) { b.setAttribute('aria-pressed', on); });
+    if (keep) { try { sessionStorage.setItem('fr-acc', on ? '1' : '0'); } catch (e) {} }
+  };
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.acc-sw'); if (b) setAcc(b.getAttribute('aria-pressed') !== 'true', true); });
+  addEventListener('load', function () { try { if (document.querySelector('.acc-sw') && sessionStorage.getItem('fr-acc') === '0') setAcc(false); } catch (e) {} });
   // A row of plan chips: one is chosen, and what it chooses is shown under it. The chosen chip is brought to the middle.
   function chipRow(labels, onPick, first) {
     var row = document.createElement('div'), btns = [];
@@ -167,6 +177,7 @@
       pane.innerHTML = '<ul class="cmp-in">' + inc + '</ul>' + (exc ? '<p class="cmp-h">Not in this plan</p><ul class="cmp-out">' + exc + '</ul>' : '');
       panes.push(pane);
     }
+    var sw0 = tb.querySelector('.acc-sw'); if (sw0) cm.appendChild(sw0.cloneNode(true));
     var cr = chipRow(labels, function (i) { panes.forEach(function (p, j) { p.classList.toggle('on', j === i); }); }, hot);
     cm.appendChild(cr.el); panes.forEach(function (p) { cm.appendChild(p); });
   }
@@ -177,9 +188,7 @@
     if (cards.length < 3 || ps.classList.contains('m-hide')) return;
     var first = 0, ls = cards.map(function (p, i) {
       if (p.classList.contains('hot')) first = i;
-      var h = p.querySelector('h3'), pr = p.querySelector('.price'), own = p.querySelector('.own [data-plan-price]');
-      // A card that leads with our accountant's price shows the plan's own price on its chip, which is the plan the chip names.
-      if (own && pr && pr.querySelector('[data-plan-price]')) return (h ? h.innerHTML : '') + '<span>from ' + own.outerHTML + '</span>';
+      var h = p.querySelector('h3'), pr = p.querySelector('.price');
       return (h ? (h.hasAttribute('data-plan-name') ? '<b data-plan-name="' + h.getAttribute('data-plan-name') + '">' + h.innerHTML + '</b>' : h.innerHTML) : '') + '<span>' + (pr ? pr.innerHTML.replace(/<small>[\s\S]*?<\/small>/g, '') : '') + '</span>';
     });
     var t = chipRow(ls, function (i) { cards.forEach(function (p, j) { p.classList.toggle('sel', j === i); }); }, first);
