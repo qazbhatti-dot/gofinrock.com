@@ -2058,3 +2058,12 @@ html.mtd-on li.m-on{display:flex!important}
 .acc-sw em{grid-column:1;grid-row:2;font-size:13px}
 .acc-sw em:after{content:" a month"}
 .acc-sw .acc-sw-k{grid-column:2;grid-row:1/span 2}
+.once:not(:has(.rows)){grid-template-columns:1fr}
+@media(max-width:759px){
+ /* A long value takes its own line under its label, never the same line. */
+ .once .row.me{flex-wrap:wrap}
+ .once .row.me b{flex:1 1 100%;white-space:normal;text-align:left}
+ /* While the sticky bar shows, the chat is a small icon docked at its right end, beside the one button. */
+ .mcta{padding-right:74px}
+ body:has(.mcta.show) .fr-chat{right:20px;bottom:calc(13px + env(safe-area-inset-bottom));box-shadow:none;z-index:56}
+}
