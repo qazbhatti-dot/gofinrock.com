@@ -194,8 +194,23 @@
       pane.innerHTML = '<ul class="cmp-in">' + inc + '</ul>' + (exc ? '<p class="cmp-h">Not in this plan</p><ul class="cmp-out">' + exc + '</ul>' : '');
       panes.push(pane);
     }
-    var cr = chipRow(labels, function (i) { panes.forEach(function (p, j) { p.classList.toggle('on', j === i); }); }, hot);
-    cm.appendChild(cr.el); panes.forEach(function (p) { cm.appendChild(p); });
+    // Three plans, as on the cards; My Life and the trade plan each have a second side (Plus, inside MTD).
+    var groups = [[0, 1, 'Free', 'Plus'], [2, 3, 'Under £50,000', 'Over £50,000 · MTD'], [4]], names = ['My Life', 'Trade & lets', 'Company'], g = 1, side = [0, 0, 0];
+    var seg = document.createElement('div'); seg.className = 'seg3'; seg.setAttribute('role', 'tablist');
+    var subs = groups.map(function (gr, gi) {
+      if (gr.length < 3) return null;
+      var s = document.createElement('div'); s.className = 'seg2'; s.setAttribute('role', 'tablist');
+      [gr[2], gr[3]].forEach(function (lab, k) { var x = document.createElement('button'); x.type = 'button'; x.setAttribute('role', 'tab'); x.textContent = lab; x.addEventListener('click', function () { side[gi] = k; show(); }); s.appendChild(x); });
+      return s;
+    });
+    var show = function () {
+      [].forEach.call(seg.children, function (x, i) { x.setAttribute('aria-selected', i === g); });
+      subs.forEach(function (s, i) { if (!s) return; s.classList.toggle('on', i === g); [].forEach.call(s.children, function (x, k) { x.setAttribute('aria-selected', k === side[i]); }); });
+      var col = groups[g][groups[g].length > 2 ? side[g] : 0];
+      panes.forEach(function (p, j) { p.classList.toggle('on', j === col); });
+    };
+    names.forEach(function (nm, i) { var x = document.createElement('button'); x.type = 'button'; x.setAttribute('role', 'tab'); x.textContent = nm; x.addEventListener('click', function () { g = i; show(); }); seg.appendChild(x); });
+    cm.appendChild(seg); subs.forEach(function (s) { if (s) cm.appendChild(s); }); panes.forEach(function (p) { cm.appendChild(p); }); show();
   }
   // Three or more plan cards are one card at a time on a phone, chosen from the same chips, each with its name and price.
   var planTabs = [];
