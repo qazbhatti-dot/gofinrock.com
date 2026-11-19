@@ -6,6 +6,7 @@
      data-accountant-adds="sole_trader"       what our accountant adds to that plan, "£10"
      data-together-price="sole_trader"        that plan's price beside a company, "£9.99"
      data-plan-discount="company_own+sole_trader"   what the two cost apart less what they cost as one, "£9.99"
+     data-plan-trial="sole_trader"            how long that plan's free trial is, "7 days"
      data-plan-name / data-plan-tagline       a plan's name and its one line, as the console's Plans page words them
      data-plan-features="sole_trader"         a plan's lines, as the list's items
      data-accountant-steps="sole_trader"      what our accountant does, step by step
@@ -59,6 +60,9 @@
     [].forEach.call(document.querySelectorAll('[data-together-price]'), function (el) {
       var c = byId['company_own_and_' + el.getAttribute('data-together-price')], co = byId.company_own;
       if (c && co) el.textContent = money(c.price_minor - co.price_minor, c.currency);
+    });
+    [].forEach.call(document.querySelectorAll('[data-plan-trial]'), function (el) {
+      var p = byId[el.getAttribute('data-plan-trial')], n = p && p.trial_days; if (n > 0) el.textContent = n + (n === 1 ? ' day' : ' days');
     });
     [].forEach.call(document.querySelectorAll('[data-plan-discount]'), function (el) {
       var d = discount(el.getAttribute('data-plan-discount')); if (d) el.textContent = d;

@@ -1876,10 +1876,10 @@ html.acc-off .p-off{display:revert!important}
 .acc-sw:focus-visible{outline:3px solid var(--or);outline-offset:2px}
 .acc-sw-k{flex:none;position:relative;width:42px;height:26px;border-radius:99px;background:rgba(21,22,26,.28);transition:background .2s}
 .acc-sw-k:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s cubic-bezier(.16,1,.3,1)}
-.acc-sw[aria-pressed="true"] .acc-sw-k{background:var(--ok)}
-.acc-sw[aria-pressed="true"] .acc-sw-k:after{transform:translateX(16px)}
+.acc-sw[aria-checked="true"] .acc-sw-k{background:var(--ok)}
+.acc-sw[aria-checked="true"] .acc-sw-k:after{transform:translateX(16px)}
 .plan.hot .acc-sw{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.16);color:#fff}
-.plan.hot .acc-sw[aria-pressed="true"] .acc-sw-k{background:#22c55e}
+.plan.hot .acc-sw[aria-checked="true"] .acc-sw-k{background:#22c55e}
 .plan .acc-sw+.price{margin-top:14px}
 .acc-tick{display:flex;gap:9px;align-items:flex-start;margin:18px 0 -10px;font-size:14px;font-weight:600;line-height:1.45}
 .acc-tick [data-lucide]{flex:none;width:15px;height:15px;margin-top:3px;color:var(--ok)}
@@ -1891,3 +1891,95 @@ html.acc-off .p-off{display:revert!important}
 /* On a phone the chat pill sits above the sticky bar while the bar is showing, never on its button. */
 @media(max-width:759px){.fr-chat{transition:bottom .3s cubic-bezier(.16,1,.3,1),transform .2s,box-shadow .2s}body:has(.mcta.show) .fr-chat{bottom:calc(80px + env(safe-area-inset-bottom))}}
 @media(max-width:759px){.mcta .p{flex:0 1 auto;min-width:0}.mcta .p b{font-size:13.5px}.mcta .btn{flex:1 0 112px}}
+/* Pricing: one switch above three cards, and the sole trader card holds both sides of the MTD line. */
+.m-on{display:none!important}
+html.mtd-on .m-off{display:none!important}
+html.mtd-on .m-on{display:revert!important}
+html.mtd-on li.m-on{display:flex!important}
+.acc-sw-hero{display:inline-flex;width:auto;max-width:100%;margin:28px auto 0;padding:10px 20px 10px 12px;border-radius:99px;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:#fff;font-size:15.5px;min-height:52px}
+.acc-sw-hero[aria-checked="true"] .acc-sw-k{background:#22c55e}
+.mtd-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin-top:14px;border-radius:14px;background:rgba(255,255,255,.1)}
+.mtd-seg button{min-height:44px;border:0;border-radius:10px;background:transparent;font:600 13.5px/1.2 Inter,sans-serif;color:rgba(255,255,255,.78);cursor:pointer}
+.mtd-seg button[aria-pressed="true"]{background:#fff;color:var(--ink2);box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.mtd-seg button:focus-visible{outline:3px solid var(--or);outline-offset:2px}
+.plans3 .plan .price{margin-top:16px}
+@media(min-width:900px){.plans.plans3{grid-template-columns:repeat(3,minmax(0,1fr))!important;max-width:1080px;margin-left:auto;margin-right:auto}}
+.note a{color:inherit;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
+.cmpd{margin-top:22px}
+.cmpd>summary{list-style:none;display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;font:700 16px/1 var(--disp);color:var(--ind);cursor:pointer}
+.cmpd>summary::-webkit-details-marker{display:none}
+.cmpd>summary [data-lucide]{width:18px;height:18px;transition:transform .25s}
+.cmpd[open]>summary [data-lucide]{transform:rotate(180deg)}
+.cmpd .tblw{margin-top:12px}
+.cmpd .cmp-m{margin-top:8px}
+.bundle{display:grid;margin:4px 0 20px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.bundle .row{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:11px 14px;border-top:1px solid rgba(20,22,28,.07);font-size:14.5px;line-height:1.35}
+.bundle .row:first-child{border-top:0}
+.bundle .row span{color:rgba(21,22,26,.72)}
+.bundle .row b{white-space:nowrap;font-variant-numeric:tabular-nums}
+/* Small orange labels on a light section are a darker orange, so they pass 4.5:1; on dark sections they stay bright. */
+:root{--or-ink:#a85300}
+.eyebrow,.step .n,.zz .n{color:var(--or-ink)}
+.hero .eyebrow,.final .eyebrow,.why .eyebrow,.foot .eyebrow,.acct-eyebrow,.hero .n,.tcard .n,[style*="background:var(--ink)"] .eyebrow{color:var(--or)}
+.sec .eyebrow::before{background:currentColor}
+/* Cookie choices: a slim bar along the bottom, two buttons of equal weight, and Choose. */
+.cc{left:0;right:0;bottom:0}
+.cc-in{max-width:none;border-radius:18px 18px 0 0;border-width:1px 0 0;padding:12px 18px calc(12px + env(safe-area-inset-bottom));display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;box-shadow:0 -12px 40px rgba(11,11,16,.18)}
+.cc-p{flex:1 1 320px;font-size:13.5px;line-height:1.4}
+.cc-set{flex:1 1 100%;margin-top:0}
+.cc-b{flex:0 1 auto;margin-top:0;flex-wrap:nowrap}
+.cc-b .btn,.cc .cc-no{min-height:44px;padding:0 16px;font-size:14px;font-weight:700;background:#1e1b4b;color:#fff;border:0;box-shadow:none;white-space:nowrap}
+.cc-link{min-height:44px;margin-left:4px}
+@media(max-width:520px){.cc{left:0;right:0;bottom:0}.cc-b{flex:1 1 100%}.cc-b .btn{flex:1 1 0;padding:0 8px}.cc-link{flex:0 0 auto;margin:0 0 0 4px}}
+/* Footer: the legal line carries the social icons; on a phone the links are three tight columns. */
+.foot .legal .soc{margin:0;flex-direction:row;gap:2px}
+.foot .legal .soc a{font-size:0;width:44px;height:44px;min-height:44px;justify-content:center;color:rgba(255,255,255,.6)}
+.foot .legal .soc svg{width:20px;height:20px}
+@media(max-width:759px){
+ /* The menu: eight destinations in half a screen, the second group as a two-column grid, one button at the foot. */
+ .sheet{padding-left:22px;padding-right:22px;padding-bottom:20px}
+ .sheet>a{font-size:20px;font-weight:600;padding:0 2px;min-height:52px}
+ .sheet .small{margin-top:8px;gap:0 20px}
+ .sheet .small a{font-size:15px}
+ .sheet .btn{margin-top:16px;min-height:52px}
+ .lock .fr-chat{display:none}
+ /* One pinned thing at the bottom: the chat is a round icon, and it sits inside the sticky bar while the bar shows. */
+ .fr-chat{width:48px;height:48px;padding:0;justify-content:center;right:12px;bottom:calc(12px + env(safe-area-inset-bottom))}
+ .fr-chat .fr-chat-label{display:none}
+ .fr-chat-mark{width:40px;height:40px}
+ body:has(.mcta.show) .fr-chat{bottom:calc(11px + env(safe-area-inset-bottom));box-shadow:none}
+ .mcta{padding-right:70px}
+ .mcta .btn{flex:1 0 104px}
+ .bar{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .foot{padding:36px 0 96px}
+ .foot .cols{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 12px}
+ .foot .brand p{margin-top:10px;font-size:14px;line-height:1.45;max-width:none}
+ .foot h4{margin-bottom:2px}
+ .foot a{font-size:14px;line-height:1.25}
+ .foot .legal{margin-top:20px;padding-top:12px;gap:2px}
+ .foot .legal .legal-links{gap:0 18px}
+ .foot .legal .soc{margin-left:-12px}
+}
+@media(max-width:759px){
+ /* The tour is all five screens, a swipe apart. */
+ .tour .steps{display:flex;align-items:stretch;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:20px -22px 0;padding:0 22px 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+ .tour .steps::-webkit-scrollbar{display:none}
+ .tour .steps .step,.tour .steps .step.m-hide{display:flex!important;flex-direction:column;flex:0 0 84%;scroll-snap-align:center;margin:0;padding:22px 20px 0!important;border:1px solid var(--line)!important;border-radius:22px;background:#fff;overflow:hidden}
+ .tour .steps .step .ph-m{margin-top:auto;padding-top:16px}
+ .once .row.me b{white-space:normal;text-align:right}
+}
+@media(max-width:759px){
+ .foot .cols>div{grid-column:auto!important}
+ .foot .cols>.brand{grid-column:1/-1!important}
+ .foot .legal{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between}
+ .foot .legal>span:first-child{flex:1 1 100%}
+}
+@media(max-width:759px){
+ .sheet>.btn{justify-content:center}
+ .tour .steps .step .ph-m{order:-1;margin:0 0 16px;padding:0}
+ .tour .steps .step,.tour .steps .step.m-hide{padding:18px 20px 22px!important}
+}
+.acct-line{max-width:46em;margin-left:auto;margin-right:auto;font-size:14px;line-height:1.5;color:var(--mute)}
+.acct-line b{color:var(--ink2)}
+.btn>[data-plan-trial]{margin:0 -4px}
+@media(max-width:759px){.plans:not(.tabbed)>.plan[data-lead]{order:-2}}

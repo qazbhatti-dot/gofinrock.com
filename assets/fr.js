@@ -130,13 +130,30 @@
   if (mc && hero) { var onS = function () { mc.classList.toggle('show', scrollY > hero.offsetHeight * .7 && scrollY + innerHeight < document.body.scrollHeight - 200); }; addEventListener('scroll', onS, { passive: true }); onS(); }
   // Our accountant is one switch for the whole page, on unless somebody turns it off: every card, chip and column shows
   // the price for its state. The page reads right with it on and no script; the choice is kept for the visit.
-  var setAcc = function (on, keep) {
-    document.documentElement.classList.toggle('acc-off', !on);
-    [].forEach.call(document.querySelectorAll('.acc-sw'), function (b) { b.setAttribute('aria-pressed', on); });
-    if (keep) { try { sessionStorage.setItem('fr-acc', on ? '1' : '0'); } catch (e) {} }
+  var root = document.documentElement;
+  // A plan button carries the choice to sign-up: which plan, and whether our accountant is on.
+  var setCta = function () {
+    var acc = root.classList.contains('acc-off') ? 0 : 1, mtd = root.classList.contains('mtd-on');
+    [].forEach.call(document.querySelectorAll('a[data-cta]'), function (a) {
+      var plan = a.getAttribute('data-cta') === 'ltd' ? 'company_own' : (mtd ? 'self_employed' : 'sole_trader');
+      a.href = a.href.split('?')[0] + '?plan=' + plan + '&accountant=' + acc;
+    });
   };
-  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.acc-sw'); if (b) setAcc(b.getAttribute('aria-pressed') !== 'true', true); });
+  var setAcc = function (on, keep) {
+    root.classList.toggle('acc-off', !on);
+    [].forEach.call(document.querySelectorAll('.acc-sw'), function (b) { b.setAttribute('aria-checked', on); });
+    if (keep) { try { sessionStorage.setItem('fr-acc', on ? '1' : '0'); } catch (e) {} }
+    setCta();
+  };
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.acc-sw'); if (b) { setAcc(b.getAttribute('aria-checked') !== 'true', true); return; }
+    // Under or over the MTD line: one card, two prices.
+    var m = e.target.closest && e.target.closest('.mtd-seg button');
+    if (m) { root.classList.toggle('mtd-on', m.getAttribute('data-mtd') === '1'); [].forEach.call(m.parentNode.children, function (x) { x.setAttribute('aria-pressed', x === m); }); setCta(); }
+  });
   addEventListener('load', function () { try { if (document.querySelector('.acc-sw') && sessionStorage.getItem('fr-acc') === '0') setAcc(false); } catch (e) {} });
+  // The comparison opens on its chosen plan.
+  [].forEach.call(document.querySelectorAll('details.cmpd'), function (d) { d.addEventListener('toggle', function () { var s = d.querySelector('.chips [aria-selected="true"]'); if (s) s.parentNode.scrollLeft = s.offsetLeft - (s.parentNode.clientWidth - s.offsetWidth) / 2; }); });
   // A row of plan chips: one is chosen, and what it chooses is shown under it. The chosen chip is brought to the middle.
   function chipRow(labels, onPick, first) {
     var row = document.createElement('div'), btns = [];
@@ -186,11 +203,13 @@
   [].forEach.call(document.querySelectorAll('.plans'), function (ps) {
     var cards = [].filter.call(ps.children, function (x) { return x.classList.contains('plan'); });
     if (cards.length < 3 || ps.classList.contains('m-hide')) return;
-    var first = 0, ls = cards.map(function (p, i) {
-      if (p.classList.contains('hot')) first = i;
+    var first = 0, lead = -1, ls = cards.map(function (p, i) {
+      if (p.hasAttribute('data-lead')) lead = i; if (p.classList.contains('hot')) first = i;
       var h = p.querySelector('h3'), pr = p.querySelector('.price');
-      return (h ? (h.hasAttribute('data-plan-name') ? '<b data-plan-name="' + h.getAttribute('data-plan-name') + '">' + h.innerHTML + '</b>' : h.innerHTML) : '') + '<span>' + (pr ? pr.innerHTML.replace(/<small>[\s\S]*?<\/small>/g, '') : '') + '</span>';
+      return '<b' + (h && h.hasAttribute('data-plan-name') ? ' data-plan-name="' + h.getAttribute('data-plan-name') + '"' : '') + '>' + (h ? h.innerHTML : '') + '</b><span>' + (pr ? pr.innerHTML.replace(/<small>[\s\S]*?<\/small>/g, '') : '') + '</span>';
     });
+    // The card a page opens on is the plan its headline quotes.
+    if (lead >= 0) first = lead;
     var t = chipRow(ls, function (i) { cards.forEach(function (p, j) { p.classList.toggle('sel', j === i); }); }, first);
     t.el.classList.add('plan-tabs'); ps.classList.add('tabbed'); ps.parentNode.insertBefore(t.el, ps);
     planTabs.push({ cards: cards, choose: t.choose });
@@ -251,15 +270,14 @@
     root.className = 'cc'; root.setAttribute('role', 'dialog'); root.setAttribute('aria-live', 'polite'); root.setAttribute('aria-label', 'Cookie choices');
     root.innerHTML =
       '<div class="cc-in">' +
-        '<p class="cc-t">Cookies, plainly</p>' +
-        '<p class="cc-p">We use essential cookies to run this site. With your OK we’d also measure visits and see which of our ads work. Never tied to your financial data. <a href="' + legalHref() + '">Details</a></p>' +
+        '<p class="cc-p">Essential cookies run this site. With your OK we’d also measure visits and which ads work, never tied to your financial data. <a href="' + legalHref() + '">Details</a></p>' +
         '<div class="cc-set"' + (showSettings ? '' : ' hidden') + '>' +
           '<label class="cc-row"><span><b>Essential</b><small>Sign-in, security, your choices here. Always on.</small></span><input type="checkbox" checked disabled></label>' +
           '<label class="cc-row"><span><b>Analytics</b><small>Google Analytics: which pages help and which confuse.</small></span><input type="checkbox" name="analytics"' + (c.analytics ? ' checked' : '') + '></label>' +
           '<label class="cc-row"><span><b>Advertising</b><small>Meta and Google Ads: whether an ad led to a sign-up.</small></span><input type="checkbox" name="marketing"' + (c.marketing ? ' checked' : '') + '></label>' +
         '</div>' +
         '<div class="cc-b">' +
-          '<button type="button" class="btn btn-or" data-cc="all">Accept all</button>' +
+          '<button type="button" class="btn cc-no" data-cc="all">Accept all</button>' +
           '<button type="button" class="btn cc-no" data-cc="none">Reject non-essential</button>' +
           '<button type="button" class="cc-link" data-cc="' + (showSettings ? 'save' : 'settings') + '">' + (showSettings ? 'Save my choices' : 'Choose') + '</button>' +
         '</div>' +
@@ -282,7 +300,7 @@
 
 /* The chat: Finrock's own assistant, and the team behind it. Nobody waits live on the website: a visitor who wants a
    person leaves the team a message here, which lands on Finrock's Support desk with the conversation and is
-   answered by email, usually the same working day. Nothing is loaded from another company, so the chat sets no
+   answered by email. Nothing is loaded from another company, so the chat sets no
    cookies of its own. */
 (function () {
   var root = document.documentElement; root.classList.add('has-chat');
@@ -296,7 +314,7 @@
      Nothing is fetched from Tawk until Start conversation is pressed. */
   var QA = [
     ["What is Finrock and who is it for?", "Finrock is one app for your money, tax and life admin in the UK.\n\n**It's built for**\n- Employed people and landlords\n- Sole traders and partners\n- Owner-run limited companies\n\n**What it does**\n- Connects to your bank read-only and suggests a category for every transaction\n- Keeps a live Self Assessment or Corporation Tax estimate\n- Tracks renewals such as your MOT and insurance"],
-    ["How do I get started with Finrock?", "It takes about three minutes:\n\n1. Press **Start free** at the top of the page. My Life is free for good, and the business plans are 7 days free. Neither needs a card.\n2. Answer a few questions about how you earn: a job, a trade, a let or a company.\n3. Connect your bank, and each transaction arrives with a suggested category for you to confirm."],
+    ["How do I get started with Finrock?", "It takes about three minutes:\n\n1. Press **Start free** at the top of the page. My Life is free for good, and the business plans start with a free trial. Neither needs a card.\n2. Answer a few questions about how you earn: a job, a trade, a let or a company.\n3. Connect your bank, and each transaction arrives with a suggested category for you to confirm."],
     ["How do I connect my bank?", "On a new account, Home leads with **Connect your bank**.\n\n1. Pick your bank.\n2. Approve access in your own banking app.\n3. New transactions appear in Activity within a few minutes.\n\nMost UK banks are supported. If an account can't be connected, you can import a statement instead."],
     ["Is bank access safe?", "Yes. The connection is read-only, through a regulated Open Banking provider.\n\n- Finrock can read your accounts, balances and transactions\n- It can never move, send or withdraw money\n- You approve access in your own banking app, and we never see your bank login"],
     ["Does Finrock file my tax return?", "Finrock prepares your Self Assessment, Making Tax Digital quarterly updates and VAT return from your books, ready to file.\n\n**Filing with HMRC**\nFinrock can’t send returns to HMRC itself yet. We’re working through HMRC’s software recognition process, and the app will tell you when direct filing is switched on.\n\n**Until then, you can:**\n- File the prepared figures yourself in your HMRC online account\n- Ask your own accountant to file them\n- Add our accountant for £10 a month on your own trade and lets: a qualified UK accountant checks every return against your books, queries anything odd, and files it for you wherever the rules let an accountant, and tells you when a return needs your own confirmation"],
@@ -569,7 +587,7 @@
         var st = teamStatus(); same = st && st === last ? same + 1 : 0; last = st;
         if ((!st || same < 4) && ++n < 24) return setTimeout(look, 250);
         if (st === 'offline' || st === 'away') {
-          if (!asked) { asking = true; reveal(m.lastChild, txt((before ? before + ' ' : '') + 'You can leave the team a message here, and they’ll reply by email, usually the same working day. Would you like to?'), log); chime(); return; }
+          if (!asked) { asking = true; reveal(m.lastChild, txt((before ? before + ' ' : '') + 'You can leave the team a message here, and they’ll reply by email. Would you like to?'), log); chime(); return; }
           if (before && keepOff) { reveal(m.lastChild, txt(before), log); chime(); } else m.remove();
           who(); return;
         }
@@ -1081,4 +1099,10 @@
   if (!('IntersectionObserver' in window)) { vids.forEach(function (v) { v.setAttribute('controls', ''); }); return; }
   var io = new IntersectionObserver(function (es) { es.forEach(function (e) { var v = e.target; if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () { v.setAttribute('controls', ''); }); } else v.pause(); }); }, { threshold: 0.35 });
   vids.forEach(function (v) { io.observe(v); });
+})();
+/* The home film plays by itself on a wide screen. On a phone it is its cover until tapped, so nobody downloads it unasked. */
+(function () {
+  var v = document.querySelector('video[data-autoplay-wide]'); if (!v) return;
+  if (matchMedia('(min-width:760px)').matches) { v.preload = 'metadata'; v.autoplay = true; var p = v.play(); if (p && p.catch) p.catch(function () { v.controls = true; }); }
+  else { v.controls = true; }
 })();
