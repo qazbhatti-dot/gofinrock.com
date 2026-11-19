@@ -21,8 +21,9 @@ Website: https://gofinrock.com · App: https://app.gofinrock.com · Company: Fin
 Priced per person by what HMRC asks of you — never per income source. A sole trader who is also a landlord pays once.
 
 - Every plan: 7 days free, no card. After the trial an unpaid account can read its books but not add or change anything.
-- One subscription built from the workspaces you keep. My Life is included free with any other plan.
-- My Life — £9.99/mo on its own: every account and bill in one view, renewals, documents vault, net worth, unlimited scans. For people who are not self-employed (salary, pension, savings, dividends).
+- One subscription built from the workspaces you keep. My Life Plus is included free with any other plan.
+- My Life — free for good, no card: bills and subscriptions, renewals and reminders, documents vault, one connected bank account and 10 questions a month to the AI assistant. For people who are not self-employed (salary, pension, savings, dividends).
+- My Life Plus — £4.99/mo: every account connected, the AI assistant without limit, unlimited receipt and document scans, net worth, and the tax view for PAYE, savings and dividends.
 - Sole trader & Landlord — £14.99/mo: your own trade and lets under the MTD threshold (£50,000 qualifying income 2026/27; £30,000 from April 2027; £20,000 from April 2028). Self Assessment prepared incl. property pages, invoicing, mileage. One plan for every trade and property. 7-day trial.
 - Sole trader & Landlord · MTD — £24.99/mo: inside MTD for Income Tax (decided by income, never sold as an upgrade). Quarterly updates prepared for every trade and every property, Self Assessment and VAT prepared, jointly-owned lets. 7-day trial.
 - Limited company — £39.99/mo per company when your own accountant files: accounts, CT600, confirmation statement, payroll, dividends, director's loan prepared. Includes the director's My Life workspace and their own Self Assessment for salary and dividends; it does not include the director's own trade or lets. A company return needs an accountant or filing software (HMRC's free company filing service closed on 31 March 2026).
