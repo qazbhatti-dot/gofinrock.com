@@ -1095,13 +1095,9 @@
 /* Films marked data-lazy load and play only when scrolled into view, and pause when out of it. */
 (function () {
   var vids = document.querySelectorAll('video[data-lazy]'); if (!vids.length) return;
+  // Somebody who asked for less motion sees the cover and nothing moves.
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!('IntersectionObserver' in window)) { vids.forEach(function (v) { v.setAttribute('controls', ''); }); return; }
   var io = new IntersectionObserver(function (es) { es.forEach(function (e) { var v = e.target; if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () { v.setAttribute('controls', ''); }); } else v.pause(); }); }, { threshold: 0.35 });
   vids.forEach(function (v) { io.observe(v); });
-})();
-/* The home film plays by itself on a wide screen. On a phone it is its cover until tapped, so nobody downloads it unasked. */
-(function () {
-  var v = document.querySelector('video[data-autoplay-wide]'); if (!v) return;
-  if (matchMedia('(min-width:760px)').matches) { v.preload = 'metadata'; v.autoplay = true; var p = v.play(); if (p && p.catch) p.catch(function () { v.controls = true; }); }
-  else { v.controls = true; }
 })();

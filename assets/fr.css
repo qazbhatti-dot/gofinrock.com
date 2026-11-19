@@ -2043,8 +2043,6 @@ html.mtd-on li.m-on{display:flex!important}
  .fr-chat-mark{width:34px;height:34px}
  body:has(.mcta.show) .fr-chat{bottom:calc(82px + env(safe-area-inset-bottom));box-shadow:0 8px 20px rgba(11,11,16,.25)}
  .cc-open .fr-chat,.lock .fr-chat{display:none}
- /* The tour: every step, one after another. */
- .steps .step.m-hide{display:flex!important}
 }
 @media(max-width:759px){
  #plans{padding-top:4px!important}
