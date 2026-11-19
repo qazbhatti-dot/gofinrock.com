@@ -1961,11 +1961,6 @@ html.mtd-on li.m-on{display:flex!important}
  .foot .legal .soc{margin-left:-12px}
 }
 @media(max-width:759px){
- /* The tour is all five screens, a swipe apart. */
- .tour .steps{display:flex;align-items:stretch;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:20px -22px 0;padding:0 22px 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
- .tour .steps::-webkit-scrollbar{display:none}
- .tour .steps .step,.tour .steps .step.m-hide{display:flex!important;flex-direction:column;flex:0 0 84%;scroll-snap-align:center;margin:0;padding:22px 20px 0!important;border:1px solid var(--line)!important;border-radius:22px;background:#fff;overflow:hidden}
- .tour .steps .step .ph-m{margin-top:auto;padding-top:16px}
  .once .row.me b{white-space:normal;text-align:right}
 }
 @media(max-width:759px){
@@ -1974,12 +1969,92 @@ html.mtd-on li.m-on{display:flex!important}
  .foot .legal{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between}
  .foot .legal>span:first-child{flex:1 1 100%}
 }
-@media(max-width:759px){
- .sheet>.btn{justify-content:center}
- .tour .steps .step .ph-m{order:-1;margin:0 0 16px;padding:0}
- .tour .steps .step,.tour .steps .step.m-hide{padding:18px 20px 22px!important}
+@media(max-width:759px){.sheet>.btn{justify-content:center}}
 }
 .acct-line{max-width:46em;margin-left:auto;margin-right:auto;font-size:14px;line-height:1.5;color:var(--mute)}
 .acct-line b{color:var(--ink2)}
 .btn>[data-plan-trial]{margin:0 -4px}
 @media(max-width:759px){.plans:not(.tabbed)>.plan[data-lead]{order:-2}}
+/* ---- Calm pass: one colour idea. Navy, white and cream; the brand orange only on the primary button. ---- */
+.hero::before,.plan.hot::after{display:none}
+.hero{background:linear-gradient(180deg,#1e1b4b,#14122f)}
+.final{background:linear-gradient(180deg,#1e1b4b,#14122f)}
+.final .phone{box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.plan.hot{background:#1e1b4b;box-shadow:0 30px 60px -34px rgba(30,27,75,.6)}
+.plan.hot li [data-lucide],.plan.hot .acc-tick [data-lucide]{color:#fff;opacity:.85}
+.grad{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--or);animation:none}
+/* A page with no picture in its hero opens light: one bold headline, one short line. */
+.hero:has(>.phero){background:var(--paper);color:var(--ink2)}
+.hero:has(>.phero)::after{display:none}
+.hero:has(>.phero) h1{text-shadow:none;color:var(--ink2)}
+.hero:has(>.phero) .grad{color:var(--ind)}
+.hero:has(>.phero) .lede{color:var(--mute)}
+.hero:has(>.phero) .eyebrow{color:var(--or-ink)}
+.hero:has(>.phero) .pill{background:rgba(30,27,75,.06);border-color:rgba(30,27,75,.12);color:var(--ink2)}
+.hero:has(>.phero) .pill b{background:var(--ind);color:#fff}
+.hero:has(>.phero) .fine{color:var(--mute)}
+.hero:has(>.phero) .btn-ghost{color:var(--ink2);border-color:var(--line);background:#fff}
+.wrap.phero{padding-bottom:clamp(28px,5vw,64px)}
+/* The accountant's switch is a slim row inside the card it changes. */
+.acc-sw{background:none!important;border:0!important;border-radius:0;padding:0;margin-top:12px;min-height:44px;gap:8px;font-size:14.5px}
+.acc-sw>span{flex:1;min-width:0}
+.acc-sw em{font-style:normal;font-weight:500;opacity:.6}
+.acc-sw-k{width:46px;height:28px}
+.acc-sw-k:after{width:22px;height:22px}
+.acc-sw[aria-checked="true"] .acc-sw-k:after{transform:translateX(18px)}
+.acc-sw[aria-checked="true"] .acc-sw-k,.plan.hot .acc-sw[aria-checked="true"] .acc-sw-k{background:#34c759}
+.plan.hot .acc-sw-k{background:rgba(255,255,255,.28)}
+.mtd-seg{margin-top:6px;background:rgba(255,255,255,.12);border-radius:12px}
+.mtd-seg button{min-height:44px;font-size:14px}
+.plans3 .plan .own{margin-top:8px;font-size:14.5px}
+.plans3 .plan ul{margin-top:18px}
+.plans3 .plan li{font-size:15px}
+@media(max-width:759px){
+ .wrap{padding-left:20px;padding-right:20px}
+ .sec{padding:32px 0}
+ .hero:has(>.phero){padding-bottom:0}
+ /* Pricing: three plans in a control that fits the screen, and the one chosen as a solid navy card. */
+ .plan-tabs.seg3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;overflow:visible;margin:0;padding:4px;border-radius:14px;background:rgba(30,27,75,.08);-webkit-mask-image:none;mask-image:none}
+ .plan-tabs.seg3 button{min-height:44px;padding:0 4px;border:0;border-radius:10px;background:transparent;font:600 14.5px/1.15 Inter,sans-serif;letter-spacing:0;color:var(--mute);text-align:center;white-space:normal;box-shadow:none}
+ .plan-tabs.seg3 button[aria-selected="true"]{background:#fff;color:var(--ink2);box-shadow:0 2px 8px rgba(15,23,42,.12)}
+ .plans.tabbed{margin-top:16px!important}
+ .plans.tabbed>.plan.sel{background:#1e1b4b;color:#fff;border-color:transparent;box-shadow:0 30px 60px -34px rgba(30,27,75,.6);padding:24px 22px}
+ .plans.tabbed>.plan.sel .own,.plans.tabbed>.plan.sel li{color:rgba(255,255,255,.78)}
+ .plans.tabbed>.plan.sel .own b,.plans.tabbed>.plan.sel li b{color:#fff}
+ .plans.tabbed>.plan.sel li [data-lucide]{color:#fff;opacity:.85}
+ .plans.tabbed>.plan.sel .btn{background:var(--or);color:#140d02;border:0}
+ .plans.tabbed>.plan.sel .acc-sw{color:#fff}
+ .plans.tabbed>.plan.sel .acc-sw-k{background:rgba(255,255,255,.28)}
+ .plans.tabbed>.plan.sel .acc-sw[aria-checked="true"] .acc-sw-k{background:#34c759}
+ .plans.tabbed>.plan .price{font-size:52px}
+ /* The comparison's plan names wrap; nothing scrolls sideways or is cut off. */
+ .cmp-m .chips{flex-wrap:wrap;overflow:visible;margin:0;padding:0 0 12px;-webkit-mask-image:none;mask-image:none}
+ .cmp-m .chips button{min-height:44px;padding:0 14px;border-radius:99px;font:600 14px/1 Inter,sans-serif;white-space:nowrap}
+ .cmp-m .chips button[aria-selected="true"]{background:#1e1b4b;box-shadow:none}
+ .cmp-pane{border:0;box-shadow:none;background:none;padding:0}
+ .cmp-in li{border-top:0;padding:7px 0 7px 30px}
+ .cmp-in li:before{top:11px}
+ .addon.together{border:0;background:none;padding:0;margin-top:20px}
+ /* The sticky bar is one button. The chat is a small round icon above its right end. */
+ .mcta .p{display:none}
+ .mcta{padding:10px 20px calc(10px + env(safe-area-inset-bottom))}
+ .mcta .btn{flex:1 1 100%}
+ .fr-chat{background:#1e1b4b;width:44px;height:44px;right:20px;box-shadow:0 8px 20px rgba(11,11,16,.25)}
+ .fr-chat-mark{width:34px;height:34px}
+ body:has(.mcta.show) .fr-chat{bottom:calc(82px + env(safe-area-inset-bottom));box-shadow:0 8px 20px rgba(11,11,16,.25)}
+ .cc-open .fr-chat,.lock .fr-chat{display:none}
+ /* The tour: every step, one after another. */
+ .steps .step.m-hide{display:flex!important}
+}
+@media(max-width:759px){
+ #plans{padding-top:4px!important}
+ .hero:has(>.phero) .wrap.phero{padding-top:36px;padding-bottom:24px}
+ .acc-sw{font-size:14px}
+ .acc-sw>span{white-space:nowrap}
+ .fr-chat{border:1px solid rgba(30,27,75,.12)}
+}
+.acc-sw{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:1px;align-items:center;text-align:left}
+.acc-sw>span{grid-column:1;white-space:normal}
+.acc-sw em{grid-column:1;grid-row:2;font-size:13px}
+.acc-sw em:after{content:" a month"}
+.acc-sw .acc-sw-k{grid-column:2;grid-row:1/span 2}

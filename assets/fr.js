@@ -183,7 +183,7 @@
   if (cm && tb) {
     var ths = tb.querySelectorAll('thead th'), trs = tb.querySelectorAll('tbody tr'), panes = [], labels = [], hot = 0;
     for (var c = 1; c < ths.length; c++) {
-      labels.push(ths[c].innerHTML); if (/MTD/.test(ths[c].textContent)) hot = c - 1;
+      labels.push(ths[c].firstChild.textContent); if (/MTD/.test(ths[c].textContent)) hot = c - 1;
       var inc = '', exc = '';
       [].forEach.call(trs, function (tr) {
         var td = tr.cells[c], name = tr.cells[0].innerHTML;
@@ -194,7 +194,6 @@
       pane.innerHTML = '<ul class="cmp-in">' + inc + '</ul>' + (exc ? '<p class="cmp-h">Not in this plan</p><ul class="cmp-out">' + exc + '</ul>' : '');
       panes.push(pane);
     }
-    var sw0 = tb.querySelector('.acc-sw'); if (sw0) cm.appendChild(sw0.cloneNode(true));
     var cr = chipRow(labels, function (i) { panes.forEach(function (p, j) { p.classList.toggle('on', j === i); }); }, hot);
     cm.appendChild(cr.el); panes.forEach(function (p) { cm.appendChild(p); });
   }
@@ -202,16 +201,16 @@
   var planTabs = [];
   [].forEach.call(document.querySelectorAll('.plans'), function (ps) {
     var cards = [].filter.call(ps.children, function (x) { return x.classList.contains('plan'); });
-    if (cards.length < 3 || ps.classList.contains('m-hide')) return;
+    if (!ps.classList.contains('plans3')) return;
     var first = 0, lead = -1, ls = cards.map(function (p, i) {
       if (p.hasAttribute('data-lead')) lead = i; if (p.classList.contains('hot')) first = i;
       var h = p.querySelector('h3'), pr = p.querySelector('.price');
-      return '<b' + (h && h.hasAttribute('data-plan-name') ? ' data-plan-name="' + h.getAttribute('data-plan-name') + '"' : '') + '>' + (h ? h.innerHTML : '') + '</b><span>' + (pr ? pr.innerHTML.replace(/<small>[\s\S]*?<\/small>/g, '') : '') + '</span>';
+      return p.getAttribute('data-short') || (h ? h.textContent : '');
     });
     // The card a page opens on is the plan its headline quotes.
     if (lead >= 0) first = lead;
     var t = chipRow(ls, function (i) { cards.forEach(function (p, j) { p.classList.toggle('sel', j === i); }); }, first);
-    t.el.classList.add('plan-tabs'); ps.classList.add('tabbed'); ps.parentNode.insertBefore(t.el, ps);
+    t.el.classList.add('plan-tabs'); if (cards.length <= 3) t.el.classList.add('seg3'); ps.classList.add('tabbed'); ps.parentNode.insertBefore(t.el, ps);
     planTabs.push({ cards: cards, choose: t.choose });
   });
   window.frPickPlan = function (k) { planTabs.forEach(function (t) { t.cards.forEach(function (p, i) { if (p.dataset.plan === k) t.choose(i, true); }); }); };
