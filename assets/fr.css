@@ -2058,9 +2058,6 @@ html.mtd-on li.m-on{display:flex!important}
 .acc-sw .acc-sw-k{grid-column:2;grid-row:1/span 2}
 .once:not(:has(.rows)){grid-template-columns:1fr}
 @media(max-width:759px){
- /* A long value takes its own line under its label, never the same line. */
- .once .row.me{flex-wrap:wrap}
- .once .row.me b{flex:1 1 100%;white-space:normal;text-align:left}
  /* While the sticky bar shows, the chat is a small icon docked at its right end, beside the one button. */
  .mcta{padding-right:74px}
  body:has(.mcta.show) .fr-chat{right:20px;bottom:calc(13px + env(safe-area-inset-bottom));box-shadow:none;z-index:56}
@@ -2103,3 +2100,39 @@ html.mtd-on li.m-on{display:flex!important}
 .once .row,.bundle .row{flex-wrap:wrap!important;align-items:baseline;column-gap:14px;row-gap:2px}
 .once .row>span,.bundle .row>span{flex:1 1 8.5em;min-width:min(8.5em,100%)}
 .once .row>b,.bundle .row>b{flex:0 1 auto;min-width:0;max-width:100%;white-space:normal!important;overflow-wrap:normal;text-align:right}
+
+/* The final look-over, 19 Nov. Jump links on a light hero are ink on white, never white on paper. */
+.hero:has(>.phero) .opt{background:#fff;border-color:var(--line);color:var(--ink2)}
+.hero:has(>.phero) .opt:hover{border-color:var(--ind);color:var(--ind)}
+/* A headline's coloured half wraps as a block of its own, so its last word is never left alone on a line. */
+h1 .grad,h2 .grad{display:inline-block;text-wrap:balance;max-width:100%}
+/* Lists inside a card start at the card's own left edge. */
+.prop ul,.let ul{padding-left:0;margin:0}
+.tcard h3{line-height:1.2}
+/* An answer written as a block reads as every other answer does. */
+.faq details .a{padding:0 40px 22px 2px;font-size:15px;line-height:1.65;color:var(--mute)}
+@media(min-width:1040px){.faq details .a{font-size:16px}}
+/* A closing band with no phone under it keeps room below its button. */
+.final:not(:has(.phone)){padding-bottom:clamp(56px,8vw,104px)}
+html.has-chat .chatbox{margin-top:28px}
+/* A legal section's label is a small label, and wraps without a dash hanging beside it. */
+.art .eyebrow{display:block;font-size:12px;line-height:1.6;color:var(--or-ink)}
+.art .eyebrow::before{display:none}
+/* Six cards sit three and three, never four and two; one quote or one plan sits in the middle at a readable width. */
+@media(min-width:1040px){.trust:has(>div:nth-child(6):last-child){grid-template-columns:repeat(3,minmax(0,1fr))}}
+.quotes:has(>.qt:only-child){max-width:720px;margin-left:auto;margin-right:auto;grid-template-columns:1fr}
+@media(min-width:760px){.plans:has(>.plan:only-child){max-width:520px;margin-left:auto;margin-right:auto;grid-template-columns:1fr!important}}
+/* A topic's label lines up with the questions under it. */
+.eyebrow:has(+.faq){display:flex;max-width:780px;margin-left:auto;margin-right:auto}
+/* The chat button rests beside the footer's last line, not on top of it. */
+@media(min-width:760px){.foot .legal{padding-bottom:56px}}
+/* Jump links on a phone are a tidy two-column block, never a ragged pile; an odd last one takes the full row. */
+@media(max-width:759px){
+ .phero .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ .phero .opts .opt{justify-content:center;text-align:center;padding:0 10px;font-size:14px;min-width:0}
+ .phero .opts .opt:last-child:nth-child(odd){grid-column:1/-1}
+ /* A plan's badge sits clear of the card above it. */
+ .plans>.plan+.plan:has(.tag){margin-top:10px}
+}
+/* The menu's button is dark ink on orange like every other, not the menu links' white. */
+.sheet a.btn-or{color:#140d02}
