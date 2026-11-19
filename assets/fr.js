@@ -38,7 +38,7 @@
     var P = function (id, fb) { return window.frPlanPrice ? window.frPlanPrice(id, fb) : fb; };
     function pick(k) { document.querySelectorAll('.plan').forEach(function (p) { p.classList.toggle('pick', p.dataset.plan === k); }); }
     function run() {
-      var plans = { life: ['My Life', P('individual', '£9.99')], st: ['Sole trader & Landlord', P('sole_trader', '£14.99')], se: ['Sole trader & Landlord · MTD', P('self_employed', '£24.99')] };
+      var plans = { life: ['My Life', 'Free'], st: ['Sole trader & Landlord', P('sole_trader', '£14.99')], se: ['Sole trader & Landlord · MTD', P('self_employed', '£24.99')] };
       var trade = sel.se || sel.prop;
       q2.classList.toggle('show', !!trade);
       var k, msg;
@@ -54,7 +54,7 @@
         var p = plans[k];
         msg = '<b>' + p[0] + '</b> · <span class="num">' + p[1] + '</span>/mo';
         if (trade && sel.se && sel.prop) msg += ' — your trade <i>and</i> your lets, one price, My Life included.';
-        else if (k === 'life') msg += ' — salary, pension, savings and dividends are all in.';
+        else if (k === 'life') msg = '<b>My Life</b> · <span class="num">Free</span> — every account with Plus at ' + P('individual', '£4.99') + '/mo.';
         else if (k === 'st') msg += ' — Self Assessment incl. property pages, My Life included, no quarterly updates yet.';
         else msg += ' — every trade and every property, quarterly updates included, My Life included.';
       }
@@ -144,7 +144,7 @@
       var me, plan;
       if (s.ltd) { plan = 'Finrock Limited company' + ((s.se || s.prop) ? '' : ''); me = (s.se || s.prop) ? 44.99 : 39.99; }
       else if (s.se || s.prop) { plan = 'Finrock Sole trader & Landlord · MTD'; me = 24.99; }
-      else { plan = 'Finrock My Life'; me = 9.99; }
+      else { plan = 'Finrock My Life Plus'; me = 4.99; }
       document.getElementById('calc-rows').innerHTML = rows.map(function (r) { return '<div class="row"><span>' + r[0] + '</span><b>' + (r[1] ? fmt(r[1]) : '—') + '</b></div>'; }).join('');
       document.getElementById('calc-them').textContent = fmt(them);
       document.getElementById('calc-me').textContent = fmt(me);

@@ -269,7 +269,7 @@
     document.getElementById('res-cta').style.display = a.cta ? '' : 'none';
     document.getElementById('res-f').innerHTML = a.cta
       ? 'No card to start. Then £14.99 a month, or £24.99 once you’re in MTD. Prices include VAT.'
-      : '<a href="' + withUtm('../finrock-personal.html') + '">See My Life, £9.99 a month →</a>';
+      : '<a href="' + withUtm('../finrock-personal.html') + '">See My Life, free to start →</a>';
     res.classList.add('show'); shown = true; paint();
     if (!tracked) { tracked = true; if (window.frTrack) window.frTrack('lead', { content_name: 'mtd-check', value: a.k }); }
     return true;
