@@ -377,7 +377,10 @@
     var id = null, tok = '', failed = false, retried = false, asking = false, waiting = [];
     /* Cloudflare asks for a tick only when it is unsure of a browser. Then the visitor is told what the box is for,
        and a question waits for them however long they take; a check that fails for good is put out of sight, and
-       the page's own words (Try again, or email the team) take its place. */
+       the page's own words (Try again, or email the team) take its place. A check that passes is put out of sight
+       a moment later however it ran: Cloudflare can draw its "Success!" without having asked for a tick, and that
+       box would otherwise sit above the chat for the rest of the conversation. A later check that needs a tick
+       brings it back. */
     var hint = document.createElement('p'); hint.className = 'fr-ts-hint'; hint.hidden = true;
     hint.textContent = 'Please tick the box below so we know you’re a person, not a bot.';
     if (el.parentNode) el.parentNode.insertBefore(hint, el);
@@ -386,7 +389,7 @@
     function fail() { failed = true; ask(false); el.classList.add('fr-ts-off'); settle(); }
     function rerun() { tok = ''; failed = false; el.classList.remove('fr-ts-off'); try { if (id !== null) window.turnstile.reset(id); } catch (e) {} }
     tsReady(function () { try { id = window.turnstile.render(el, { sitekey: TS_KEY, appearance: 'interaction-only', theme: 'light', retry: 'never',
-      callback: function (t) { var ticked = asking; tok = t; failed = false; ask(false); settle(); if (ticked) setTimeout(function () { if (tok && !asking) el.classList.add('fr-ts-off'); }, 1200); },
+      callback: function (t) { tok = t; failed = false; ask(false); settle(); setTimeout(function () { if (tok && !asking) el.classList.add('fr-ts-off'); }, 1200); },
       'expired-callback': function () { tok = ''; },
       'before-interactive-callback': function () { ask(true); },
       'after-interactive-callback': function () { ask(false); },
