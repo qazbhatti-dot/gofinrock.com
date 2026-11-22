@@ -736,7 +736,7 @@
       function post(tok) {
       var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function () { if (ctl) ctl.abort(); }, 30000);
       /* Sent as plain text so the browser asks no permission first: the answer arrives in one round trip. */
-      fetch(AI, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ messages: msgs.slice(-10), pass: pass, turnstile: tok }), signal: ctl ? ctl.signal : undefined })
+      return fetch(AI, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ messages: msgs.slice(-10), pass: pass, turnstile: tok }), signal: ctl ? ctl.signal : undefined })
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j.status = r.status; return j; }); })
         .then(function (j) {
           if (j.pass) try { sessionStorage.setItem('fr-ai-pass', j.pass); } catch (e) {}
@@ -744,6 +744,12 @@
              drawn again for another try, and the email form (checked itself) carries the question to the team. */
           /* The refused question leaves the conversation, so it is never sent again as an earlier turn with no answer;
              Try again asks it afresh once the check has run again. */
+          /* A pass holds for an hour, on the network it was given to, for so many questions; one that no longer
+             holds is dropped and the question asked again once with a fresh check, so the visitor sees nothing. */
+          if (j.check && pass) {
+            pass = ''; try { sessionStorage.removeItem('fr-ai-pass'); } catch (e) {} if (chatTs) chatTs.reset();
+            return new Promise(function (done) { chatCheck().wait(function (t) { clearTimeout(tm); post(t).then(done, done); }); });
+          }
           if (j.check) {
             msgs.pop(); save(); try { sessionStorage.removeItem('fr-ai-pass'); } catch (e) {} if (chatTs) chatTs.reset(); else chatCheck();
             reveal(w.lastChild, 'I can’t answer that one here just now: Cloudflare’s security check couldn’t confirm this browser. If a box appears below, tick it, then try again. Or email your question to the team.', log); chime();
@@ -787,7 +793,7 @@
     });
     /* The question goes to the same place as the contact page's form (postContact). */
     var supTs = null;
-    var WHY = { check: 'We couldn’t confirm you’re not a robot. Please tick the box and send again.', missing: 'Please enter your email and your question.', email: 'That email address doesn’t look right. Please check it and send again.', long: 'That message is over 5,000 characters. Please shorten it and send again.', links: 'Please keep it to three links or fewer and send again.', busy: 'Too many messages just now. Please try again in a little while.' };
+    var WHY = { check: 'We couldn’t confirm you’re not a robot. Please tick the box and send again.', missing: 'Please enter your email and your question.', email: 'That email address doesn’t look right. Please check it and send again.', long: 'That message is over 5,000 characters. Please shorten it and send again.', links: 'Please keep it to three links or fewer and send again.', busy: 'Too many messages just now. Please try again in a little while.', blocked: 'This form isn’t available here. Please email support@gofinrock.com.' };
     form.addEventListener('input', function () { status.textContent = ''; });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
