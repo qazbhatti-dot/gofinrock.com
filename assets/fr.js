@@ -411,6 +411,35 @@
       }
     };
   }
+  /* The contact page's form posts to the app itself. It used to post the moment Send was pressed, so a press made
+     while Cloudflare's check was still running, or just after the visitor ticked its box, carried no token, was
+     refused, and had to be pressed again. Send now waits for the check, then posts: one press sends. A check that
+     fails is said so on the page, with the message kept; with Cloudflare's script blocked the form posts as before
+     and the app decides. */
+  (function () {
+    var cf = document.getElementById('contact-form'), el = cf && cf.querySelector('.fr-ts-form'); if (!el) return;
+    var ts = tsWidget(el), go = cf.querySelector('button[type=submit]'), note = document.getElementById('contact-result'), label = '', held = false, was = null;
+    /* say(text) puts a failed check where the page's other results go; say('') puts back what was there before. */
+    function say(s) {
+      if (!note) return;
+      if (s) { if (!was) was = { t: note.textContent, c: note.style.color, w: note.style.fontWeight, r: note.getAttribute('role') }; note.textContent = s; note.style.color = '#b91c1c'; note.style.fontWeight = '600'; note.setAttribute('role', 'alert'); return; }
+      if (!was) return; note.textContent = was.t; note.style.color = was.c; note.style.fontWeight = was.w; if (was.r) note.setAttribute('role', was.r); else note.removeAttribute('role'); was = null;
+    }
+    function ready() { held = false; go.disabled = false; if (label) go.innerHTML = label; }
+    cf.addEventListener('submit', function (e) {
+      e.preventDefault(); if (held) return; held = true;
+      say(''); label = go.innerHTML; go.disabled = true; go.textContent = 'Checking you’re not a robot…';
+      ts.wait(function (tok) {
+        if (!tok && window.turnstile) { ready(); ts.reset(); say('We couldn’t confirm you’re not a robot. Please try again, or email support@gofinrock.com.'); return; }
+        var f = cf.querySelector('input[name="cf-turnstile-response"]');
+        if (!f) { f = document.createElement('input'); f.type = 'hidden'; f.name = 'cf-turnstile-response'; cf.appendChild(f); }
+        f.value = tok; go.textContent = 'Sending…';
+        HTMLFormElement.prototype.submit.call(cf);
+      });
+    });
+    /* Back to a page the browser kept shows the form ready again; the check itself is run afresh by tsWidget. */
+    window.addEventListener('pageshow', function (e) { if (e.persisted) { ready(); say(''); } });
+  })();
   /* Our own assistant answers in the panel, from the live app, and Tawk is loaded only to hand a visitor to the team.
      One browser can be pointed at a test server with ?ai=<address>, or back to Tawk alone with ?ai=off, kept for that
      browser; ?ai=live returns it to the live app. */
